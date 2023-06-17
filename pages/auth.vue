@@ -7,9 +7,7 @@
                 </div>
 
                 <div class="auth-box-description">
-                    登入后即可尽享 Tisea 全功能。你可以使用登录令牌或者 Oasis 的火星港账号来登录 Tisea。<div v-if="currentLoginMethod === 'oasis'">
-                        <br />注意：多次密码输入错误可能导致你的火星港账号被临时锁定。
-                    </div>
+                    登入后即可尽享 Tisea 全功能。你可以使用登录令牌或者 Oasis 的火星港账号来登录 Tisea。
                 </div>
             </div>
 
