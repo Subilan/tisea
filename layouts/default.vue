@@ -64,13 +64,4 @@
     position: relative;
 }
 
-@keyframes FlowDown {
-    0% {
-        transform: translateY(-36px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
 </style>

@@ -6,10 +6,40 @@ body {
 @keyframes OpacityFade {
     0% {
         opacity: 0;
+        visibility: collapse;
     }
 
     100% {
+        visibility: visible;
         opacity: 1;
     }
 }
 
+@keyframes FlowDown {
+    0% {
+        visibility: collapse;
+        transform: translateY(-36px);
+    }
+
+    100% {
+        visibility: visible;
+        transform: translateY(0);
+    }
+}
+
+.fadeDown-enter-active,
+.fadeDown-leave-active {
+    transition: all .2s cubic-bezier(.8, 0, 0, 1);
+}
+
+.fadeDown-enter-from,
+.fadeDown-leave-to {
+    transform: translateY(-36px);
+    opacity: 0;
+}
+
+.fadeDown-enter-to,
+.fadeDown-leave-from {
+    transform: translateY(0);
+    opacity: 1;
+}
