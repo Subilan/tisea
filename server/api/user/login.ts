@@ -1,4 +1,5 @@
 import Auth, { NodeBBResponse } from '../../utils/auth';
+import Func from '../../utils/func';
 
 export default defineEventHandler(async e => {
 	const body = await readBody(e);
@@ -9,27 +10,29 @@ export default defineEventHandler(async e => {
 		const playername = k[0];
 		return {
 			status: await Auth.verifyToken(playername, token),
-            code: 200
+			code: 200
 		};
 	} else {
 		const username = body.username;
 		const password = body.password;
 		try {
-			await $fetch('https://i.oases.red/api/v3/utilities/login', {
+			await $fetch<NodeBBResponse>('https://i.oases.red/api/v3/utilities/login', {
 				method: 'post',
 				body: {
 					username,
 					password
 				}
-			});
+			})
 			return {
 				status: true,
-                code: 200
+				code: 200,
+                msg: Func.encrypt(`${username}.${password}`).toString()
 			};
 		} catch (e: any) {
 			return {
 				status: false,
-				code: e?.statusCode ?? -1
+				code: 403,
+                msg: e.message
 			};
 		}
 	}

@@ -7,7 +7,9 @@
                 </div>
 
                 <div class="auth-box-description">
-                    登入后即可尽享 Tisea 全功能。你可以使用登录令牌或者 Oasis 的火星港账号来登录 Tisea。
+                    登入后即可尽享 Tisea 全功能。你可以使用登录令牌或者 Oasis 的火星港账号来登录 Tisea。<div v-if="currentLoginMethod === 'oasis'">
+                        <br />注意：多次密码输入错误可能导致你的火星港账号被临时锁定。
+                    </div>
                 </div>
             </div>
 
@@ -67,7 +69,13 @@ function dispatchSnackbar(info: string, delay: number = 0) {
 
 interface LoginResponse {
     code: number,
-    status: boolean
+    status: boolean,
+    msg?: string
+}
+
+const dictionary = {
+    '[[error:invalid-username-or-password]]': "用户名或密码错误",
+    '[[error:account-locked]]': '账号被临时锁定'
 }
 
 function login() {
@@ -87,14 +95,20 @@ function login() {
                 seconds -= 1;
                 if (seconds === 0) {
                     if (process.client) {
-                        localStorage.setItem('tisea-login-token', loginKey)
+                        if (currentLoginMethod === 'oasis') {
+                            localStorage.setItem('tisea-login-method', 'oasis');
+                            localStorage.setItem('tisea-login-data', r.msg || '');
+                        } else if (currentLoginMethod === 'key') {
+                            localStorage.setItem('tisea-login-method', 'key');
+                            localStorage.setItem('tisea-login-key', loginKey);
+                        }
                     }
                     useRouter().push('/');
                 }
             }, 1000);
         } else {
             if (r.code === 403) {
-                if (currentLoginMethod === 'oasis') dispatchSnackbar('密码错误，请检查拼写是否有误', 3500);
+                if (currentLoginMethod === 'oasis') dispatchSnackbar(`无法登录 ${r.msg}`, 3500);
             }
             if (currentLoginMethod === 'key') dispatchSnackbar('无效登录令牌', 3500);
         }
