@@ -1,5 +1,5 @@
 <template>
-    <Transition name="fadeDown">
+    <Transition name="fadeUp">
         <div v-if="props.modelValue" class="snackbar">
             <div class="text">
                 <slot></slot>
@@ -20,10 +20,11 @@ defineEmits(['update:modelValue']);
     background: #212121;
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
-    height: 30px;
+    height: 36px;
     font-size: 18px;
     position: fixed;
-    top: 0;
+    min-width: 300px;
+    bottom: 0;
     color: white;
     padding: 10px 20px;
     font-family: Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', 'Courier New', Courier, monospace;
