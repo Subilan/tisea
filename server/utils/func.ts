@@ -20,6 +20,6 @@ export default class Func {
 	}
 
 	static decrypt(cipher: string) {
-		return CryptoEs.AES.decrypt(cipher, CRYPTO_KEY);
+		return CryptoEs.AES.decrypt(cipher, CRYPTO_KEY).toString(CryptoEs.enc.Utf8);
 	}
 }
