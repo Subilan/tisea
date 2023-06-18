@@ -1,13 +1,16 @@
-import DB from "../../utils/static/DB";
+import DB from '../../utils/static/DB';
 
 export default defineEventHandler(async e => {
-    const query = getQuery(e);
-    const username = query.username;
-    const binding = await DB.getBinding({
-        username
-    })
-    if (binding === null) {
-        return er(ERR.EMPTY_RESULT);
+	const query = getQuery(e);
+	const username = query.username;
+    if (username === null) {
+        return er(ERR.NOT_ENOUGH_ARGUMENT)
     }
-    return ok(null, binding)
-})
+	const binding = await DB.getBinding({
+		username: username 
+	});
+	if (binding === null) {
+		return er(ERR.EMPTY_RESULT);
+	}
+	return ok(null, binding);
+});
