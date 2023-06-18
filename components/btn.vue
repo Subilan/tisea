@@ -23,6 +23,12 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
 }
 
+.button.solid {
+    background: #e3f2fd;
+    color: #2196f3;
+    border: none;
+}
+
 .button[disabled] {
     cursor: not-allowed;
     box-shadow: none;
