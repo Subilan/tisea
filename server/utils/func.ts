@@ -23,11 +23,19 @@ export default class Func {
 		return CryptoEs.AES.decrypt(cipher, CRYPTO_KEY).toString(CryptoEs.enc.Utf8);
 	}
 
-	static getUsername(oasisToken: string) {
+	static OgetUsername(oasisToken: string) {
 		return this.decrypt(oasisToken).split('.')[0];
 	}
 
-	static getPassword(oasisToken: string) {
+	static OgetPassword(oasisToken: string) {
 		return this.decrypt(oasisToken).split('.')[1];
+	}
+
+	static KgetUsername(key: string) {
+		return key.split('~')[0];
+	}
+
+	static KgetToken(key: string) {
+		return key.split('~')[1];
 	}
 }

@@ -11,7 +11,7 @@ export default class Auth {
 	static async verifyKey(key: string) {
 		const playername = Func.KgetUsername(key);
 		const token = Func.KgetToken(key);
-		const _token = await DB.findToken(playername);
+		const _token = await DB.getToken(playername);
 		return token === _token;
 	}
 

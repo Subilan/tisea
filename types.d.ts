@@ -36,3 +36,15 @@ interface NodeBBResponse {
 
 type RespStatus = 'er' | 'ok';
 type UserType = 'oasis' | 'key';
+
+interface Binding {
+	playername: string;
+	username: string;
+	uuid: string;
+	verified: boolean;
+	bindingToken: string | null;
+}
+
+interface BindingData extends Binding {
+	_id: string
+}
