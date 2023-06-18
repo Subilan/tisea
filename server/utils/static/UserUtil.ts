@@ -17,7 +17,7 @@ export default class UserUtil {
 	 * @returns 执行成功？
 	 * @throws 执行失败
 	 */
-	static async bind(username: string, playername: string) {
+	static async bind(username: string, playername: string, update: Partial<Binding>) {
 		const resp: MojangResponse = await $fetch(`https://api.mojang.com/users/profiles/minecraft/${playername}`, {
 			method: 'get'
 		});
@@ -25,8 +25,8 @@ export default class UserUtil {
 			DB.upsertBinding(
 				{ username },
 				{
-					uuid: resp.id,
-					verified: true
+					...{ uuid: resp.id, verified: false, playername },
+					...update
 				}
 			);
 			return true;
