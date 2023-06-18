@@ -90,7 +90,7 @@ function login() {
                     if (process.client) {
                         if (currentLoginMethod === 'oasis') {
                             localStorage.setItem('tisea-login-method', 'oasis');
-                            localStorage.setItem('tisea-login-data', r.msg || '');
+                            localStorage.setItem('tisea-login-oasis-token', r.msg || '');
                         } else if (currentLoginMethod === 'key') {
                             localStorage.setItem('tisea-login-method', 'key');
                             localStorage.setItem('tisea-login-key', loginKey);

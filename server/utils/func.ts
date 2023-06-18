@@ -22,4 +22,12 @@ export default class Func {
 	static decrypt(cipher: string) {
 		return CryptoEs.AES.decrypt(cipher, CRYPTO_KEY).toString(CryptoEs.enc.Utf8);
 	}
+
+	static getUsername(oasisToken: string) {
+		return this.decrypt(oasisToken).split('.')[0];
+	}
+
+	static getPassword(oasisToken: string) {
+		return this.decrypt(oasisToken).split('.')[1];
+	}
 }
