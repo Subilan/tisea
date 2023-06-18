@@ -11,12 +11,16 @@ export default defineEventHandler(async e => {
 	if (binding === null) return er(ERR.INVALID_OPERATION);
 	if (binding.verified === true || binding.bindingToken === null) return er(ERR.INVALID_OPERATION);
 	try {
-        UserUtil.bind(binding.username, binding.playername);
-        DB.upsertUser({
+        await UserUtil.bind(binding.username, binding.playername, {
+            bindingToken: "",
+            verified: true
+        });
+        await DB.upsertUser({
             username: binding.username
         }, {
             playername: binding.playername
         })
+        console.log(binding)
         return ok();
     } catch (e: any) {
         return er(e.message)

@@ -38,4 +38,15 @@ export default class Func {
 	static KgetToken(key: string) {
 		return key.split('~')[1];
 	}
+
+	static async refreshLatestConnect(username: string) {
+		DB.upsertUser(
+			{
+				username
+			},
+			{
+				latestConnect: new Date().toString()
+			}
+		);
+	}
 }

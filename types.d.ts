@@ -58,4 +58,5 @@ interface User {
 	playername: string;
 	group: UserGroup;
 	latestConnect: string;
+	type: UserType
 }

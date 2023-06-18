@@ -7,7 +7,7 @@ export default defineEventHandler(async e => {
         return er(ERR.NOT_ENOUGH_ARGUMENT)
     }
 	const binding = await DB.getBinding({
-		username: username 
+		username: username as string
 	});
 	if (binding === null) {
 		return er(ERR.EMPTY_RESULT);
