@@ -45,53 +45,13 @@ export default class DB {
 		}
 	}
 
-	static async upsertBinding(username: string, playername: string, uuid: string, verified: boolean = false, bindingToken: string | null = null) {
+	static async upsertBinding(find: Partial<Binding>, set: Partial<Binding>) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {
 			const db = client.db('tisea');
 			const c = db.collection('bindings');
 			return await c.updateOne(
-				{
-					username
-				},
-				{
-					$set: {
-						uuid,
-						verified,
-						playername,
-						bindingToken
-					}
-				},
-				{
-					upsert: true
-				}
-			);
-		} finally {
-			await client.close();
-		}
-	}
-
-	static async getBinding(find: object) {
-		const client = new MongoClient('mongodb://localhost:27017');
-		try {
-			const db = client.db('tisea');
-			const c = db.collection('bindings');
-			const r = await c.findOne(find);
-			return r as unknown as Binding | null;
-		} finally {
-			await client.close();
-		}
-	}
-
-	static async upsertUser(uid: string, set: User) {
-		const client = new MongoClient('mongodb://localhost:27017');
-		try {
-			const db = client.db('tisea');
-			const c = db.collection('users');
-			return await c.updateOne(
-				{
-					uid
-				},
+				find,
 				{
 					$set: set
 				},
@@ -104,7 +64,38 @@ export default class DB {
 		}
 	}
 
-	static async getUser(find: object) {
+	static async getBinding(find: Partial<Binding>) {
+		const client = new MongoClient('mongodb://localhost:27017');
+		try {
+			const db = client.db('tisea');
+			const c = db.collection('bindings');
+			const r = await c.findOne(find);
+			return r as unknown as Binding | null;
+		} finally {
+			await client.close();
+		}
+	}
+
+	static async upsertUser(find: Partial<User>, set: Partial<User>) {
+		const client = new MongoClient('mongodb://localhost:27017');
+		try {
+			const db = client.db('tisea');
+			const c = db.collection('users');
+			return await c.updateOne(
+				find,
+				{
+					$set: set
+				},
+				{
+					upsert: true
+				}
+			);
+		} finally {
+			await client.close();
+		}
+	}
+
+	static async getUser(find: Partial<User>) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {
 			const db = client.db('tisea');

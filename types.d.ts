@@ -52,7 +52,7 @@ interface BindingData extends Binding {
 }
 
 interface User {
-	uid?: string;
+	uid: string;
 	username: string;
 	displayname: string;
 	playername: string;
