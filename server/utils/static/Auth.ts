@@ -1,5 +1,5 @@
-import DB from './db';
-import Func from './func';
+import DB from './DB';
+import Func from './Func';
 
 export default class Auth {
 	/**

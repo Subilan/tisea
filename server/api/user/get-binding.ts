@@ -1,4 +1,4 @@
-import DB from "../../utils/db";
+import DB from "../../utils/static/DB";
 
 export default defineEventHandler(async e => {
     const query = getQuery(e);

@@ -1,5 +1,5 @@
-import { UserUtil } from '../../utils/class';
-import DB from '../../utils/db';
+import UserUtil from '../../utils/static/UserUtil';
+import DB from '../../utils/static/DB';
 
 export default defineEventHandler(async e => {
 	const body = await readBody(e);

@@ -36,6 +36,8 @@ interface NodeBBResponse {
 
 type RespStatus = 'er' | 'ok';
 type UserType = 'oasis' | 'key';
+type UserGroup = 'admin' | 'player';
+type dict<T> = { [prop: string]: T };
 
 interface Binding {
 	playername: string;
@@ -46,5 +48,14 @@ interface Binding {
 }
 
 interface BindingData extends Binding {
-	_id: string
+	_id: string;
+}
+
+interface User {
+	uid?: string;
+	username: string;
+	displayname: string;
+	playername: string;
+	group: UserGroup;
+	latestConnect: string;
 }

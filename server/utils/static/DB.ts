@@ -71,13 +71,46 @@ export default class DB {
 		}
 	}
 
-	static async getBinding(find: object): Promise<Binding | null> {
+	static async getBinding(find: object) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {
 			const db = client.db('tisea');
 			const c = db.collection('bindings');
 			const r = await c.findOne(find);
 			return r as unknown as Binding | null;
+		} finally {
+			await client.close();
+		}
+	}
+
+	static async upsertUser(uid: string, set: User) {
+		const client = new MongoClient('mongodb://localhost:27017');
+		try {
+			const db = client.db('tisea');
+			const c = db.collection('users');
+			return await c.updateOne(
+				{
+					uid
+				},
+				{
+					$set: set
+				},
+				{
+					upsert: true
+				}
+			);
+		} finally {
+			await client.close();
+		}
+	}
+
+	static async getUser(find: object) {
+		const client = new MongoClient('mongodb://localhost:27017');
+		try {
+			const db = client.db('tisea');
+			const c = db.collection('users');
+			const r = await c.findOne(find);
+			return r as unknown as User | null;
 		} finally {
 			await client.close();
 		}
