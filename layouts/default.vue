@@ -2,7 +2,7 @@
     <div class="layout-default">
         <nav class="navbar">
             <div class="logo">
-
+                <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="~/assets/icons/tisea.svg"/>
             </div>
             <div class="navigation-links">
                 <NuxtLink class="link" to="/">首页</NuxtLink>
@@ -63,6 +63,7 @@ const user = new User();
     z-index: 1000;
     background: white;
     backdrop-filter: blur(10px);
+    gap: 32px;
 }
 
 .navigation-links {
@@ -87,5 +88,14 @@ const user = new User();
 .router-link-exact-active {
     transform: scale(1.3);
     position: relative;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo-img {
+    height: 28px;
+    cursor: pointer;
 }
 </style>

@@ -124,7 +124,7 @@ onMounted(() => {
 
 .title-element-1 {
     margin-right: 1ex;
-    color: #2196f3;
+    color: #00bcd4;
 }
 
 .auth {
@@ -186,7 +186,7 @@ onMounted(() => {
 
     &:hover,
     &:focus {
-        border-color: #2196f3;
+        border-color: #00bcd4;
     }
 
     &:focus {
