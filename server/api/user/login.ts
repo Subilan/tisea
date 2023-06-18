@@ -1,4 +1,4 @@
-import Auth, { NodeBBResponse } from '../../utils/auth';
+import Auth from '../../utils/auth';
 import Func from '../../utils/func';
 
 export default defineEventHandler(async e => {
@@ -16,13 +16,7 @@ export default defineEventHandler(async e => {
 		const username = body.username;
 		const password = body.password;
 		try {
-			await $fetch<NodeBBResponse>('https://i.oases.red/api/v3/utilities/login', {
-				method: 'post',
-				body: {
-					username,
-					password
-				}
-			})
+			const r = await Auth.loginOasis(username, password)
 			return {
 				status: true,
 				code: 200,

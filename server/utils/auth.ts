@@ -19,34 +19,21 @@ export default class Auth {
 		});
 		return token;
 	}
-}
 
-export interface NodeBBResponse {
-	response: {
-		uid: number;
-		username: string;
-		userslug: string;
-		picture: string;
-		status: string;
-		postcount: number;
-		reputation: number;
-		'email:confirmed': number;
-		lastonline: number;
-		flags: null;
-		banned: boolean;
-		'banned:expire': number;
-		joindate: number;
-		fullname: string;
-		displayname: string;
-		'icon:text': string;
-		'icon:bgColor': string;
-		joindateISO: Date;
-		lastonlineISO: Date;
-		banned_until: number;
-		banned_until_readable: string;
-	};
-	status: {
-		code: string;
-		message: string;
-	};
+	static loginOasis(username: string, password: string) {
+		return $fetch<NodeBBResponse>('https://i.oases.red/api/v3/utilities/login', {
+			method: 'post',
+			body: {
+				username,
+				password
+			}
+		}).catch(e => {
+			if (typeof e.response._data === 'string') {
+				throw new Error(e.response._data);
+			} else {
+				let d: NodeBBResponse = e.response._data as any;
+				throw new Error(d.status.message);
+			}
+		});
+	}
 }
