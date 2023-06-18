@@ -58,7 +58,7 @@ const user = new User();
     height: @nav-height;
     display: flex;
     align-items: center;
-    animation: .4s cubic-bezier(.51, .02, 0, 1.02) FlowDown, .4s cubic-bezier(.51, .02, 0, 1.02) OpacityFade;
+    animation: .4s cubic-bezier(.41, .01, .03, .98) FlowDown, .4s cubic-bezier(.41, .01, .03, .98) OpacityFade;
     animation-delay: .2s;
     z-index: 1000;
     background: white;
