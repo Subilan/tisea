@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 			method: 'get',
 			params: {
 				method: localStorage.getItem('tisea-login-method'),
-				key: localStorage.getItem('tisea-login-key'),
+				key: localStorage.getItem('tisea-login-seati-key'),
 				data: localStorage.getItem('tisea-login-oasis-token')
 			}
 		});

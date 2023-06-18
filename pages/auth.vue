@@ -95,7 +95,8 @@ function login() {
                             localStorage.setItem('tisea-login-username', loginData.username)
                         } else if (currentLoginMethod === 'key') {
                             localStorage.setItem('tisea-login-method', 'key');
-                            localStorage.setItem('tisea-login-key', loginKey);
+                            localStorage.setItem('tisea-login-seati-key', loginKey);
+                            localStorage.setItem('tisea-login-username', r.msg)
                         }
                     }
                     useRouter().push('/');
