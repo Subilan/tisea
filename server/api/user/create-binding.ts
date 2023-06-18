@@ -15,7 +15,7 @@ export default defineEventHandler(async e => {
 	if (await Auth.verifyOasis(oasisToken)) {
 		try {
 			const bindingToken = Func.genStr(20);
-			await UserUtil.setBinding(Func.OgetUsername(oasisToken), playername, false, bindingToken);
+			await UserUtil.bind(Func.OgetUsername(oasisToken), playername, false, bindingToken);
 			return ok(bindingToken);
 		} catch (err: any) {
 			return er(err.message);
