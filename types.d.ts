@@ -4,12 +4,6 @@ interface CommonResponse {
 	data: any;
 }
 
-interface LoginResponse {
-	code: number;
-	status: boolean;
-	msg?: string;
-}
-
 interface NodeBBResponse {
 	response: {
 		uid: number;
@@ -41,3 +35,4 @@ interface NodeBBResponse {
 }
 
 type RespStatus = 'er' | 'ok';
+type UserType = 'oasis' | 'key';

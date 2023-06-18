@@ -72,7 +72,7 @@ const dictionary = {
 }
 
 function login() {
-    $fetch<LoginResponse>('/api/user/login', {
+    $fetch<CommonResponse>('/api/user/login', {
         method: 'post',
         body: {
             loginType: currentLoginMethod,
@@ -81,16 +81,18 @@ function login() {
             key: loginKey
         }
     }).then((r) => {
-        if (r.status === true) {
+        if (r.status === 'ok') {
             let seconds = 5;
             setInterval(() => {
                 dispatchSnackbar(`登录成功，将在 ${seconds} 秒内跳转`);
                 seconds -= 1;
                 if (seconds === 0) {
                     if (process.client) {
+                        localStorage.setItem('tisea-login-date', new Date().toString())
                         if (currentLoginMethod === 'oasis') {
                             localStorage.setItem('tisea-login-method', 'oasis');
                             localStorage.setItem('tisea-login-oasis-token', r.msg || '');
+                            localStorage.setItem('tisea-login-username', loginData.username)
                         } else if (currentLoginMethod === 'key') {
                             localStorage.setItem('tisea-login-method', 'key');
                             localStorage.setItem('tisea-login-key', loginKey);
@@ -100,10 +102,7 @@ function login() {
                 }
             }, 1000);
         } else {
-            if (r.code === 403) {
-                if (currentLoginMethod === 'oasis') dispatchSnackbar(`无法登录 ${r.msg}`, 3500);
-            }
-            if (currentLoginMethod === 'key') dispatchSnackbar('无效登录令牌', 3500);
+            dispatchSnackbar(`无法登录：${r.msg}`, 3500);
         }
     })
 }
