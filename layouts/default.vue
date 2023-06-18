@@ -7,18 +7,43 @@
             <div class="navigation-links">
                 <NuxtLink class="link" to="/">首页</NuxtLink>
                 <NuxtLink class="link" to="/terms">周目</NuxtLink>
-                <NuxtLink class="link" to="/auth">注册</NuxtLink>
+                <ClientOnly>
+                    <NuxtLink v-if="!user.isUser" class="link" to="/auth">登录</NuxtLink>
+                </ClientOnly>
             </div>
+            <div class="divider"></div>
+            <ClientOnly>
+                <div class="avatar" v-if="user.isUser">
+
+                </div>
+                <btn @click="() => {
+                    user.logout();
+                    useRouter().go(0)
+                }" class="solid" v-if="user.isUser">
+                    登出
+                </btn>
+            </ClientOnly>
         </nav>
         <slot />
     </div>
 </template>
+
+<script setup>
+import User from '@/utils/user'
+
+const user = new User();
+
+</script>
 
 <style scoped lang="less">
 @import '~/assets/styles/var.less';
 
 @nav-padding: 16px;
 @nav-height: 36px;
+
+.divider {
+    flex: 1;
+}
 
 .layout-default {
     margin-top: calc(@nav-height + 2 * @nav-padding);
@@ -27,7 +52,7 @@
 .navbar {
     position: fixed;
     top: 0;
-    width: 100%;
+    width: calc(100% - 2 * @nav-padding);
     padding: @nav-padding;
     box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
     height: @nav-height;
@@ -63,5 +88,4 @@
     transform: scale(1.3);
     position: relative;
 }
-
 </style>
