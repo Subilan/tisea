@@ -9,8 +9,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 			}
 		});
 		console.log(r);
-		if (r.status === 'er') {
-			return navigateTo('/auth');
+		if (r.status === 'ok') {
+			return navigateTo('/');
 		}
 	}
 });

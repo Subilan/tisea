@@ -37,7 +37,8 @@
 
 <script setup lang="ts">
 definePageMeta({
-    layout: false
+    layout: false,
+    middleware: 'not-auth'
 })
 
 let currentLoginMethod = 'oasis';
@@ -63,12 +64,6 @@ function dispatchSnackbar(info: string, delay: number = 0) {
             displaySnackbar = false;
         }, delay);
     }
-}
-
-interface LoginResponse {
-    code: number,
-    status: boolean,
-    msg?: string
 }
 
 const dictionary = {
