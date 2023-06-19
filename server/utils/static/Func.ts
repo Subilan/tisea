@@ -31,7 +31,7 @@ export default class Func {
 		return this.decrypt(oasisToken).split('.')[1];
 	}
 
-	static KgetUsername(key: string) {
+	static kgetPlayername(key: string) {
 		return key.split('~')[0];
 	}
 

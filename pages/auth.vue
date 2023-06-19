@@ -48,7 +48,7 @@ let titleElementShown = ref(true)
 let snackbarInfo = ref('');
 let displaySnackbar = false;
 
-const loginKey = ''
+const loginKey = ref('')
 const loginData = reactive({
     username: '',
     password: ''
@@ -66,9 +66,16 @@ function dispatchSnackbar(info: string, delay: number = 0) {
     }
 }
 
-const dictionary = {
+const dictionary: dict<string> = {
     '[[error:invalid-username-or-password]]': "用户名或密码错误",
-    '[[error:account-locked]]': '账号被临时锁定'
+    '[[error:account-locked]]': '账号被临时锁定',
+    '[[error:invalid-login-credentials]]': '登录信息无效',
+    'VERIFICATION': '验证失败',
+    'NOT_ENOUGH_ARGUMENT': '参数不足'
+}
+
+function translate(msg: string) {
+    return Object.keys(dictionary).includes(msg) ? dictionary[msg] : msg;
 }
 
 function login() {
@@ -78,7 +85,7 @@ function login() {
             loginType: currentLoginMethod,
             username: loginData.username,
             password: loginData.password,
-            key: loginKey
+            key: loginKey.value
         }
     }).then((r) => {
         if (r.status === 'ok') {
@@ -95,7 +102,7 @@ function login() {
                             localStorage.setItem('tisea-login-username', loginData.username)
                         } else if (currentLoginMethod === 'key') {
                             localStorage.setItem('tisea-login-method', 'key');
-                            localStorage.setItem('tisea-login-seati-key', loginKey);
+                            localStorage.setItem('tisea-login-seati-key', loginKey.value);
                             localStorage.setItem('tisea-login-username', r.msg)
                         }
                     }
@@ -103,7 +110,7 @@ function login() {
                 }
             }, 1000);
         } else {
-            dispatchSnackbar(`无法登录：${r.msg}`, 3500);
+            dispatchSnackbar(`${translate(r.msg)}`, 3500);
         }
     })
 }

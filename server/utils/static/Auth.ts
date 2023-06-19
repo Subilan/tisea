@@ -9,7 +9,8 @@ export default class Auth {
 	 * @returns 有效？
 	 */
 	static async verifyKey(key: string) {
-		const playername = Func.KgetUsername(key);
+		if (key.split('~').length !== 2) return false;
+		const playername = Func.kgetPlayername(key);
 		const token = Func.KgetToken(key);
 		const _token = await DB.getToken(playername);
 		return token === _token;

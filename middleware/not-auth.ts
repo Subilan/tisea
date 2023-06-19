@@ -8,7 +8,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 				data: localStorage.getItem('tisea-login-oasis-token')
 			}
 		});
-		console.log(r);
 		if (r.status === 'ok') {
 			return navigateTo('/');
 		}

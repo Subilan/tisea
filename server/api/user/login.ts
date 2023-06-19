@@ -34,7 +34,7 @@ async function initOasisUser(username: string) {
 }
 
 async function initKeyUser(key: string) {
-	const playername = Func.KgetUsername(key);
+	const playername = Func.kgetPlayername(key);
 
 	const user = await DB.getUser({
 		playername
@@ -67,7 +67,8 @@ async function initKeyUser(key: string) {
 
 export default defineEventHandler(async e => {
 	const body = await readBody(e);
-	const type = body.loginType as 'oasis' | 'key';
+	const type = body.loginType as UserType;
+	if (!type) return er(ERR.NOT_ENOUGH_ARGUMENT);
 	if (type === 'key') {
 		const key = body.key;
 
