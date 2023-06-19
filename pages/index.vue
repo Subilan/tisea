@@ -5,13 +5,25 @@
         </div>
         <div class="container">
             <div class="col col-1">
-                <card>
-                    <template #title>Title</template>
-                    <template #content>
-                        123
-                    </template>
-
-                </card>
+                <client-only>
+                    <card v-if="!lock && !loggedIn">
+                        <template #title>
+                            <div style="color: #00bcd4">
+                                开始你的
+                                <br />
+                                Tisea 之旅吧~
+                            </div>
+                        </template>
+                        <template #content>
+                            <p>Tisea 是我们为 Seati 玩家精心打造的分享、交流与记录平台。</p>
+                            <p>你可以在此无限制地保留自己在每个周目游戏中的经历与记忆。</p>
+                        </template>
+                        <template #actions>
+                            <btn class="primary">去火星港注册新账号</btn>
+                            <btn class="solid">立即登录</btn>
+                        </template>
+                    </card>
+                </client-only>
             </div>
             <div class="col col-2">
                 <card>
@@ -26,7 +38,6 @@
                     <template #content>
                         123
                     </template>
-
                 </card>
                 <card>
                     <template #title>Title</template>
@@ -56,6 +67,24 @@
         </div>
     </div>
 </template>
+
+<script lang="ts">
+import FUserUtil from '@/utils/FUserUtil';
+
+export default {
+    data() {
+        return {
+            loggedIn: false,
+            // prevent weird card state changing
+            lock: true
+        }
+    },
+    async created() {
+        this.loggedIn = await FUserUtil.loggedIn();
+        this.lock = false;
+    }
+}
+</script>
 
 <style scoped>
 .hero {

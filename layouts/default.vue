@@ -7,32 +7,40 @@
             <div class="navigation-links">
                 <NuxtLink class="link" to="/">首页</NuxtLink>
                 <NuxtLink class="link" to="/terms">周目</NuxtLink>
-                <ClientOnly>
-                    <NuxtLink v-if="!user.isUser" class="link" to="/auth">登录</NuxtLink>
-                </ClientOnly>
+                <client-only>
+                    <NuxtLink v-if="!loggedIn" class="link" to="/auth">登录</NuxtLink>
+                </client-only>
             </div>
             <div class="divider"></div>
-            <ClientOnly>
-                <div class="avatar" v-if="user.isUser">
+            <client-only>
+                <div class="avatar" v-if="loggedIn">
 
                 </div>
                 <btn @click="() => {
                     user.logout();
                     useRouter().go(0)
-                }" class="solid" v-if="user.isUser">
+                }" class="solid" v-if="loggedIn">
                     登出
                 </btn>
-            </ClientOnly>
+            </client-only>
         </nav>
         <slot />
     </div>
 </template>
 
-<script setup>
-import User from '@/utils/user'
+<script lang="ts">
+import FUserUtil from '@/utils/FUserUtil'
 
-const user = new User();
-
+export default {
+    data() {
+        return {
+            loggedIn: false
+        }
+    },
+    async created() {
+        this.loggedIn = await FUserUtil.loggedIn();
+    }
+}
 </script>
 
 <style scoped lang="less">
