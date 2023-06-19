@@ -26,8 +26,8 @@
             </div>
 
             <div class="auth-box-actions">
-                <btn v-if="currentLoginMethod === 'key'" @click="currentLoginMethod = 'oasis'">使用火星港账号登录</btn>
-                <btn v-if="currentLoginMethod === 'oasis'" @click="currentLoginMethod = 'key'">使用登录令牌</btn>
+                <btn class="outline" v-if="currentLoginMethod === 'key'" @click="currentLoginMethod = 'oasis'">使用火星港账号登录</btn>
+                <btn class="outline" v-if="currentLoginMethod === 'oasis'" @click="currentLoginMethod = 'key'">使用登录令牌</btn>
                 <btn class="primary" @click="login()">继续</btn>
             </div>
         </div>

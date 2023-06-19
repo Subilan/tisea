@@ -19,8 +19,8 @@
                             <p>你可以在此无限制地保留自己在每个周目游戏中的经历与记忆。</p>
                         </template>
                         <template #actions>
-                            <btn class="primary">去火星港注册新账号</btn>
-                            <btn class="solid">立即登录</btn>
+                            <btn class="primary" @click="$openTab('https://i.oases.red/register')">去火星港注册新账号</btn>
+                            <btn class="solid" @click="useRouter().push('/auth')">立即登录</btn>
                         </template>
                     </card>
                 </client-only>
@@ -70,6 +70,7 @@
 
 <script lang="ts">
 import FUserUtil from '@/utils/FUserUtil';
+import { $openTab } from '@/utils/FCommonUtil';
 
 export default {
     data() {
@@ -82,6 +83,9 @@ export default {
     async created() {
         this.loggedIn = await FUserUtil.loggedIn();
         this.lock = false;
+    },
+    methods: {
+        $openTab
     }
 }
 </script>
