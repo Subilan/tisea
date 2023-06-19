@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<style>
+<style lang="less">
 .button {
     padding: 8px 16px;
     border: 1px solid rgba(0, 0, 0, .2);
@@ -20,13 +20,20 @@
     background: #00bcd4;
     color: white;
     border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
+
+    &:hover {
+        box-shadow: 0 0 0 4px #b2ebf2;
+    }
 }
 
 .button.solid {
     background: #e0f7fa;
     color: #00bcd4;
     border: none;
+
+    &:hover {
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, .1)
+    }
 }
 
 .button[disabled] {
