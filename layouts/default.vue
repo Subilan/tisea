@@ -17,7 +17,7 @@
 
                 </div>
                 <btn @click="() => {
-                    user.logout();
+                    logout();
                     useRouter().go(0)
                 }" class="solid" v-if="loggedIn">
                     登出
@@ -34,11 +34,14 @@ import FUserUtil from '@/utils/FUserUtil'
 export default {
     data() {
         return {
-            loggedIn: false
+            loggedIn: false,
         }
     },
     async created() {
         this.loggedIn = await FUserUtil.loggedIn();
+    },
+    methods: {
+        logout: FUserUtil.logout
     }
 }
 </script>

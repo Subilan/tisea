@@ -41,4 +41,14 @@ export default class UserUtils {
 			body
 		});
 	}
+
+	static logout() {
+		if (process.server) return;
+		for (let i = 0; i < localStorage.length; i++) {
+			let key = localStorage.key(i);
+			if (key?.startsWith('tisea-login')) {
+				localStorage.removeItem(key);
+			}
+		}
+	}
 }
