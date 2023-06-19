@@ -2,7 +2,7 @@
     <div class="layout-default">
         <nav class="navbar">
             <div class="logo">
-                <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="~/assets/icons/tisea.svg"/>
+                <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="~/assets/icons/tisea.svg" />
             </div>
             <div class="navigation-links">
                 <NuxtLink class="link" to="/">首页</NuxtLink>
@@ -46,7 +46,7 @@ const user = new User();
 }
 
 .layout-default {
-    margin-top: calc(@nav-height + 2 * @nav-padding);
+    margin-top: @nav-height + 2 * @nav-padding;
 }
 
 .navbar {
@@ -57,11 +57,11 @@ const user = new User();
     box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
     height: @nav-height;
     display: flex;
+    background: white;
     align-items: center;
     animation: .4s cubic-bezier(.41, .01, .03, .98) FlowDown, .4s cubic-bezier(.41, .01, .03, .98) OpacityFade;
     animation-delay: .2s;
     z-index: 1000;
-    background: white;
     backdrop-filter: blur(10px);
     gap: 32px;
 }
@@ -75,7 +75,7 @@ const user = new User();
 
 .link {
     text-decoration: none;
-    color: rgba(0, 0, 0, .5);
+    color: rgba(0, 0, 0, .4);
     transition: all .2s ease;
     position: relative;
 }
@@ -94,6 +94,7 @@ const user = new User();
     display: flex;
     align-items: center;
 }
+
 .logo-img {
     height: 28px;
     cursor: pointer;
