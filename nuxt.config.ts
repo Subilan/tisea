@@ -22,5 +22,8 @@ export default defineNuxtConfig({
 			mode: 'out-in'
 		}
 	},
-	css: ['@/assets/styles/main.less']
+	css: ['@/assets/styles/main.less'],
+	routeRules: {
+		'/auth': { ssr: false }
+	}
 });

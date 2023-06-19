@@ -35,10 +35,31 @@
     </div>
 </template>
 
+<script lang="ts">
+export default {
+    beforeRouteEnter(to, from, next) {
+        $fetch<CommonResponse>('/api/user/verify', {
+            method: 'get',
+            params: {
+                method: localStorage.getItem('tisea-login-method'),
+                key: localStorage.getItem('tisea-login-seati-key'),
+                data: localStorage.getItem('tisea-login-oasis-token')
+            }
+        }).then(r => {
+            if (r.status === 'ok') {
+                next('/')
+            } else {
+                next();
+            }
+        });
+
+    }
+}
+</script>
+
 <script setup lang="ts">
 definePageMeta({
     layout: false,
-    middleware: 'not-auth'
 })
 
 let currentLoginMethod = 'oasis';
