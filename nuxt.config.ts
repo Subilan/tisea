@@ -25,5 +25,9 @@ export default defineNuxtConfig({
 	css: ['@/assets/styles/main.less'],
 	routeRules: {
 		'/auth': { ssr: false }
-	}
+	},
+	plugins: [{
+		src: '@/plugins/routerSettings.ts',
+		mode: 'client'
+	}]
 });
