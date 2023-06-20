@@ -14,7 +14,7 @@ export default defineEventHandler(async e => {
 
 	try {
 		const bindingToken = Func.genStr(20);
-		await UserUtil.bind(username, playername, {
+		await BUserUtil.bind(username, playername, {
 			bindingToken,
 			verified: false
 		});

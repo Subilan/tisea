@@ -1,5 +1,3 @@
-import BCommonUtil from '../../utils/static/BCommonUtil';
-
 export default defineEventHandler(async e => {
 	const query = getQuery(e);
 	const username = query.username as string;
@@ -14,7 +12,7 @@ export default defineEventHandler(async e => {
 		{
 			username
 		},
-		BCommonUtil.buildProjection<User>(...properties)
+		Func.buildProjection<User>(...properties)
 	);
     if (user === null) {
         return er(ERR.EMPTY_RESULT);
