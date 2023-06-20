@@ -1,3 +1,4 @@
+<!-- Copied from https://github.com/nguyenvanduocit/vue-loading-spinner/blob/master/src/components/Circle2.vue ; Modified -->
 <template>
     <div :style="styles" class="spinner spinner--circle-2"></div>
 </template>

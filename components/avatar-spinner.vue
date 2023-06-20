@@ -1,3 +1,4 @@
+<!-- Copied from https://github.com/nguyenvanduocit/vue-loading-spinner/blob/master/src/components/Circle5.vue -->
 <template>
     <div v-bind:style="styles" class="spinner spinner--circle-5"></div>
 </template>
