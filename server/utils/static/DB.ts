@@ -64,12 +64,19 @@ export default class DB {
 		}
 	}
 
-	static async getBinding(find: Partial<Binding>) {
+	static async getBinding(find: Partial<Binding>, projection: Record<keyof Binding, boolean> | null = null) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {
 			const db = client.db('tisea');
 			const c = db.collection('bindings');
-			const r = await c.findOne(find);
+			let r;
+			if (projection) {
+				r = await c.findOne(find, {
+					projection
+				});
+			} else {
+				r = await c.findOne(find);
+			}
 			return r as unknown as Binding | null;
 		} finally {
 			await client.close();
@@ -95,17 +102,22 @@ export default class DB {
 		}
 	}
 
-	static async getUser(find: Partial<User>) {
+	static async getUser(find: Partial<User>, projection: Record<keyof User, boolean> | null = null) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {
 			const db = client.db('tisea');
 			const c = db.collection('users');
-			const r = await c.findOne(find);
-			return r as unknown as User | null;
+			let r;
+			if (projection) {
+				r = await c.findOne(find, {
+					projection
+				});
+			} else {
+				r = await c.findOne(find);
+			}
+			return r as User | null;
 		} finally {
 			await client.close();
 		}
 	}
 }
-
-
