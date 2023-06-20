@@ -47,7 +47,8 @@ export default class UserUtils {
 		return $fetch(`/api/user/get-property`, {
 			method: 'get',
 			query: {
-				properties: userProp
+				properties: userProp,
+				username: this.username()
 			}
 		});
 	}
