@@ -7,7 +7,7 @@ interface MojangResponse {
 	id: string;
 }
 
-export default class UserUtil {
+export default class BUserUtil {
 	/**
 	 * **使用 `playername`** 设置用户与玩家的绑定
 	 *
