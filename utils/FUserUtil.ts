@@ -1,5 +1,6 @@
 export const USER_ACTION = {
-	UPDATE_DISPLAYNAME: 'update-displayname'
+	UPDATE_DISPLAYNAME: 'update-displayname',
+	REFRESH_LATEST_ACTIVE: 'refresh-latest-active'
 };
 
 export default class UserUtils {
@@ -16,6 +17,11 @@ export default class UserUtils {
 		return r.status === 'ok';
 	}
 
+	static type(): UserType | null {
+		if (process.server) return null;
+		return localStorage.getItem('tisea-login-method') as UserType;
+	}
+
 	static username() {
 		if (process.server) return null;
 		return localStorage.getItem('tisea-login-username');
@@ -27,18 +33,22 @@ export default class UserUtils {
 	}
 
 	static refreshLatestConnect() {
-		return $fetch(`/api/user/set-latest-connect`, {
+		return this.action('REFRESH_LATEST_ACTIVE');
+	}
+
+	static action(userAction: keyof typeof USER_ACTION, query: object = {}) {
+		return $fetch(`/api/user/actions/${USER_ACTION[userAction]}`, {
 			method: 'get',
-			body: {
-				username: this.username()
-			}
+			query
 		});
 	}
 
-	static action(userAction: keyof typeof USER_ACTION, body: object) {
-		return $fetch(`/api/user/actions/${USER_ACTION[userAction]}`, {
+	static prop(...userProp: (keyof User)[]) {
+		return $fetch(`/api/user/get-property`, {
 			method: 'get',
-			body
+			query: {
+				properties: userProp
+			}
 		});
 	}
 
@@ -49,6 +59,21 @@ export default class UserUtils {
 			if (key?.startsWith('tisea-login')) {
 				localStorage.removeItem(key);
 			}
+		}
+	}
+
+	static uuid() {
+		return $fetch(`/api/user/get-uuid`, {
+			method: 'get',
+			query: {
+				username: this.username()
+			}
+		})
+	}
+
+	static avatar() {
+		if (this.type() === 'key') {
+		} else if (this.type() === 'oasis') {
 		}
 	}
 }
