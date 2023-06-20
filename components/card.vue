@@ -14,8 +14,6 @@
 </template>
 
 <style lang="less" scoped>
-@import "~/assets/styles/var.less";
-
 .card {
     padding: 16px;
     background: white;
@@ -24,14 +22,12 @@
 }
 
 .card-title {
-    font-size: 32px;
-    font-weight: bold;
+    font-size: 20px;
     margin-bottom: 16px;
 }
 
 .card-content {
     font-size: 18px;
-    color: @text-1;
     line-height: 1.5;
 }
 

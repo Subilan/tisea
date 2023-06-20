@@ -1,6 +1,8 @@
 @import './nprogress.css';
+@import './var.less';
 
 body {
+    color: @text-1;
     margin: 0;
     background: #f8f8f8;
     font-family: Rubik, ui-sans-serif, '微软雅黑', 'Microsoft Yahei', sans-serif;
@@ -11,6 +13,15 @@ body {
     display: block;
     margin: auto;
     padding: 32px 0;
+}
+
+.subtle {
+    color: rgba(0, 0, 0, .3);
+    font-size: 14px;
+}
+
+.text-align-center {
+    text-align: center;
 }
 
 .text-gradient {

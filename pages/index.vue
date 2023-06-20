@@ -8,7 +8,7 @@
                 <client-only>
                     <card v-if="!lock && !loggedIn">
                         <template #title>
-                            <div style="color: #00bcd4">
+                            <div class="hero-text">
                                 开始你的
                                 <br />
                                 Tisea 之旅吧~
@@ -24,6 +24,23 @@
                         </template>
                     </card>
                 </client-only>
+                <card>
+                    <template #title>
+                        服务器状态
+                        
+                    </template>
+                    <template #content>
+                        <div class="subtle text-align-center">服务器状态获取失败</div>
+                    </template>
+                </card>
+                <card>
+                    <template #title>
+                        当前在线
+                    </template>
+                    <template #content>
+                        <div class="subtle text-align-center">当前没有人在线呢~</div>
+                    </template>
+                </card>
             </div>
             <div class="col col-2">
                 <card>
@@ -57,9 +74,9 @@
             </div>
             <div class="col col-3">
                 <card>
-                    <template #title>Title</template>
+                    <template #title>Subilan</template>
                     <template #content>
-                        123
+                        
                     </template>
 
                 </card>
@@ -98,6 +115,16 @@ export default {
     background-repeat: no-repeat;
     width: 100vw;
     height: 30vh;
+}
+
+.hero-text {
+    font-size: 32px;
+    background: linear-gradient(90deg, #00e3db 0%, #00bcd4 100%);
+    background-clip: text;
+    color: transparent;
+    font-family: YuanHeiNC, Rubik;
+    font-weight: bold;
+    line-height: 1.2;
 }
 
 .container {
