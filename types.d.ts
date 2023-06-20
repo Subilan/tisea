@@ -4,30 +4,32 @@ interface CommonResponse {
 	data: any;
 }
 
+interface OasisUserObject {
+	uid: number;
+	username: string;
+	userslug: string;
+	picture: string;
+	status: string;
+	postcount: number;
+	reputation: number;
+	'email:confirmed': number;
+	lastonline: number;
+	flags: null;
+	banned: boolean;
+	'banned:expire': number;
+	joindate: number;
+	fullname: string;
+	displayname: string;
+	'icon:text': string;
+	'icon:bgColor': string;
+	joindateISO: Date;
+	lastonlineISO: Date;
+	banned_until: number;
+	banned_until_readable: string;
+}
+
 interface NodeBBResponse {
-	response: {
-		uid: number;
-		username: string;
-		userslug: string;
-		picture: string;
-		status: string;
-		postcount: number;
-		reputation: number;
-		'email:confirmed': number;
-		lastonline: number;
-		flags: null;
-		banned: boolean;
-		'banned:expire': number;
-		joindate: number;
-		fullname: string;
-		displayname: string;
-		'icon:text': string;
-		'icon:bgColor': string;
-		joindateISO: Date;
-		lastonlineISO: Date;
-		banned_until: number;
-		banned_until_readable: string;
-	};
+	response: OasisUserObject;
 	status: {
 		code: string;
 		message: string;
@@ -58,5 +60,5 @@ interface User {
 	playername: string;
 	group: UserGroup;
 	latestConnect: string;
-	type: UserType
+	type: UserType;
 }

@@ -13,15 +13,18 @@
             </div>
             <div class="divider"></div>
             <client-only>
-                <div class="avatar" v-if="loggedIn">
-
+                <div class="misc">
+                    <div class="avatar" v-if="loggedIn">
+                        <avatar-spinner v-if="!user.avatar"/>
+                        <img v-else :src="user.avatar" class="nav-avatar-img avatar-img" />
+                    </div>
+                    <btn @click="() => {
+                        logout();
+                        useRouter().go(0)
+                    }" class="solid" v-if="loggedIn">
+                        登出
+                    </btn>
                 </div>
-                <btn @click="() => {
-                    logout();
-                    useRouter().go(0)
-                }" class="solid" v-if="loggedIn">
-                    登出
-                </btn>
             </client-only>
         </nav>
         <slot />
@@ -35,10 +38,14 @@ export default {
     data() {
         return {
             loggedIn: false,
+            user: {
+                avatar: ''
+            }
         }
     },
     async created() {
-        this.loggedIn = await FUserUtil.loggedIn();
+        this.loggedIn = await FUserUtil.AgetLoggedIn();
+        this.user.avatar = await FUserUtil.AgetAvatarURL();
     },
     methods: {
         logout: FUserUtil.logout
@@ -48,6 +55,15 @@ export default {
 
 <style scoped lang="less">
 @import '~/assets/styles/var.less';
+
+.nav-avatar-img {
+    width: 36px;
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+}
 
 @nav-padding: 16px;
 @nav-height: 36px;
@@ -82,6 +98,13 @@ export default {
     align-items: center;
     gap: 32px;
     font-size: 20px;
+}
+
+.misc {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-direction: row;
 }
 
 .link {
