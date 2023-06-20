@@ -1,5 +1,5 @@
 import Auth from '../../utils/static/Auth';
-import { ERR, er, ok } from '../../utils/common';
+import { ERR, er, ok } from '../../utils/global';
 
 export default defineEventHandler(async e => {
 	const q = getQuery(e);

@@ -87,7 +87,7 @@ export default defineEventHandler(async e => {
 		const username = body.username;
 		const password = body.password;
 		try {
-			if (await Auth.loginOasis(username, password)) {
+			if (await Auth.checkOasis(username, password)) {
 				await initOasisUser(username);
 				return ok(Func.encrypt(`${username}.${password}`).toString());
 			} else return er(ERR.VERIFICATION);

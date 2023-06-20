@@ -36,6 +36,11 @@ export default class Auth {
 	 * @param password 密码
 	 * @returns 成功？
 	 */
+	static async checkOasis(username: string, password: string) {
+		const r = await this.loginOasis(username, password);
+		return r.status.code === 'ok';
+	}
+
 	static async loginOasis(username: string, password: string) {
 		try {
 			const r = await $fetch<NodeBBResponse>('https://i.oases.red/api/v3/utilities/login', {
@@ -45,7 +50,7 @@ export default class Auth {
 					password
 				}
 			});
-			return r.status.code === 'ok';
+			return r;
 		} catch (err: any) {
 			if (typeof err.response._data === 'string') {
 				throw new Error(err.response._data);
@@ -57,24 +62,23 @@ export default class Auth {
 	}
 
 	/**
-	 * 通过 NodeBB API 验证 Oasis 登录凭证有效性
+	 * 验证 Oasis 登录凭证有效性
 	 *
-	 * @param datastr Oasis 登录凭证，登录时由后端返回至前端
+	 * @param oasisToken Oasis 登录凭证，在登录时由后端返回至前端
 	 * @returns 有效？
 	 */
-	static async verifyOasis(datastr: string) {
+	static async verifyOasis(oasisToken: string) {
 		let username,
-			password,
-			lg = null;
+			password;
 		try {
-			let de = Func.decrypt(datastr).split('.');
+			let de = Func.decrypt(oasisToken).split('.');
 			username = de[0];
 			password = de[1];
 		} catch (err) {
 			throw new Error(ERR.CIPHER_DECRYPTION);
 		}
 		try {
-			if (await this.loginOasis(username, password)) return true;
+			if (await this.checkOasis(username, password)) return true;
 			else throw new Error(ERR.INTERNAL_REQUEST_FAILED);
 		} catch (err: any) {
 			throw new Error(err.message);
