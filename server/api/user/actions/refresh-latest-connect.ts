@@ -4,9 +4,5 @@ export default defineEventHandler(async e => {
     if (!username) {
         return er(ERR.NOT_ENOUGH_ARGUMENT);
     }
-    DB.upsertUser({
-        username
-    }, {
-        latestConnect: new Date().toString()
-    })
+    await Func.refreshLatestConnect(username);
 });
