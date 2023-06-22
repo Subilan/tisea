@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-title">
+        <div class="card-title" v-if="!raw">
             <slot name="title"></slot>
 
         </div>
@@ -12,6 +12,17 @@
         </div>
     </div>
 </template>
+
+<script lang="ts">
+export default {
+    props: {
+        raw: {
+            type: Boolean,
+            default: false
+        }
+    }
+}
+</script>
 
 <style lang="less" scoped>
 .card {
