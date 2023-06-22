@@ -52,7 +52,9 @@ export default class Auth {
 			});
 			return r;
 		} catch (err: any) {
-			if (typeof err.response._data === 'string') {
+			if (!Object.keys(err).includes('response')) {
+				throw new Error(err);
+			} else if (typeof err.response._data === 'string') {
 				throw new Error(err.response._data);
 			} else {
 				let d: NodeBBResponse = err.response._data as any;
@@ -68,8 +70,7 @@ export default class Auth {
 	 * @returns 有效？
 	 */
 	static async verifyOasis(oasisToken: string) {
-		let username,
-			password;
+		let username, password;
 		try {
 			let de = Func.decrypt(oasisToken).split('.');
 			username = de[0];
