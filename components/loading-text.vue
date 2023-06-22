@@ -1,5 +1,5 @@
 <template>
-    <div class="loading-text" :class="{ center: this.center }" :style="{ margin: `${this.margin} 0` }">
+    <div class="loading-text" :class="{center: center}" :style="{margin: `${margin} 0`}">
         <spinner size="20px" width="0.3px" />
         {{ text }}
     </div>
