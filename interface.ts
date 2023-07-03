@@ -5,6 +5,7 @@ interface IUser {
     minecraft: string;
     uuid: string;
     latestLoginActionAt: number;
+    latestLogoutActionAt: number;
     regType: UserRegType;
     perm: UserPerm;
     oasis: Nullable<OasisUserObject>;

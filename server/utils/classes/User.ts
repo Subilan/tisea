@@ -16,6 +16,7 @@ export class Creation implements IUserCreation {
     minecraft: string = "";
     uuid: string = "";
     latestLoginActionAt: number = 0;
+    latestLogoutActionAt: number = 0;
     regType: UserRegType = "common";
     perm: UserPerm = 1;
     oasis: OasisUserObject | null = null;
@@ -122,6 +123,7 @@ export class User implements IUser {
     uuid = "";
     minecraft = "";
     latestLoginActionAt = 0;
+    latestLogoutActionAt = 0;
     regType: UserRegType = 'common';
     perm: UserPerm = 0;
     oasis: Nullable<OasisUserObject> = null;
