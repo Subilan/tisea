@@ -1,11 +1,13 @@
 export const ERR = {
-    INVALID_PARAMETER: 'error.invalid_parameter',
+    INVALID_ARGUMENT: 'error.invalid_argument',
     UNSUPPORTED_OPERATION: 'error.unsupported_operation',
     NOT_ENOUGH_ARGUMENT: 'error.not_enough_argument',
     INTERNAL_REQUEST_FAILED: 'error.internal_request_failed',
     CANNOT_GET_UUID: 'error.cannot_get_uuid',
     VERFICIATION: 'error.verification',
-    BANNED: 'error.banned'
+    RESOURCE_NOT_EXIST: 'error.resource_not_exist',
+    BANNED: 'error.banned',
+    UNKNOWN: 'error.unknown'
 }
 
 export function ok<T extends any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
