@@ -90,8 +90,6 @@ export class Creation implements IUserCreation {
     public async create() {
         return await UserUtil.create(this.dist);
     }
-
-
 }
 
 export class UserUtil {
