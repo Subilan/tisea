@@ -32,8 +32,8 @@ export class Creation implements IUserCreation {
 
     private static checkParams(params: Partial<IUserCreation>) {
         this.MANDATORY.forEach(k => {
-            if (!Object.hasOwn(params, k)) throw new Error(ERR.INVALID_PARAMETER);
-            if (isEmptyKey(params, k)) throw new Error(ERR.INVALID_PARAMETER);
+            if (!Object.hasOwn(params, k)) throw new Error(ERR.INVALID_ARGUMENT);
+            if (isEmptyKey(params, k)) throw new Error(ERR.INVALID_ARGUMENT);
         })
     }
 
@@ -67,7 +67,7 @@ export class Creation implements IUserCreation {
 
         if (!isEmpty(params.oasis)) {
             if (!OasisUserObject.test(params.oasis)) {
-                throw new Error(ERR.INVALID_PARAMETER);
+                throw new Error(ERR.INVALID_ARGUMENT);
             } else {
                 params.regType = 'oasis';
             }
@@ -86,16 +86,27 @@ export class Creation implements IUserCreation {
         deleteKey(this, "password");
         return result as IUser;
     }
+
+    public async create() {
+        return await UserUtil.create(this.dist);
+    }
+
+
 }
 
 export class UserUtil {
     public static create(user: IUser) {
         return upsertOne<IUser>("users", {id: getRandomString(10)}, {
+            // provided
             minecraft: user.minecraft,
             displayname: user.displayname,
+            oasis: user.oasis,
+            // generated
             latestLoginActionAt: new Date().getTime(),
             regType: user.regType,
-            perm: 1
+            perm: 1,
+            hash: user.hash,
+            uuid: user.uuid
         })
     }
 
@@ -109,6 +120,10 @@ export class UserUtil {
 
     public static remove(id: string) {
         return removeOne<IUser>("users", {id});
+    }
+
+    public static async doesExist(id: string) {
+        return (await this.get(id)) !== null;
     }
 }
 
@@ -145,6 +160,7 @@ export class User implements IUser {
     }
 
     public async alter(set: Partial<IUser>) {
+        bindProperties(this, set);
         return await UserUtil.alter(this.id, set);
     }
 
@@ -164,6 +180,10 @@ export class User implements IUser {
         })
     }
 
+    public async toggleOnline() {
+        return await this.setOnline(!this.isOnline);
+    }
+
     public async login(providedPwd: string) {
         if (!await bcrypt.compare(providedPwd, this.hash)) {
             throw new Error(ERR.VERFICIATION);
@@ -174,7 +194,15 @@ export class User implements IUser {
         }
 
         await this.alter({
-            latestLoginActionAt: new Date().getTime()
+            latestLoginActionAt: new Date().getTime(),
+            isOnline: true
+        })
+    }
+
+    public async logout() {
+        await this.alter({
+            latestLogoutActionAt: new Date().getTime(),
+            isOnline: false
         })
     }
 }
