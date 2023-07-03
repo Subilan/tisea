@@ -1,10 +1,11 @@
-import {buildResponse, ERR, ng} from '../utils/response';
+import {ERR, ng} from '../utils/response';
+import {requireNonEmpty} from "../utils/common";
 
-const Actions = ['user.create', 'user.alter', 'auth'] as const;
+const Actions = ['user.create', 'user.alter', 'auth.login', 'auth.logout'] as const;
 export default defineEventHandler(async e => {
     const body = await readBody(e);
     if (typeof body.action !== 'string' || typeof body.params !== 'object') {
-        return ng(ERR.INVALID_PARAMETER);
+        return ng(ERR.INVALID_ARGUMENT);
     }
     const action = body.action as typeof Actions[number];
     const params = body.params as dict<any>;
@@ -13,25 +14,53 @@ export default defineEventHandler(async e => {
         if (action.startsWith("user.")) {
             switch (action) {
                 case "user.create": {
-
+                    const creation = await Creation.build({
+                        displayname: requireNonEmpty(params.displayname),
+                        minecraft: requireNonEmpty(params.minecraft),
+                        password: requireNonEmpty(params.password),
+                        oasis: requireNonEmpty(params.oasis),
+                    })
+                    if (await creation.create()) {
+                        return ok();
+                    } else {
+                        ng(ERR.UNKNOWN)
+                    }
                     break;
                 }
 
                 case "user.alter": {
-                    break;
-                }
-
-                default: {
-                    return ng(ERR.UNSUPPORTED_OPERATION);
+                    const id = requireNonEmpty(params.id);
+                    const user = await User.build(id);
+                    if (await user.alter(params.set)) {
+                        return ok();
+                    } else {
+                        return ng(ERR.UNKNOWN);
+                    }
                 }
             }
         }
 
-        if (action === 'auth') {
+        if (action.startsWith('auth.')) {
+            switch (action) {
+                case "auth.login": {
+                    const id = requireNonEmpty(params.id);
+                    const pwd = requireNonEmpty(params.password);
+                    const user = await User.build(id);
+                    await user.login(pwd);
+                    return ok();
+                }
 
+                case "auth.logout": {
+                    const id = requireNonEmpty(params.id);
+                    const user = await User.build(id);
+                    await user.logout();
+                    return ok();
+                }
+            }
         }
-    } catch (e: InstanceType<Error>) {
-        if (e.message === 'REQUIRE_NON_NULL_ERROR') return ng(ERR.INVALID_PARAMETER);
-        return ng(`An internal error occurred. Detail: ${e.message}.`);
+
+        return ng(ERR.UNSUPPORTED_OPERATION);
+    } catch (e: any) {
+        return ng(e.message);
     }
 })
