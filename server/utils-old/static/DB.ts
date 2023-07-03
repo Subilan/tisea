@@ -1,6 +1,12 @@
 import { MongoClient } from 'mongodb';
 
 export default class DB {
+	/**
+	 * 
+	 * @param playername 
+	 * @param token 
+	 * @returns 
+	 */
 	static async upsertToken(playername: string, token: string) {
 		const client = new MongoClient('mongodb://localhost:27017');
 		try {

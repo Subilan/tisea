@@ -1,5 +1,5 @@
-import BUserUtil from '../../utils/static/BUserUtil';
-import DB from '../../utils/static/DB';
+import BUserUtil from '../../../utils/static/BUserUtil';
+import DB from '../../../utils/static/DB';
 
 export default defineEventHandler(async e => {
 	const body = await readBody(e);

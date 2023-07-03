@@ -27,7 +27,7 @@
                 <card>
                     <template #title>
                         服务器状态
-                        
+
                     </template>
                     <template #content>
                         <div class="subtle text-align-center">服务器状态获取失败</div>
@@ -46,7 +46,7 @@
                 <card>
                     <template #title>Title</template>
                     <template #content>
-                        123
+                        <loading-text center />
                     </template>
 
                 </card>
@@ -73,12 +73,15 @@
 
             </div>
             <div class="col col-3">
-                <card>
-                    <template #title>Subilan</template>
+                <card raw v-if="loggedIn">
                     <template #content>
-                        
+                        <div class="user-card">
+                            <div class="avatar">
+                                <avatar-spinner v-if="!avatar"/>
+                                <img class="avatar-img" v-else :src="avatar"/>
+                            </div>
+                        </div>
                     </template>
-
                 </card>
             </div>
         </div>
@@ -94,12 +97,14 @@ export default {
         return {
             loggedIn: false,
             // prevent weird card state changing
-            lock: true
+            lock: true,
+            avatar: ''
         }
     },
     async created() {
-        this.loggedIn = await FUserUtil.loggedIn();
+        this.loggedIn = await FUserUtil.AgetLoggedIn();
         this.lock = false;
+        this.avatar = await FUserUtil.AgetAvatarURL() ?? '';
     },
     methods: {
         $openTab

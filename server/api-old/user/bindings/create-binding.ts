@@ -1,4 +1,4 @@
-import Func from '../../utils/static/Func';
+import Func from '../../../utils/static/Func';
 
 export default defineEventHandler(async e => {
 	const body = await readBody(e);

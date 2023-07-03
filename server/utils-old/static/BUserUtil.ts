@@ -1,6 +1,4 @@
-import Auth from './Auth';
 import DB from './DB';
-import Func from './Func';
 
 interface MojangResponse {
 	name: string;
@@ -9,11 +7,11 @@ interface MojangResponse {
 
 export default class BUserUtil {
 	/**
-	 * **使用 `playername`** 设置用户与玩家的绑定
+	 * 使用 `playername` 设置用户与玩家的绑定
 	 *
 	 * @param username 用户名
 	 * @param playername 所要绑定的目标玩家名
-	 * @param set 绑定设置内容
+	 * @param update 所要修改的对象
 	 * @returns 执行成功？
 	 * @throws 执行失败
 	 */
@@ -22,7 +20,7 @@ export default class BUserUtil {
 			method: 'get'
 		});
 		if (resp.id) {
-			DB.upsertBinding(
+			await DB.upsertBinding(
 				{ username },
 				{
 					...{ uuid: resp.id, verified: false, playername },

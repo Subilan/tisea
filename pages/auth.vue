@@ -13,7 +13,11 @@
 
             <div class="auth-box-textfields" v-if="currentLoginMethod === 'key'">
                 <div class="auth-box-textfield">
-                    <textarea placeholder="粘贴登录令牌..." class="auth-box-textfield-textarea" v-model="loginKey" type="text" />
+                    <textarea @keydown="ev => {
+                        if (ev.key == 'Enter') {
+                            login();
+                        }
+                    }" placeholder="粘贴登录令牌..." class="auth-box-textfield-textarea" v-model="loginKey" type="text" />
                 </div>
             </div>
             <div class="auth-box-textfields" v-else-if="currentLoginMethod === 'oasis'">
@@ -21,12 +25,19 @@
                     <input placeholder="用户名" class="auth-box-textfield-input" v-model="loginData.username" type="text" />
                 </div>
                 <div class="auth-box-textfield">
-                    <input placeholder="密码" class="auth-box-textfield-input" v-model="loginData.password" type="password" />
+                    <input @keydown="ev => {
+                        if (ev.key == 'Enter') {
+                            console.log('login')
+                            login();
+                        }
+                    }" placeholder="密码" class="auth-box-textfield-input" v-model="loginData.password"
+                        type="password" />
                 </div>
             </div>
 
             <div class="auth-box-actions">
-                <btn class="outline" v-if="currentLoginMethod === 'key'" @click="currentLoginMethod = 'oasis'">使用火星港账号登录</btn>
+                <btn class="outline" v-if="currentLoginMethod === 'key'" @click="currentLoginMethod = 'oasis'">使用火星港账号登录
+                </btn>
                 <btn class="outline" v-if="currentLoginMethod === 'oasis'" @click="currentLoginMethod = 'key'">使用登录令牌</btn>
                 <btn class="primary" @click="login()">继续</btn>
             </div>
@@ -77,7 +88,7 @@ const loginData = reactive({
 
 function dispatchSnackbar(info: string, delay: number = 0) {
     snackbarInfo.value = info;
-    if (displaySnackbar === false) {
+    if (!displaySnackbar) {
         displaySnackbar = true;
     }
     if (delay > 0) {
@@ -144,7 +155,7 @@ onMounted(() => {
 </script>
 
 <style lang="less">
-@import "~/assets/styles/var.less";
+@import "@/assets/styles/var.less";
 
 .title-element-1,
 .title-element-2 {
