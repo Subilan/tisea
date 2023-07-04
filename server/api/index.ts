@@ -1,7 +1,8 @@
 import {ERR, ng} from '../utils/response';
 import {requireNonEmpty} from "../utils/common";
+import {UserUtil} from "../utils/classes/User";
 
-const Actions = ['user.create', 'user.alter', 'auth.login', 'auth.logout'] as const;
+const Actions = ['user.create', 'user.alter', 'user.login', 'user.logout', 'user.checkToken'] as const;
 export default defineEventHandler(async e => {
     const body = await readBody(e);
     if (typeof body.action !== 'string' || typeof body.params !== 'object') {
@@ -31,19 +32,25 @@ export default defineEventHandler(async e => {
             }
 
 
-            case "auth.login": {
+            case "user.login": {
                 const displayname = requireNonEmpty(params.displayname);
                 const pwd = requireNonEmpty(params.password);
+                // default: 12 hours
+                const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
                 const user = await User.build("", displayname);
                 await user.login(pwd);
-                return ok(user.toToken());
+                return ok(user.getToken(expiration));
             }
 
-            case "auth.logout": {
+            case "user.logout": {
                 const id = requireNonEmpty(params.id);
                 const user = await User.build(id);
                 await user.logout();
                 return ok();
+            }
+
+            case "user.checkToken": {
+                return ok(null, UserUtil.checkEncryptedToken(requireNonEmpty(params.token)));
             }
         }
 

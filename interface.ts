@@ -44,3 +44,8 @@ interface NodeBBResponse {
         message: string;
     };
 }
+
+interface Token {
+    expires: number;
+    id: string;
+}

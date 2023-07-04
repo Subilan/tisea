@@ -4,19 +4,24 @@ export const ERR = {
     NOT_ENOUGH_ARGUMENT: 'error.not_enough_argument',
     INTERNAL_REQUEST_FAILED: 'error.internal_request_failed',
     CANNOT_GET_UUID: 'error.cannot_get_uuid',
-    VERFICIATION: 'error.verification',
-    OBJECT_NOT_EXIST: 'error.object_not_exist',
+    VERFICIATION_FAILED: 'error.verification_failed',
+    NOT_EXIST: {
+      OBJECT: 'error.not_exist.object',
+      USER: 'error.not_exist.user'
+    },
     BANNED: 'error.banned',
     INTERNAL_QUERY_FAILED: 'error.internal_query_failed',
     CRYPTO: 'error.crypto',
-    DUPLICATE: 'error.duplicate'
+    DUPLICATE: 'error.duplicate',
+    EXPIRED_TOKEN: 'error.expired_token',
+    INVALID_TOKEN: 'error.invalid_token'
 }
 
-export function ok<T extends any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
+export function ok<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
     return buildResponse('ok', msg, data);
 }
 
-export function ng<T extends any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
+export function ng<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
     return buildResponse('ng', msg, data);
 }
 
