@@ -1,8 +1,17 @@
 <template>
-  <div class="button">
+  <div :disabled="disabled" class="button">
     <slot></slot>
   </div>
 </template>
+
+<script lang="ts" setup>
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
+</script>
 
 <style lang="less">
 .button {
@@ -30,7 +39,7 @@
   border: 1px solid rgba(0, 0, 0, .2);
 
   &:hover {
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, .2);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, .1);
   }
 }
 
@@ -52,12 +61,19 @@
   }
 }
 
-.button[disabled] {
+.button[disabled='true'] {
   cursor: not-allowed;
+  pointer-events: none;
   box-shadow: none;
   border: none;
-  background: gray;
+  background: rgba(0, 0, 0, .2);
   color: white;
+
+  &:hover {
+
+    opacity: 1;
+    box-shadow: none;
+  }
 }
 
 .button:hover {
