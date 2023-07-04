@@ -90,6 +90,23 @@ body {
     opacity: 1;
 }
 
+.fadeRight-enter-active,
+.fadeRight-leave-active {
+    transition: all .2s cubic-bezier(.8, 0, 0, 1);
+}
+
+.fadeRight-enter-from,
+.fadeRight-leave-to {
+    transform: translateX(-36px);
+    opacity: 0;
+}
+
+.fadeRight-enter-to,
+.fadeRight-leave-from {
+    transform: translateX(0);
+    opacity: 1;
+}
+
 .avatar-img {
     display: inline-block;
     border-radius: 100%;
