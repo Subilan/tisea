@@ -20,46 +20,23 @@
         <div class="auth-box-description" v-else>
           若要注册一个 Tisea 账号，请填写下列信息。
           <notice-bar>
-            <span class="mdi mdi-information-outline"/> 使用火星港账号登录后将自动注册
+            <span class="mdi mdi-information-outline"/> 你也可以使用火星港账号登录来自动注册
           </notice-bar>
         </div>
       </div>
 
       <div class="auth-box-textfields" v-if="!registering">
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-account-circle"/>
-          <input placeholder="用户名" class="auth-box-textfield-input" v-model="loginData.displayname" type="text"/>
-        </div>
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-key"/>
-          <input placeholder="密码" @keydown="ev => {
-                        if (ev.key == 'Enter') {
-                            console.log('login')
-                            login();
-                        }
-                    }" class="auth-box-textfield-input" v-model="loginData.password"
-                 type="password"/>
-        </div>
+        <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.displayname"/>
+        <textfield placeholder="密码" icon="mdi-key" type="password" v-model="loginData.password"/>
       </div>
       <div class="auth-box-textfields" v-if="registering">
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-account-circle"/>
-          <input placeholder="用户名" class="auth-box-textfield-input" v-model="registrationData.displayname" type="text"/>
-        </div>
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-minecraft"/>
-          <input placeholder="Minecraft 游戏名" class="auth-box-textfield-input" v-model="registrationData.minecraft" type="text"/>
-        </div>
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-key"/>
-          <input placeholder="密码" class="auth-box-textfield-input" v-model="registrationData.password"
-                 type="password"/>
-        </div>
-        <div class="auth-box-textfield">
-          <span class="mdi mdi-shield-key"/>
-          <input placeholder="确认密码" class="auth-box-textfield-input" v-model="passwordV"
-                 type="password"/>
-        </div>
+        <textfield placeholder="用户名" :error-text="errorTexts.displayname" icon="mdi-account-circle" type="text"
+                   v-model="registrationData.displayname"/>
+        <textfield placeholder="Minecraft 游戏名" :error-text="errorTexts.minecraft" icon="mdi-minecraft" type="text"
+                   v-model="registrationData.minecraft"/>
+        <textfield placeholder="密码" icon="mdi-key" :error-text="errorTexts.password" type="password"
+                   v-model="registrationData.password"/>
+        <textfield placeholder="确认密码" :error-text="errorTexts.passwordV" icon="mdi-shield-key" type="password" v-model="passwordV"/>
       </div>
 
       <div class="auth-box-divider"/>
@@ -78,6 +55,7 @@
 
 <script lang="ts" setup>
 import NoticeBar from "~/components/notice-bar.vue";
+import {bindProperties} from "~/server/utils/common";
 
 definePageMeta({
   layout: false
@@ -90,17 +68,32 @@ let snackbar = {
   display: false,
   text: ''
 }
-let loginData: Partial<IUserCreation> = {
+let loginData = reactive({
   displayname: '',
   password: '',
-}
-let registrationData: Partial<IUserCreation> = {
+})
+let registrationData = reactive({
   displayname: '',
   password: '',
   oasis: null,
   minecraft: ''
+})
+let errorTexts = {
+  displayname: '',
+  minecraft: '',
+  password: '',
+  passwordV: ''
 }
-let passwordV = ''
+let passwordV = ref('')
+
+let validation = computed(() => {
+  return {
+    displayname: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.displayname ?? '') || registrationData.displayname.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
+    password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
+    minecraft: /^[a-zA-Z0-9_]{2,16}$/mg.test(registrationData.minecraft ?? '') || registrationData.minecraft.length === 0 ? '' : '不是有效的 Minecraft 游戏名格式',
+    passwordV: passwordV.value === registrationData.password || registrationData.password.length === 0 || passwordV.value.length === 0 ? '' : '两次密码输入不一致'
+  }
+})
 
 function login() {
 
@@ -115,6 +108,11 @@ onMounted(() => {
     titleUnderscoreShown.value = !titleUnderscoreShown.value;
   }, 600);
 })
+
+watch(() => validation, (v, ov) => {
+  const val = v.value;
+  bindProperties(errorTexts, val);
+}, {deep: true})
 </script>
 
 <style lang="less">
@@ -176,38 +174,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.auth-box-textfield-input {
-  outline: none;
-  border-radius: 5px;
-  border: 2px solid rgba(0, 0, 0, .2);
-  transition: all .2s ease;
-  font-size: 16px;
-  width: calc(100% - 18px);
-  resize: none;
-
-  padding: 8px;
-  font-family: Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', ui-sans-serif, monospace;
-
-  &:hover,
-  &:focus {
-    border-color: #00bcd4;
-  }
-
-  &:focus {
-    background: rgba(0, 0, 0, .04);
-  }
-}
-
-.auth-box-textfield {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  .mdi::before {
-    font-size: 28px;
-    color: rgba(0, 0, 0, .6);
-  }
 }
 
 .auth-box-actions {
