@@ -141,14 +141,14 @@ export class UserUtil {
         return (await getOne<IUser>("users", filter)) !== null;
     }
 
-    public static fromToken(token: string) {
-        let decrypted = '{}';
+    public static checkEncryptedToken(encryptedToken: string) {
+        let token: Nullable<Token> = null;
         try {
-            decrypted = CryptoEs.AES.decrypt(token, CRYPTO_KEY).toString(CryptoEs.enc.Utf8);
+            token = JSON.parse(CryptoEs.AES.decrypt(encryptedToken, CRYPTO_KEY).toString(CryptoEs.enc.Utf8)) as Token;
         } catch (e: any) {
-            throw new Error(ERR.VERFICIATION)
+            return false;
         }
-        return JSON.parse(decrypted) as IUser;
+        return token.expires > new Date().getTime();
     }
 }
 
@@ -184,13 +184,22 @@ export class User implements IUser {
             result = await UserUtil.get({displayname})
         }
         if (result === null) {
-            throw new Error(ERR.OBJECT_NOT_EXIST);
+            throw new Error(ERR.NOT_EXIST.USER);
         }
         return new User(result);
     }
 
-    public static fromToken(token: string) {
-        return new User(UserUtil.fromToken(token));
+    public static async fromToken(encryptedToken: string) {
+        let token: Nullable<Token> = null;
+        try {
+            token = JSON.parse(CryptoEs.AES.decrypt(encryptedToken, CRYPTO_KEY).toString(CryptoEs.enc.Utf8)) as Token;
+        } catch (e: any) {
+            throw new Error(ERR.INVALID_TOKEN)
+        }
+        if (token.expires <= new Date().getTime()) {
+            throw new Error(ERR.EXPIRED_TOKEN);
+        }
+        return await User.build(token.id);
     }
 
     public async alter(set: Partial<IUser>) {
@@ -220,7 +229,7 @@ export class User implements IUser {
 
     public async login(providedPwd: string) {
         if (!checkPassword(providedPwd, this.hash)) {
-            throw new Error(ERR.VERFICIATION);
+            throw new Error(ERR.VERFICIATION_FAILED);
         }
 
         if (this.perm === -2) {
@@ -247,8 +256,11 @@ export class User implements IUser {
         return result as IUser;
     }
 
-    public toToken() {
-        const rawDist = JSON.stringify(this.dist);
-        return CryptoEs.AES.encrypt(rawDist, CRYPTO_KEY).toString();
+    public getToken(expiration: number) {
+        const rawToken: Token = {
+            id: this.id,
+            expires: new Date().getTime() + expiration
+        }
+        return CryptoEs.AES.encrypt(JSON.stringify(rawToken), CRYPTO_KEY).toString();
     }
 }

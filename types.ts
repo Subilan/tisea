@@ -17,4 +17,4 @@ type UserPerm = -2 | -1 | 0 | 1 | 2;
 type Class<IClass = any> = { new(...args: any[]): IClass }
 type Nullable<T> = T | null;
 type ResponseState = 'ok' | 'ng';
-type CommonResponse<T> = { state: ResponseState, msg: Nullable<string>, data: T };
+type CommonResponse<T = any> = { state: ResponseState, msg: Nullable<string>, data: T };
