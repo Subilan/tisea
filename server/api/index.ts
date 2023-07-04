@@ -18,24 +18,17 @@ export default defineEventHandler(async e => {
                         displayname: requireNonEmpty(params.displayname),
                         minecraft: requireNonEmpty(params.minecraft),
                         password: requireNonEmpty(params.password),
-                        oasis: requireNonEmpty(params.oasis),
+                        oasis: params.oasis ?? null
                     })
-                    if (await creation.create()) {
-                        return ok();
-                    } else {
-                        ng(ERR.UNKNOWN)
-                    }
-                    break;
+                    await creation.create()
+                    return ok();
                 }
 
                 case "user.alter": {
                     const id = requireNonEmpty(params.id);
                     const user = await User.build(id);
-                    if (await user.alter(params.set)) {
-                        return ok();
-                    } else {
-                        return ng(ERR.UNKNOWN);
-                    }
+                    await user.alter(params.set)
+                    return ok();
                 }
             }
         }
@@ -43,11 +36,11 @@ export default defineEventHandler(async e => {
         if (action.startsWith('auth.')) {
             switch (action) {
                 case "auth.login": {
-                    const id = requireNonEmpty(params.id);
+                    const displayname = requireNonEmpty(params.displayname);
                     const pwd = requireNonEmpty(params.password);
-                    const user = await User.build(id);
+                    const user = await User.build("", displayname);
                     await user.login(pwd);
-                    return ok();
+                    return ok(user.toToken());
                 }
 
                 case "auth.logout": {

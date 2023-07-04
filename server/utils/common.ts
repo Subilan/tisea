@@ -1,3 +1,4 @@
+import CryptoEs from "crypto-es";
 const RANDOM_STRING_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function castObject<T>(obj: any, targetClass: Class) {
@@ -35,7 +36,7 @@ export function isEmptyKey(obj: any, key: string) {
 }
 
 /**
- * 同步两个对象的属性。
+ * 将第二个参数的所有非函数属性同步至第一个参数上。
  * **注意：两个对象必须都能使用
  * [bracket notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation)
  * 访问和赋值**
@@ -46,7 +47,7 @@ export function isEmptyKey(obj: any, key: string) {
 
 export function bindProperties(bindTarget: any, bindFrom: any) {
     Object.keys(bindFrom).forEach(k => {
-        bindTarget[k] = bindFrom[k];
+        if (!(typeof bindFrom[k] === 'function')) bindTarget[k] = bindFrom[k];
     })
 }
 
@@ -59,7 +60,7 @@ export function getRandomString(len: number) {
     let randomString = '';
     for (let i = 0; i < len; i++) {
         const randomPoz = Math.floor(Math.random() * RANDOM_STRING_CHARSET.length);
-        randomString += RANDOM_STRING_CHARSET.substring(randomPoz,randomPoz+1);
+        randomString += RANDOM_STRING_CHARSET.substring(randomPoz, randomPoz + 1);
     }
     return randomString;
 }
@@ -81,4 +82,24 @@ export async function getUUIDFromName(name: string) {
 
 export function deleteKey(obj: any, key: string) {
     return delete obj[key];
+}
+
+export function getKey(obj: any, key: string) {
+    return obj[key];
+}
+
+export function checkPassword(input: string, hash: string) {
+    const {raw, salt} = splitHash(hash);
+    return CryptoEs.PBKDF2(input, salt).toString() === raw;
+}
+
+function splitHash(hash: string) {
+    const splitted = hash.split(".");
+    if (splitted.length !== 2) {
+        throw new Error(ERR.CRYPTO);
+    }
+    return {
+        raw: splitted[0],
+        salt: splitted[1]
+    }
 }

@@ -1,28 +1,35 @@
 import {getOne, removeOne, upsertOne} from "../database";
-import {bindProperties, deleteKey, getRandomString, getUUIDFromName, isEmpty, isEmptyKey} from "../common";
-import interfaceTi from "../../../interface-ti";
-import {createCheckers} from "ts-interface-checker";
-import * as bcrypt from "bcryptjs";
+import {
+    bindProperties,
+    checkPassword,
+    deleteKey,
+    getRandomString,
+    getUUIDFromName,
+    isEmpty,
+    isEmptyKey
+} from "../common";
+import CryptoEs from "crypto-es";
 
-const {OasisUserObject, IUser} = createCheckers(interfaceTi);
+const CRYPTO_KEY = 'jkeUmUaYnfxVcuvjnpS39uo5EnX4mR7OHyIkXSOfmcVjAIUqxZntJBjgRsHGzTicCgbga0DwQJLs9JEKHp90dMSLefWQMC9OwJOPtUzbPey02gqlKL2GxRqQWAwLmlG2baLY4AiXOkRpwxLilKg0CHeX9OQTo2cKr3LEyOd555';
 
 interface IUserCreation extends IUser {
     password: string;
 }
 
 export class Creation implements IUserCreation {
-    id: string = "";
-    displayname: string = "";
-    minecraft: string = "";
-    uuid: string = "";
-    latestLoginActionAt: number = 0;
-    latestLogoutActionAt: number = 0;
+    id = "";
+    displayname = "";
+    minecraft = "";
+    uuid = "";
+    avatar = "";
+    latestLoginActionAt = 0;
+    latestLogoutActionAt = 0;
     regType: UserRegType = "common";
     perm: UserPerm = 1;
     oasis: OasisUserObject | null = null;
-    isOnline: boolean = false;
-    hash: string = "";
-    password: string = "";
+    isOnline = false;
+    hash = "";
+    password = "";
     private static readonly MANDATORY: (keyof IUserCreation)[] = ["minecraft", "displayname", "password"]
 
     constructor(creation: Partial<IUserCreation>) {
@@ -57,7 +64,6 @@ export class Creation implements IUserCreation {
         }
 
         const password = params.password as string;
-
         const minecraft = params.minecraft as string;
         const uuid = await getUUIDFromName(minecraft);
         if (uuid === undefined) {
@@ -66,7 +72,7 @@ export class Creation implements IUserCreation {
         params.uuid = uuid;
 
         if (!isEmpty(params.oasis)) {
-            if (!OasisUserObject.test(params.oasis)) {
+            if (isEmpty(params.oasis)) {
                 throw new Error(ERR.INVALID_ARGUMENT);
             } else {
                 params.regType = 'oasis';
@@ -75,7 +81,8 @@ export class Creation implements IUserCreation {
             params.regType = 'common';
         }
 
-        params.hash = await bcrypt.hash(password, await bcrypt.genSalt(10));
+        const salt = getRandomString(10);
+        params.hash = `${CryptoEs.PBKDF2(password, salt).toString()}.${salt}`;
 
         return new Creation(params);
     }
@@ -88,7 +95,17 @@ export class Creation implements IUserCreation {
     }
 
     public async create() {
-        return await UserUtil.create(this.dist);
+        if (await UserUtil.doesExist({
+            displayname: this.dist.displayname,
+            uuid: this.dist.uuid
+        })) {
+            throw new Error(ERR.DUPLICATE);
+        }
+        try {
+            await UserUtil.create(this.dist);
+        } catch (e: any) {
+            throw new Error(ERR.INTERNAL_QUERY_FAILED);
+        }
     }
 }
 
@@ -105,23 +122,33 @@ export class UserUtil {
             perm: 1,
             hash: user.hash,
             uuid: user.uuid
-        })
+        });
     }
 
     public static alter(id: string, set: Partial<IUser>) {
         return upsertOne<IUser>("users", {id}, set);
     }
 
-    public static get(id: string) {
-        return getOne<IUser>("users", {id});
+    public static get(filter: Partial<IUser>) {
+        return getOne<IUser>("users", filter);
     }
 
     public static remove(id: string) {
         return removeOne<IUser>("users", {id});
     }
 
-    public static async doesExist(id: string) {
-        return (await this.get(id)) !== null;
+    public static async doesExist(filter: Partial<IUser>) {
+        return (await getOne<IUser>("users", filter)) !== null;
+    }
+
+    public static fromToken(token: string) {
+        let decrypted = '{}';
+        try {
+            decrypted = CryptoEs.AES.decrypt(token, CRYPTO_KEY).toString(CryptoEs.enc.Utf8);
+        } catch (e: any) {
+            throw new Error(ERR.VERFICIATION)
+        }
+        return JSON.parse(decrypted) as IUser;
     }
 }
 
@@ -134,6 +161,7 @@ export class User implements IUser {
     displayname = "";
     hash = "";
     uuid = "";
+    avatar = ""
     minecraft = "";
     latestLoginActionAt = 0;
     latestLogoutActionAt = 0;
@@ -146,15 +174,23 @@ export class User implements IUser {
         bindProperties(this, user);
     }
 
-    public static async build(id: string) {
-        const result = await UserUtil.get(id);
-        if (result === null) {
-            throw new Error(`User of id ${id} does not exist.`);
+    public static async build(id: string = "", displayname: string = "") {
+        let result: Nullable<IUser> = null;
+        if (id && displayname) {
+            result = await UserUtil.get({id, displayname});
+        } else if (id) {
+            result = await UserUtil.get({id})
+        } else if (displayname) {
+            result = await UserUtil.get({displayname})
         }
-        if (!IUser.test(result)) {
-            throw new Error(`Obtained invalid user object.`);
+        if (result === null) {
+            throw new Error(ERR.OBJECT_NOT_EXIST);
         }
         return new User(result);
+    }
+
+    public static fromToken(token: string) {
+        return new User(UserUtil.fromToken(token));
     }
 
     public async alter(set: Partial<IUser>) {
@@ -183,7 +219,7 @@ export class User implements IUser {
     }
 
     public async login(providedPwd: string) {
-        if (!await bcrypt.compare(providedPwd, this.hash)) {
+        if (!checkPassword(providedPwd, this.hash)) {
             throw new Error(ERR.VERFICIATION);
         }
 
@@ -202,5 +238,17 @@ export class User implements IUser {
             latestLogoutActionAt: new Date().getTime(),
             isOnline: false
         })
+    }
+
+    public get dist() {
+        const result = {};
+        bindProperties(result, this);
+        deleteKey(result, '_id');
+        return result as IUser;
+    }
+
+    public toToken() {
+        const rawDist = JSON.stringify(this.dist);
+        return CryptoEs.AES.encrypt(rawDist, CRYPTO_KEY).toString();
     }
 }

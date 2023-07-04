@@ -5,9 +5,11 @@ export const ERR = {
     INTERNAL_REQUEST_FAILED: 'error.internal_request_failed',
     CANNOT_GET_UUID: 'error.cannot_get_uuid',
     VERFICIATION: 'error.verification',
-    RESOURCE_NOT_EXIST: 'error.resource_not_exist',
+    OBJECT_NOT_EXIST: 'error.object_not_exist',
     BANNED: 'error.banned',
-    UNKNOWN: 'error.unknown'
+    INTERNAL_QUERY_FAILED: 'error.internal_query_failed',
+    CRYPTO: 'error.crypto',
+    DUPLICATE: 'error.duplicate'
 }
 
 export function ok<T extends any>(msg: Nullable<string> = null, data: Nullable<T> = null) {

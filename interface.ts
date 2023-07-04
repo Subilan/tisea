@@ -4,6 +4,7 @@ interface IUser {
     hash: string;
     minecraft: string;
     uuid: string;
+    avatar: string;
     latestLoginActionAt: number;
     latestLogoutActionAt: number;
     regType: UserRegType;
