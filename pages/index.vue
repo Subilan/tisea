@@ -89,36 +89,34 @@
 </template>
 
 <script lang="ts">
-import FUserUtil from '@/utils/FUserUtil';
-import { $openTab } from '@/utils/FCommonUtil';
-
-export default {
-    data() {
-        return {
-            loggedIn: false,
-            // prevent weird card state changing
-            lock: true,
-            avatar: ''
-        }
-    },
-    async created() {
-        this.loggedIn = await FUserUtil.AgetLoggedIn();
-        this.lock = false;
-        this.avatar = await FUserUtil.AgetAvatarURL() ?? '';
-    },
-    methods: {
-        $openTab
-    }
-}
+// import FUserUtil from '@/utils/FUserUtil';
+// import { $openTab } from '@/utils/FCommonUtil';
+//
+// export default {
+//     data() {
+//         return {
+//             loggedIn: false,
+//             // prevent weird card state changing
+//             lock: true,
+//             avatar: ''
+//         }
+//     },
+//     async created() {
+//         this.loggedIn = await FUserUtil.AgetLoggedIn();
+//         this.lock = false;
+//         this.avatar = await FUserUtil.AgetAvatarURL() ?? '';
+//     },
+//     methods: {
+//         $openTab
+//     }
+// }
 </script>
 
 <style scoped>
 .hero {
-    background: url(https://seati.oss-cn-qingdao.aliyuncs.com/assets/images/1.jpg);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
+  background-size: cover;
+  background: url(https://seati.oss-cn-qingdao.aliyuncs.com/assets/images/1.jpg) no-repeat center;
+  width: 100vw;
     height: 30vh;
 }
 
@@ -127,7 +125,7 @@ export default {
     background: linear-gradient(90deg, #00e3db 0%, #00bcd4 100%);
     background-clip: text;
     color: transparent;
-    font-family: YuanHeiNC, Rubik;
+    font-family: YuanHeiNC, Rubik, sans-serif;
     font-weight: bold;
     line-height: 1.2;
 }

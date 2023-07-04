@@ -6,6 +6,14 @@
 	</div>
 </template>
 
+<script lang="ts" setup>
+if (process.client) {
+  window.addEventListener("visibilitychange", e => {
+    console.log(e)
+  })
+}
+</script>
+
 <style lang="less">
 .default-fade-enter-active,
 .default-fade-leave-active {

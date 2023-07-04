@@ -2,13 +2,12 @@ import {ERR, ng} from '../utils/response';
 import {requireNonEmpty} from "../utils/common";
 import {UserUtil} from "../utils/classes/User";
 
-const Actions = ['user.create', 'user.alter', 'user.login', 'user.logout', 'user.checkToken'] as const;
 export default defineEventHandler(async e => {
     const body = await readBody(e);
     if (typeof body.action !== 'string' || typeof body.params !== 'object') {
         return ng(ERR.INVALID_ARGUMENT);
     }
-    const action = body.action as typeof Actions[number];
+    const action = body.action as RequestActions;
     const params = body.params as dict<any>;
 
     try {

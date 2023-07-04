@@ -1,3 +1,7 @@
+const Actions = ['user.create', 'user.alter', 'user.login', 'user.logout', 'user.checkToken'] as const;
+
+type RequestActions = typeof Actions[number];
+
 type dict<T> = { [prop: string]: T };
 
 /**
@@ -18,3 +22,4 @@ type Class<IClass = any> = { new(...args: any[]): IClass }
 type Nullable<T> = T | null;
 type ResponseState = 'ok' | 'ng';
 type CommonResponse<T = any> = { state: ResponseState, msg: Nullable<string>, data: T };
+type CommonRequest<T extends {} = object> = { action: RequestActions, params: T };

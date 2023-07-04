@@ -12,10 +12,6 @@ import CryptoEs from "crypto-es";
 
 const CRYPTO_KEY = 'jkeUmUaYnfxVcuvjnpS39uo5EnX4mR7OHyIkXSOfmcVjAIUqxZntJBjgRsHGzTicCgbga0DwQJLs9JEKHp90dMSLefWQMC9OwJOPtUzbPey02gqlKL2GxRqQWAwLmlG2baLY4AiXOkRpwxLilKg0CHeX9OQTo2cKr3LEyOd555';
 
-interface IUserCreation extends IUser {
-    password: string;
-}
-
 export class Creation implements IUserCreation {
     id = "";
     displayname = "";

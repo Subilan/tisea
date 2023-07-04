@@ -32,25 +32,25 @@
 </template>
 
 <script lang="ts">
-import FUserUtil from '@/utils/FUserUtil'
-
-export default {
-    data() {
-        return {
-            loggedIn: false,
-            user: {
-                avatar: ''
-            }
-        }
-    },
-    async created() {
-        this.loggedIn = await FUserUtil.AgetLoggedIn();
-        this.user.avatar = await FUserUtil.AgetAvatarURL();
-    },
-    methods: {
-        logout: FUserUtil.logout
-    }
-}
+// import FUserUtil from '@/utils/FUserUtil'
+//
+// export default {
+//     data() {
+//         return {
+//             loggedIn: false,
+//             user: {
+//                 avatar: ''
+//             }
+//         }
+//     },
+//     async created() {
+//         this.loggedIn = await FUserUtil.AgetLoggedIn();
+//         this.user.avatar = await FUserUtil.AgetAvatarURL();
+//     },
+//     methods: {
+//         logout: FUserUtil.logout
+//     }
+// }
 </script>
 
 <style scoped lang="less">

@@ -13,6 +13,10 @@ interface IUser {
     isOnline: boolean;
 }
 
+interface IUserCreation extends IUser {
+    password: string;
+}
+
 interface OasisUserObject {
     uid: number;
     username: string;

@@ -5,7 +5,7 @@ export default defineEventHandler(async e => {
     try {
         const token = requireNonEmpty(body.token) as string;
         const user = await User.fromToken(token);
-        const key = requireNonEmpty(body.key);
+        const key = requireNonEmpty(body.key) as string | string[];
 
 
         if (typeof key === 'string') {
