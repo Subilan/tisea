@@ -36,14 +36,15 @@
                    v-model="registrationData.minecraft"/>
         <textfield placeholder="密码" icon="mdi-key" :error-text="errorTexts.password" type="password"
                    v-model="registrationData.password"/>
-        <textfield placeholder="确认密码" :error-text="errorTexts.passwordV" icon="mdi-shield-key" type="password" v-model="passwordV"/>
+        <textfield placeholder="确认密码" :error-text="errorTexts.passwordV" icon="mdi-shield-key" type="password"
+                   v-model="passwordV"/>
       </div>
 
       <div class="auth-box-divider"/>
 
       <div class="auth-box-actions">
         <btn class="primary" v-if="!registering" @click="login()">登录</btn>
-        <btn class="primary" v-if="registering" @click="register()">注册</btn>
+        <btn :disabled="!canRegister" class="primary" v-if="registering" @click="register()">注册</btn>
         <btn class="white" v-if="registering" @click="registering = false">转到登录</btn>
         <btn class="white" v-if="!registering" @click="registering = true">转到注册</btn>
         <btn class="white">使用火星港账号登录</btn>
@@ -91,8 +92,13 @@ let validation = computed(() => {
     displayname: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.displayname ?? '') || registrationData.displayname.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
     password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
     minecraft: /^[a-zA-Z0-9_]{2,16}$/mg.test(registrationData.minecraft ?? '') || registrationData.minecraft.length === 0 ? '' : '不是有效的 Minecraft 游戏名格式',
-    passwordV: passwordV.value === registrationData.password || registrationData.password.length === 0 || passwordV.value.length === 0 ? '' : '两次密码输入不一致'
+    passwordV: (passwordV.value === registrationData.password || registrationData.password.length === 0 || passwordV.value.length === 0) ? '' : '两次密码输入不一致'
   }
+})
+
+let canRegister = computed(() => {
+  return Object.values(validation.value).filter(x => x !== '').length === 0
+      && Object.values(registrationData).filter(x => typeof x === 'string' ? x.length > 0 : x === null).length === Object.keys(registrationData).length;
 })
 
 function login() {
@@ -109,7 +115,7 @@ onMounted(() => {
   }, 600);
 })
 
-watch(() => validation, (v, ov) => {
+watch(() => validation, v => {
   const val = v.value;
   bindProperties(errorTexts, val);
 }, {deep: true})
