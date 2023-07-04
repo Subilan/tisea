@@ -6,7 +6,7 @@ const DB_COLLECTIONS = ["users"] as const;
 type CollectionLiteral = typeof DB_COLLECTIONS[number];
 
 export function getMongoClient() {
-    return new MongoClient("mongodb://localhost:27017");
+    return new MongoClient("mongodb://127.0.0.1:27017");
 }
 
 export function getMongoCollection(collection: CollectionLiteral) {
@@ -23,7 +23,7 @@ export async function upsertOne<T extends object>(
         $set: set
     }, {
         upsert: true
-    })).matchedCount > 0;
+    })).acknowledged;
 }
 
 export async function getOne<T extends object>(
