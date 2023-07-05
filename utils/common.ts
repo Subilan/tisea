@@ -1,4 +1,5 @@
 import Storage from "~/utils/storage";
+import {useUser} from "~/utils/states";
 
 export function $openTab(url: string) {
     window.open(url);
@@ -42,4 +43,19 @@ export async function getUser() {
         all: true
     });
     return result ? result.state ? result.data as Partial<IUser> : {} : {};
+}
+
+export async function logout() {
+    const user = useUser();
+    if (!user.value.ready) return false;
+    const result = await doAction<boolean>('user.logout', {
+        id: user.value.target.id
+    });
+    if (result.state === 'ok') {
+        Storage.token = null;
+        return true;
+    } else {
+        console.error(result.msg);
+        return false;
+    }
 }
