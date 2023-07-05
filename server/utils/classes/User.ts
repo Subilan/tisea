@@ -32,13 +32,14 @@ export class Creation implements IUserCreation {
     constructor(creation: Partial<IUserCreation>) {
         bindProperties(this, creation);
         this.displayname = this.username;
+        this.latestLoginActionAt = new Date().getTime();
         this.id = getRandomString(10);
     }
 
     private static checkParams(params: Partial<IUserCreation>) {
         this.MANDATORY.forEach(k => {
-            if (!Object.hasOwn(params, k)) throw new Error(ERR.INVALID_ARGUMENT);
-            if (isEmptyKey(params, k)) throw new Error(ERR.INVALID_ARGUMENT);
+            if (!Object.hasOwn(params, k)) throw new Error(ERR.NOT_ENOUGH_ARGUMENT);
+            if (isEmptyKey(params, k)) throw new Error(ERR.UNEXPECTED_EMPTY_VALUE);
         })
     }
 
@@ -66,22 +67,16 @@ export class Creation implements IUserCreation {
         }
 
         const password = params.password as string;
-        const minecraft = params.minecraft as string;
-        const uuid = await getUUIDFromName(minecraft);
-        if (uuid === undefined) {
-            throw new Error(ERR.CANNOT_GET_UUID);
-        }
-        params.uuid = uuid;
-
-        if (!isEmpty(params.oasis)) {
-            if (isEmpty(params.oasis)) {
-                throw new Error(ERR.INVALID_ARGUMENT);
-            } else {
-                params.regType = 'oasis';
+        const minecraft = params.minecraft as Nullable<string>;
+        if (minecraft) {
+            const uuid = await getUUIDFromName(minecraft);
+            if (uuid === undefined) {
+                throw new Error(ERR.CANNOT_GET_UUID);
             }
-        } else {
-            params.regType = 'common';
+            params.uuid = uuid;
         }
+
+        params.regType = params.oasis ? 'oasis' : 'common';
 
         if (params.regType === 'common') {
             params.hash = genHash(password);
@@ -116,19 +111,7 @@ export class Creation implements IUserCreation {
 
 export class UserUtil {
     public static create(user: IUser) {
-        return upsertOne<IUser>("users", {id: getRandomString(10)}, {
-            // provided
-            minecraft: user.minecraft,
-            username: user.username,
-            displayname: user.displayname,
-            oasis: user.oasis,
-            // generated
-            latestLoginActionAt: new Date().getTime(),
-            regType: user.regType,
-            perm: 1,
-            hash: user.hash,
-            uuid: user.uuid
-        });
+        return upsertOne<IUser>("users", {id: getRandomString(10)}, user);
     }
 
     public static alter(id: string, set: Partial<IUser>) {
