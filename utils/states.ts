@@ -1,4 +1,5 @@
 import {useState} from "#app";
+import Storage from "~/utils/storage";
 
 type SnackbarConfig = { display: boolean, text: string }
 type UserConfig = { ready: boolean, target: Partial<IUser> }
@@ -9,11 +10,18 @@ export function dispatchSnackbar(text: string) {
     s.value.text = text;
 }
 
-export function updateUser(object: Partial<IUser>) {
+/**
+ * 更新用户 Object
+ * @param object 若为 {} 则删除用户信息
+ */
+export function updateUser(object: UserConfig['target']) {
     const u = useState<UserConfig>("user");
     u.value = {
-        ready: !!object,
+        ready: Object.values(object).length > 0,
         target: object
+    }
+    if (!u.value.ready) {
+        Storage.token = null;
     }
 }
 
