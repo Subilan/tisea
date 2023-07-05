@@ -12,6 +12,12 @@
 const props = defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue']);
 
+if (props.modelValue === true) {
+  setTimeout(() => {
+    emit('update:modelValue', false)
+  }, 3000);
+}
+
 watch(() => props.modelValue, v => {
   if (v === true) {
     setTimeout(() => {
