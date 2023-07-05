@@ -92,7 +92,7 @@ let validation = computed(() => {
     displayname: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.displayname ?? '') || registrationData.displayname.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
     password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
     minecraft: /^[a-zA-Z0-9_]{2,16}$/mg.test(registrationData.minecraft ?? '') || registrationData.minecraft.length === 0 ? '' : '不是有效的 Minecraft 游戏名格式',
-    passwordV: (passwordV.value === registrationData.password || registrationData.password.length === 0 || passwordV.value.length === 0) ? '' : '两次密码输入不一致'
+    passwordV: (passwordV.value === registrationData.password || (registrationData.password.length === 0 && passwordV.value.length === 0)) ? '' : '两次密码输入不一致'
   }
 })
 
