@@ -36,9 +36,9 @@ export function getUserProperty(token: string, key: keyof IUser | (keyof IUser)[
     })
 }
 
-export async function getUser(token: string) {
+export async function getUser() {
     const result = await post('/api/common/user/get', {
-        token,
+        token: Storage.token,
         all: true
     });
     return result ? result.state ? result.data as Partial<IUser> : {} : {};

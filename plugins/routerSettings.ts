@@ -1,11 +1,15 @@
 import nprogress from 'nprogress';
+import {updateUser} from "~/utils/states";
+import {getUser} from "~/utils/common";
 
 export default defineNuxtPlugin({
     hooks: {
-        'app:created'(app) {
-            useRouter().beforeEach((to, from, next) => {
-                nprogress.start();
+        async 'app:created'(app) {
+            updateUser(await getUser())
+            useRouter().beforeEach(async (to, from, next) => {
+                updateUser(await getUser())
                 next();
+                nprogress.start();
             })
             useRouter().afterEach(() => {
                 nprogress.done();

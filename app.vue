@@ -4,13 +4,15 @@
 			<NuxtPage />
 		</NuxtLayout>
     <div class="snackbar-container">
-      <snackbar v-model="states.snackbarGlobalCtrl.display" v-html="states.snackbarGlobalCtrl.text"/>
+      <snackbar v-model="snackbarGlobal.display" v-html="snackbarGlobal.text"/>
     </div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import states from '@/utils/states';
+import {useSnackbar} from "~/utils/states";
+
+const snackbarGlobal = useSnackbar();
 
 if (process.client) {
   window.addEventListener("visibilitychange", e => {

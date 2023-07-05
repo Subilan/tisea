@@ -8,20 +8,20 @@
                 <NuxtLink class="link" to="/">首页</NuxtLink>
                 <NuxtLink class="link" to="/terms">周目</NuxtLink>
                 <client-only>
-                    <NuxtLink v-if="!loggedIn" class="link" to="/auth">登录</NuxtLink>
+                    <NuxtLink v-if="!user.ready" class="link" to="/auth">登录</NuxtLink>
                 </client-only>
             </div>
             <div class="divider"></div>
             <client-only>
                 <div class="misc">
-                    <div class="avatar" v-if="loggedIn">
-                        <avatar-spinner v-if="!user.avatar"/>
-                        <img v-else :src="user.avatar" class="nav-avatar-img avatar-img" />
+                    <div class="avatar" v-if="user.ready">
+                        <avatar-spinner v-if="!user.target.avatar"/>
+                        <img v-else :src="user.target.avatar" class="nav-avatar-img avatar-img" />
                     </div>
                     <btn @click="() => {
                         logout();
                         useRouter().go(0)
-                    }" class="solid" v-if="loggedIn">
+                    }" class="solid" v-if="user.ready">
                         登出
                     </btn>
                 </div>
@@ -31,30 +31,17 @@
     </div>
 </template>
 
-<script lang="ts">
-// import FUserUtil from '@/utils/FUserUtil'
-//
-// export default {
-//     data() {
-//         return {
-//             loggedIn: false,
-//             user: {
-//                 avatar: ''
-//             }
-//         }
-//     },
-//     async created() {
-//         this.loggedIn = await FUserUtil.AgetLoggedIn();
-//         this.user.avatar = await FUserUtil.AgetAvatarURL();
-//     },
-//     methods: {
-//         logout: FUserUtil.logout
-//     }
-// }
+<script lang="ts" setup>
+import {useUser} from "~/utils/states";
+
+const user = useUser();
+function logout() {
+
+}
 </script>
 
 <style scoped lang="less">
-@import '~/assets/styles/var.less';
+@import '@/assets/styles/var';
 
 .nav-avatar-img {
     width: 36px;
