@@ -1,8 +1,8 @@
 import {getOne, removeOne, upsertOne} from "../database";
 import {
     bindProperties,
-    checkPassword,
-    deleteKey,
+    verifyHash,
+    deleteKey, genHash, genHashOasis,
     getRandomString,
     getUUIDFromName,
     isEmpty,
@@ -14,6 +14,7 @@ const CRYPTO_KEY = 'jkeUmUaYnfxVcuvjnpS39uo5EnX4mR7OHyIkXSOfmcVjAIUqxZntJBjgRsHG
 
 export class Creation implements IUserCreation {
     id = "";
+    username = ""
     displayname = "";
     minecraft = "";
     uuid = "";
@@ -26,10 +27,11 @@ export class Creation implements IUserCreation {
     isOnline = false;
     hash = "";
     password = "";
-    private static readonly MANDATORY: (keyof IUserCreation)[] = ["minecraft", "displayname", "password"]
+    private static readonly MANDATORY: (keyof IUserCreation)[] = ["minecraft", "username", "password"]
 
     constructor(creation: Partial<IUserCreation>) {
-        bindProperties(this, creation)
+        bindProperties(this, creation);
+        this.displayname = this.username;
         this.id = getRandomString(10);
     }
 
@@ -59,6 +61,10 @@ export class Creation implements IUserCreation {
             console.warn("Invalid `hash` specification in user creation, which would be directly ignored.");
         }
 
+        if ("displayname" in keys) {
+            console.warn("Invalid `displayname` specification in user creation, which would be directly ignored.");
+        }
+
         const password = params.password as string;
         const minecraft = params.minecraft as string;
         const uuid = await getUUIDFromName(minecraft);
@@ -77,8 +83,11 @@ export class Creation implements IUserCreation {
             params.regType = 'common';
         }
 
-        const salt = getRandomString(10);
-        params.hash = `${CryptoEs.PBKDF2(password, salt).toString()}.${salt}`;
+        if (params.regType === 'common') {
+            params.hash = genHash(password);
+        } else {
+            params.hash = genHashOasis(params.oasis as OasisUserObject);
+        }
 
         return new Creation(params);
     }
@@ -92,7 +101,7 @@ export class Creation implements IUserCreation {
 
     public async create() {
         if (await UserUtil.doesExist({
-            displayname: this.dist.displayname,
+            username: this.dist.username,
             uuid: this.dist.uuid
         })) {
             throw new Error(ERR.DUPLICATE);
@@ -110,6 +119,7 @@ export class UserUtil {
         return upsertOne<IUser>("users", {id: getRandomString(10)}, {
             // provided
             minecraft: user.minecraft,
+            username: user.username,
             displayname: user.displayname,
             oasis: user.oasis,
             // generated
@@ -154,6 +164,7 @@ export class UserUtil {
  */
 export class User implements IUser {
     id = "";
+    username = ""
     displayname = "";
     hash = "";
     uuid = "";
@@ -170,14 +181,14 @@ export class User implements IUser {
         bindProperties(this, user);
     }
 
-    public static async build(id: string = "", displayname: string = "") {
+    public static async build(id: string = "", username: string = "") {
         let result: Nullable<IUser> = null;
-        if (id && displayname) {
-            result = await UserUtil.get({id, displayname});
+        if (id && username) {
+            result = await UserUtil.get({id, username});
         } else if (id) {
             result = await UserUtil.get({id})
-        } else if (displayname) {
-            result = await UserUtil.get({displayname})
+        } else if (username) {
+            result = await UserUtil.get({username})
         }
         if (result === null) {
             throw new Error(ERR.NOT_EXIST.USER);
@@ -224,7 +235,7 @@ export class User implements IUser {
     }
 
     public async login(providedPwd: string) {
-        if (!checkPassword(providedPwd, this.hash)) {
+        if (!verifyHash(providedPwd, this.hash)) {
             throw new Error(ERR.VERFICIATION_FAILED);
         }
 
@@ -255,6 +266,7 @@ export class User implements IUser {
     public getToken(expiration: number) {
         const rawToken: Token = {
             id: this.id,
+            username: this.username,
             expires: new Date().getTime() + expiration
         }
         return CryptoEs.AES.encrypt(JSON.stringify(rawToken), CRYPTO_KEY).toString();
