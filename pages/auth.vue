@@ -25,15 +25,15 @@
         </div>
       </div>
 
-      <div class="auth-box-textfields" v-if="!registering && method === 'oasis'">
+      <div class="textfield-container" v-if="!registering && method === 'oasis'">
         <textfield placeholder="Oasis 用户名" icon="mdi-account-circle" type="text" v-model="loginDataOasis.username"/>
         <textfield placeholder="Oasis 密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
       </div>
-      <div class="auth-box-textfields" v-if="!registering && method === 'common'">
+      <div class="textfield-container" v-if="!registering && method === 'common'">
         <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.username"/>
         <textfield placeholder="密码" icon="mdi-key" type="password" v-model="loginData.password"/>
       </div>
-      <div class="auth-box-textfields" v-if="registering">
+      <div class="textfield-container" v-if="registering">
         <textfield placeholder="用户名" :error-text="errorTexts.username" icon="mdi-account-circle" type="text"
                    v-model="registrationData.username"/>
         <textfield placeholder="Minecraft 游戏名" :error-text="errorTexts.minecraft" icon="mdi-minecraft" type="text"
@@ -48,7 +48,7 @@
 
       <div class="auth-box-actions">
         <btn class="primary" v-if="!registering && method === 'oasis'" @click="loginWithOasis()">
-          <template v-if="loading">
+          <template v-if="loading.login">
             <spinner-diamond size="45px"/>
           </template>
           <template v-else>
@@ -56,20 +56,14 @@
           </template>
         </btn>
         <btn class="primary" v-if="!registering && method === 'common'" @click="login()">
-          <template v-if="loading">
+          <template v-if="loading.login">
             <spinner-diamond size="45px"/>
           </template>
           <template v-else>
             登录
           </template>
         </btn>
-        <btn :disabled="!canRegister" class="primary" v-if="registering" @click="dialogs.needToBindOasis = true">
-          <template v-if="loading">
-            <spinner-diamond size="45px"/>
-          </template>
-          <template v-else>
-            注册
-          </template>
+        <btn :disabled="!canRegister" class="primary" v-if="registering" @click="dialogs.needToBindOasis = true">注册
         </btn>
         <btn class="white" v-if="registering && method === 'common'" @click="registering = false">转到登录</btn>
         <btn class="white" v-if="!registering && method === 'common'" @click="registering = true">转到注册</btn>
@@ -96,7 +90,7 @@
     </dlg>
     <dlg :cover="true" v-model="dialogs.needToBindOasis">
       <template #title>
-        立即绑定火星港账号
+        推荐立即绑定火星港账号
       </template>
       <template #content>
         <p>火星港是 Oasis 官方开设的玩家交流社区，起到综合 Oasis 服务器信息的作用。如果你有火星港账号，可以将其与你所创建的
@@ -108,9 +102,40 @@
         </p>
       </template>
       <template #actions>
-        <btn class="primary" @click="dialogs.needToBindOasis = false">现在绑定</btn>
-        <btn class="primary" @click="dialogs.needToBindOasis = false">不绑定注册</btn>
+        <btn class="primary" @click="dialogs.needToBindOasis = false; dialogs.bindOasis = true;">现在绑定</btn>
+        <btn class="primary" @click="register()">
+          <template v-if="loading.register">
+            <spinner-diamond size="45px"/>
+          </template>
+          <template v-else>
+            不绑定注册
+          </template>
+        </btn>
         <btn class="white" @click="dialogs.needToBindOasis = false">取消</btn>
+      </template>
+    </dlg>
+    <dlg :cover="true" v-model="dialogs.bindOasis">
+      <template #title>
+        绑定火星港账号
+      </template>
+      <template #content>
+        <p>我们将会自动登录你的账号并绑定。</p>
+        <div class="textfield-container" style="min-width: 400px">
+          <textfield placeholder="Oasis 用户名" icon="mdi-account-circle" type="text"
+                     v-model="loginDataOasis.username"/>
+          <textfield placeholder="Oasis 密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
+        </div>
+      </template>
+      <template #actions>
+        <btn class="primary" @click="bindOasisAndRegister()">
+          <template v-if="loading.register">
+            <spinner-diamond size="45px"/>
+          </template>
+          <template v-else>
+            绑定并注册
+          </template>
+        </btn>
+        <btn class="white" @click="dialogs.bindOasis = false; dialogs.needToBindOasis = true">上一步</btn>
       </template>
     </dlg>
   </div>
@@ -121,20 +146,22 @@ import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/server/utils/common";
 import Storage from "~/utils/storage";
 import {doAction} from "~/utils/common";
+import {loginOasis} from "~/server/utils/common";
+import {dispatchSnackbar} from "~/utils/states";
 
 definePageMeta({
   layout: false,
   middleware: 'auth-excepted'
 })
 
-let loading = ref(false);
 let titleUnderscoreShown = ref(false);
 let authInformationHtml: Nullable<string> = '';
 let registering = location.hash === '#register';
 let method: UserRegType = 'common';
 let dialogs = reactive({
   authInformation: false,
-  needToBindOasis: false
+  needToBindOasis: false,
+  bindOasis: false
 })
 let loginData = reactive({
   username: '',
@@ -149,15 +176,23 @@ let loginDataOasis = reactive({
 let registrationData = reactive({
   username: '',
   password: '',
-  oasis: null,
+  oasis: null as Nullable<OasisUserObject>,
   minecraft: ''
 })
+
+let loading = reactive({
+  login: false,
+  register: false
+})
+
 let errorTexts = {
   username: '',
   minecraft: '',
   password: '',
   passwordV: ''
 }
+
+
 let passwordV = ref('')
 
 let validation = computed(() => {
@@ -178,13 +213,27 @@ function login() {
 
 }
 
+async function bindOasisAndRegister() {
+  loading.register = true;
+  const r = await post<OasisUserObject>("/api/common/user/legacy-oasis-login", loginDataOasis);
+  if (r.state !== 'ok') {
+    dialogs.bindOasis = false;
+    dispatchSnackbar(`无法登录 Oasis：${r.msg}`);
+    loading.register = false;
+    return;
+  }
+  registrationData.oasis = r.data;
+  await register();
+  loading.register = false;
+}
+
 async function loginWithOasis() {
-  loading.value = true;
+  loading.login = true;
   const result = await doAction("user.login.oasis", {
     username: loginDataOasis.username,
     password: loginDataOasis.password
   });
-  loading.value = false;
+  loading.login = false;
   if (result) {
     if (result.state === 'ok') {
       Storage.token = result.data;
@@ -197,13 +246,9 @@ async function loginWithOasis() {
 }
 
 async function register() {
-  loading.value = true;
-  const result = await doAction("user.create", {
-    username: registrationData.username,
-    password: registrationData.password,
-    minecraft: registrationData.minecraft
-  })
-  loading.value = false;
+  loading.register = true;
+  const result = await doAction("user.create", registrationData)
+  loading.register = false;
   if (result) {
     if (result.state === 'ok') {
       Storage.token = result.data;
@@ -280,12 +325,6 @@ watch(() => validation, v => {
 .auth-box-title {
   font-family: Minecraft, ui-monospace, monospace;
   font-size: 40px;
-}
-
-.auth-box-textfields {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
 .auth-box-actions {
