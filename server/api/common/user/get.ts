@@ -5,8 +5,16 @@ export default defineEventHandler(async e => {
     try {
         const token = requireNonEmpty(body.token) as string;
         const user = await User.fromToken(token);
-        const key = requireNonEmpty(body.key) as string | string[];
+        const all = body.all ?? false;
+        if (all) {
+            const user = await User.fromToken(token);
+            const dist = user.dist;
+            deleteKey(dist, 'hash');
+            deleteKey(dist, '_id');
+            return ok(null, dist);
+        }
 
+        const key = requireNonEmpty(body.key) as string | string[];
 
         if (typeof key === 'string') {
             if (key === 'hash') {
