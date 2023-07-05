@@ -27,7 +27,15 @@ export async function checkToken() {
 }
 
 export function toggleOnlineStatus(token: string) {
-    navigator.sendBeacon('/api/common/user/toggle-online-status', token);
+    const user = useUser();
+    setOnlineStatus(!user.value.target.isOnline);
+}
+
+export function setOnlineStatus(status: boolean) {
+    navigator.sendBeacon('/api/common/user/set-online-status', JSON.stringify({
+        token: Storage.token,
+        isOnline: status
+    }));
 }
 
 export function getUserProperty(token: string, key: keyof IUser | (keyof IUser)[]) {

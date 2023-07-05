@@ -10,13 +10,20 @@
 </template>
 
 <script lang="ts" setup>
-import {useSnackbar} from "~/utils/states";
+import {useSnackbar, useUser} from "~/utils/states";
+import {setOnlineStatus} from "~/utils/common";
+
 
 const snackbarGlobal = useSnackbar();
+const user = useUser();
 
 if (process.client) {
+  setOnlineStatus(document.visibilityState === 'visible');
+
   window.addEventListener("visibilitychange", e => {
-    console.log(e)
+    if (user.value.ready) {
+      setOnlineStatus(document.visibilityState === 'visible');
+    }
   })
 }
 </script>
