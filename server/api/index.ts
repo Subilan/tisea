@@ -38,10 +38,11 @@ export default defineEventHandler(async e => {
                 const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
                 const user = await User.build("", username);
                 await user.login(pwd);
-                return ok(user.getToken(expiration));
+                return ok(null, user.getToken(expiration));
             }
 
             case 'user.login.oasis': {
+
                 const oasisUsername = requireNonEmpty(params.username);
                 const oasisPassword = requireNonEmpty(params.password);
                 const login = await loginOasis(oasisUsername, oasisPassword);
@@ -52,13 +53,17 @@ export default defineEventHandler(async e => {
                 if (login.banned) {
                     return ng(ERR.BANNED)
                 }
+                if (!login["email:confirmed"]) {
+                    return ng(ERR.NODEBB.EMAIL_NOT_CONFIRMED);
+                }
                 const password = genPasswordOasis(login)
                 if (!userExist) {
                     const creation = await Creation.build({
-                        username: requireNonEmpty(login?.username),
+                        username: login.username,
                         minecraft: null,
                         password,
-                        oasis: login
+                        oasis: login,
+                        avatar: `https://i.oases.red${login.picture}`
                     });
                     await creation.create();
                 }
@@ -70,7 +75,7 @@ export default defineEventHandler(async e => {
                     })
                 }
                 await user.login(password)
-                return ok(user.getToken(expiration));
+                return ok(null, user.getToken(expiration));
             }
 
             case "user.logout": {
@@ -81,7 +86,7 @@ export default defineEventHandler(async e => {
             }
 
             case "user.checkToken": {
-                return ok(null, UserUtil.checkEncryptedToken(requireNonEmpty(params.token)));
+                return params.token ? ok(null, UserUtil.checkEncryptedToken(params.token)) : ok(null, false);
             }
         }
 
