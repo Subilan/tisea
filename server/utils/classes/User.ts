@@ -225,10 +225,7 @@ export class User implements IUser {
             throw new Error(ERR.BANNED);
         }
 
-        await this.alter({
-            latestLoginActionAt: new Date().getTime(),
-            isOnline: true
-        })
+        await this.setLogin();
     }
 
     public async logout() {
@@ -252,5 +249,12 @@ export class User implements IUser {
             expires: new Date().getTime() + expiration
         }
         return CryptoEs.AES.encrypt(JSON.stringify(rawToken), CRYPTO_KEY).toString();
+    }
+
+    public setLogin() {
+        return this.alter({
+            latestLoginActionAt: new Date().getTime(),
+            isOnline: true
+        })
     }
 }
