@@ -5,7 +5,7 @@ export function $openTab(url: string) {
 export function post<T = any>(action: RequestActions, params: object) {
     return $fetch<CommonResponse<T>>('/api', {
         method: 'post',
-        params: {
+        body: {
             action,
             params
         }
@@ -19,7 +19,7 @@ export function toggleOnlineStatus(token: string) {
 export function getUserProperty(token: string, key: string | string[]) {
     return $fetch('/api/common/user/get', {
         method: 'post',
-        params: {
+        body: {
             token,
             key
         }
