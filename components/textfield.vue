@@ -1,8 +1,3 @@
-<script setup lang="ts">
-defineProps(['icon', 'placeholder', 'type', 'modelValue', 'errorText', 'hintText'])
-defineEmits(['update:modelValue']);
-</script>
-
 <template>
   <div class="textfield" :class="{error: !!errorText}">
     <div class="left">
@@ -21,6 +16,11 @@ defineEmits(['update:modelValue']);
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+defineProps(['icon', 'placeholder', 'type', 'modelValue', 'errorText', 'hintText'])
+defineEmits(['update:modelValue']);
+</script>
 
 <style scoped lang="less">
 
