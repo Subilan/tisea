@@ -25,62 +25,135 @@
         </div>
       </div>
 
-      <div class="auth-box-textfields" v-if="!registering">
-        <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.displayname"/>
+      <div class="auth-box-textfields" v-if="!registering && method === 'oasis'">
+        <textfield placeholder="Oasis 用户名" icon="mdi-account-circle" type="text" v-model="loginDataOasis.username"/>
+        <textfield placeholder="Oasis 密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
+      </div>
+      <div class="auth-box-textfields" v-if="!registering && method === 'common'">
+        <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.username"/>
         <textfield placeholder="密码" icon="mdi-key" type="password" v-model="loginData.password"/>
       </div>
       <div class="auth-box-textfields" v-if="registering">
-        <textfield placeholder="用户名" :error-text="errorTexts.displayname" icon="mdi-account-circle" type="text"
-                   v-model="registrationData.displayname"/>
+        <textfield placeholder="用户名" :error-text="errorTexts.username" icon="mdi-account-circle" type="text"
+                   v-model="registrationData.username"/>
         <textfield placeholder="Minecraft 游戏名" :error-text="errorTexts.minecraft" icon="mdi-minecraft" type="text"
                    v-model="registrationData.minecraft"/>
         <textfield placeholder="密码" icon="mdi-key" :error-text="errorTexts.password" type="password"
                    v-model="registrationData.password"/>
-        <textfield placeholder="确认密码" :error-text="errorTexts.passwordV" icon="mdi-shield-key" type="password"
+        <textfield placeholder="确认密码" icon="mdi-shield-key" :error-text="errorTexts.passwordV" type="password"
                    v-model="passwordV"/>
       </div>
 
       <div class="auth-box-divider"/>
 
       <div class="auth-box-actions">
-        <btn class="primary" v-if="!registering" @click="login()">登录</btn>
-        <btn :disabled="!canRegister" class="primary" v-if="registering" @click="register()">注册</btn>
-        <btn class="white" v-if="registering" @click="registering = false">转到登录</btn>
-        <btn class="white" v-if="!registering" @click="registering = true">转到注册</btn>
-        <btn class="white">使用火星港账号登录</btn>
+        <btn class="primary" v-if="!registering && method === 'oasis'" @click="loginWithOasis()">
+          <template v-if="loading">
+            <spinner-diamond size="45px"/>
+          </template>
+          <template v-else>
+            使用火星港账号登录
+          </template>
+        </btn>
+        <btn class="primary" v-if="!registering && method === 'common'" @click="login()">
+          <template v-if="loading">
+            <spinner-diamond size="45px"/>
+          </template>
+          <template v-else>
+            登录
+          </template>
+        </btn>
+        <btn :disabled="!canRegister" class="primary" v-if="registering" @click="dialogs.needToBindOasis = true">
+          <template v-if="loading">
+            <spinner-diamond size="45px"/>
+          </template>
+          <template v-else>
+            注册
+          </template>
+        </btn>
+        <btn class="white" v-if="registering && method === 'common'" @click="registering = false">转到登录</btn>
+        <btn class="white" v-if="!registering && method === 'common'" @click="registering = true">转到注册</btn>
+        <btn class="white" v-if="method !== 'oasis'" @click="registering = false; method = 'oasis'">使用火星港账号登录
+        </btn>
+        <btn class="white" v-if="method === 'oasis'" @click="registering = false; method = 'common'">转到通用登录</btn>
+        <btn class="white" v-if="method === 'oasis'" @click="registering = true; method = 'common'">转到通用注册</btn>
       </div>
     </div>
-    <snackbar v-model="snackbar.display">{{ snackbar.text }}</snackbar>
+    <dlg :cover="false" v-model="dialogs.authInformation">
+      <template #title>
+        发生了一些问题
+      </template>
+      <template #content>
+        <p>服务器在处理信息时发生了一些问题，返回的错误信息如下。</p>
+        <notice-bar target-class="warn">
+          <span class="mdi mdi-alert-outline"/> 如果问题看起来难以解决，请联系管理员
+        </notice-bar>
+        <p v-html="authInformationHtml"/>
+      </template>
+      <template #actions>
+        <btn class="primary" @click="dialogs.authInformation = false">关闭</btn>
+      </template>
+    </dlg>
+    <dlg :cover="true" v-model="dialogs.needToBindOasis">
+      <template #title>
+        立即绑定火星港账号
+      </template>
+      <template #content>
+        <p>火星港是 Oasis 官方开设的玩家交流社区，起到综合 Oasis 服务器信息的作用。如果你有火星港账号，可以将其与你所创建的
+          Tisea 账号直接绑定，使用起来更加方便快捷。未来我们也将推出更多联动功能。</p>
+        <p>你也可以稍后在后台处绑定。</p>
+        <p>没有火星港账号？花两分钟
+          <r href="https://i.oases.red/register">立即注册</r>
+          一个吧。
+        </p>
+      </template>
+      <template #actions>
+        <btn class="primary" @click="dialogs.needToBindOasis = false">现在绑定</btn>
+        <btn class="primary" @click="dialogs.needToBindOasis = false">不绑定注册</btn>
+        <btn class="white" @click="dialogs.needToBindOasis = false">取消</btn>
+      </template>
+    </dlg>
   </div>
 </template>
 
 <script lang="ts" setup>
 import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/server/utils/common";
+import Storage from "~/utils/storage";
+import {doAction} from "~/utils/common";
 
 definePageMeta({
-  layout: false
+  layout: false,
+  middleware: 'auth-excepted'
 })
 
+let loading = ref(false);
 let titleUnderscoreShown = ref(false);
-let registering = false;
+let authInformationHtml: Nullable<string> = '';
+let registering = location.hash === '#register';
 let method: UserRegType = 'common';
-let snackbar = {
-  display: false,
-  text: ''
-}
+let dialogs = reactive({
+  authInformation: false,
+  needToBindOasis: false
+})
 let loginData = reactive({
-  displayname: '',
+  username: '',
   password: '',
 })
+
+let loginDataOasis = reactive({
+  username: '',
+  password: ''
+})
+
 let registrationData = reactive({
-  displayname: '',
+  username: '',
   password: '',
   oasis: null,
   minecraft: ''
 })
 let errorTexts = {
-  displayname: '',
+  username: '',
   minecraft: '',
   password: '',
   passwordV: ''
@@ -89,7 +162,7 @@ let passwordV = ref('')
 
 let validation = computed(() => {
   return {
-    displayname: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.displayname ?? '') || registrationData.displayname.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
+    username: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.username ?? '') || registrationData.username.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
     password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
     minecraft: /^[a-zA-Z0-9_]{2,16}$/mg.test(registrationData.minecraft ?? '') || registrationData.minecraft.length === 0 ? '' : '不是有效的 Minecraft 游戏名格式',
     passwordV: (passwordV.value === registrationData.password || (registrationData.password.length === 0 && passwordV.value.length === 0)) ? '' : '两次密码输入不一致'
@@ -105,8 +178,41 @@ function login() {
 
 }
 
-function register() {
+async function loginWithOasis() {
+  loading.value = true;
+  const result = await doAction("user.login.oasis", {
+    username: loginDataOasis.username,
+    password: loginDataOasis.password
+  });
+  loading.value = false;
+  if (result) {
+    if (result.state === 'ok') {
+      Storage.token = result.data;
+      await useRouter().push("/");
+    } else {
+      authInformationHtml = result.msg;
+      dialogs.authInformation = true;
+    }
+  }
+}
 
+async function register() {
+  loading.value = true;
+  const result = await doAction("user.create", {
+    username: registrationData.username,
+    password: registrationData.password,
+    minecraft: registrationData.minecraft
+  })
+  loading.value = false;
+  if (result) {
+    if (result.state === 'ok') {
+      Storage.token = result.data;
+      await useRouter().push("/");
+    } else {
+      authInformationHtml = result.msg;
+      dialogs.authInformation = true;
+    }
+  }
 }
 
 onMounted(() => {
