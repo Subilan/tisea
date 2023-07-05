@@ -2,7 +2,7 @@
   <div class="dialog">
     <div class="dialog-cover" :style="props.modelValue ? {} : {'pointer-events': 'none'}"
          :class="{cover: props.cover, active: props.modelValue}">
-      <div class="dialog-card" :class="{active: props.modelValue}">
+      <div class="dialog-card" :class="{cover: props.cover, active: props.modelValue}">
         <div class="dialog-card-title">
           <slot name="title"/>
         </div>
@@ -32,7 +32,7 @@ const emit = defineEmits(['update:modelValue'])
 
 <style scoped lang="less">
 .dialog, .dialog-cover {
-  transition: all .38s cubic-bezier(.84,0,.24,1.03);
+  transition: all .38s cubic-bezier(.84, 0, .24, 1.03);
 }
 
 .dialog-cover {
@@ -52,8 +52,17 @@ const emit = defineEmits(['update:modelValue'])
     opacity: 1;
   }
 
-  &:not(.cover) {
-    .dialog-card {
+  .dialog-card {
+    transition: all .38s cubic-bezier(.84, 0, .24, 1.03);
+    border-radius: 5px;
+    max-width: 500px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &:not(.cover) {
+
       background: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
       opacity: 0;
@@ -63,18 +72,8 @@ const emit = defineEmits(['update:modelValue'])
         opacity: 1;
         transform: scale(1);
       }
+
     }
-  }
-
-
-  .dialog-card {
-    transition: all .38s cubic-bezier(.84,0,.24,1.03);
-    border-radius: 5px;
-    max-width: 500px;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 
     .dialog-card-title {
       font-size: 34px;
@@ -112,9 +111,11 @@ const emit = defineEmits(['update:modelValue'])
     color: white;
     max-width: 1000px;
     transform: translateX(-20px);
+
     &.active {
       transform: translateX(0);
     }
+
     .dialog-card-title {
       text-shadow: 0 0 3px rgba(0, 0, 0, .2);
     }
@@ -132,11 +133,13 @@ const emit = defineEmits(['update:modelValue'])
 .dialog-cover.cover {
   .dialog-card-actions {
     .button.primary {
-      background: rgba(255, 255, 255, .3);
+      background: rgba(0, 188, 212, .3);
       color: white;
 
       &:hover {
         box-shadow: none;
+        background: #00e3db;
+        opacity: 1;
       }
     }
 
@@ -147,22 +150,32 @@ const emit = defineEmits(['update:modelValue'])
 
       &:hover {
         box-shadow: none;
+        background: black;
+        opacity: 1;
       }
     }
   }
 }
 
-.dialog-card {
-  .oasis-logo {
-    transform: scale(.8);
-    opacity: 0;
-    transition: all .38s cubic-bezier(.84,0,.24,1.03);
-  }
 
-  &.active {
-    .oasis-logo {
-      opacity: 1;
-      transform: scale(1);
+.dialog-card.cover {
+  .dialog-card-content {
+    .mdi::before {
+      color: rgba(255, 255, 255, .6);
+    }
+
+    .textfield-input {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, .6);
+
+      &:hover, &:focus {
+        border-color: #00e3db;
+      }
+
+      &::placeholder {
+        color: white;
+      }
     }
   }
 }
