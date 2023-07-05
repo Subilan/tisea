@@ -2,7 +2,7 @@
   <div class="layout-default">
     <nav class="navbar">
       <div class="logo">
-        <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="~/assets/icons/tisea.svg"/>
+        <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="/assets/icons/tisea.svg"/>
       </div>
       <div class="navigation-links">
         <NuxtLink class="link" to="/">首页</NuxtLink>

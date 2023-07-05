@@ -5,7 +5,6 @@ import {
     deleteKey, genHash, genHashOasis,
     getRandomString,
     getUUIDFromName,
-    isEmpty,
     isEmptyKey
 } from "../common";
 import CryptoEs from "crypto-es";

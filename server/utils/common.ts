@@ -100,7 +100,7 @@ export async function loginOasis(username: string, password: string) {
             username,
             password
         }
-    }).catch(e => {
+    }).catch(() => {
         throw new Error(ERR.VERFICIATION_FAILED)
     })
     if (result.status.code !== 'ok') return null;

@@ -26,7 +26,7 @@ export async function checkToken() {
     return result ? (result.state === 'ok' && result.data) : false;
 }
 
-export function toggleOnlineStatus(token: string) {
+export function toggleOnlineStatus() {
     const user = useUser();
     setOnlineStatus(!user.value.target.isOnline);
 }

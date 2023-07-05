@@ -20,7 +20,7 @@ const user = useUser();
 if (process.client) {
   setOnlineStatus(document.visibilityState === 'visible');
 
-  window.addEventListener("visibilitychange", e => {
+  window.addEventListener("visibilitychange", () => {
     if (user.value.ready) {
       setOnlineStatus(document.visibilityState === 'visible');
     }
