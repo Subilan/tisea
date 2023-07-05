@@ -40,14 +40,17 @@ export default defineEventHandler(async e => {
                 await user.login(pwd);
                 return ok(user.getToken(expiration));
             }
-            
+
             case 'user.login.oasis': {
                 const oasisUsername = requireNonEmpty(params.username);
                 const oasisPassword = requireNonEmpty(params.password);
                 const login = await loginOasis(oasisUsername, oasisPassword);
-                const userExist = await UserUtil.doesExist({username: login?.username });
+                const userExist = await UserUtil.doesExist({username: login?.username});
                 if (login === null) {
                     return ng(ERR.VERFICIATION_FAILED);
+                }
+                if (login.banned) {
+                    return ng(ERR.BANNED)
                 }
                 const password = genPasswordOasis(login)
                 if (!userExist) {
