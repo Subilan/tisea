@@ -16,10 +16,13 @@ defineProps({
 <style lang="less">
 .button {
   padding: 8px 16px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 5px;
   cursor: pointer;
   background: white;
+  min-height: 20px;
 
   transition: all .2s ease;
 }
