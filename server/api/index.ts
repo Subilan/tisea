@@ -13,14 +13,20 @@ export default defineEventHandler(async e => {
     try {
         switch (action) {
             case "user.create": {
+                const oasis: Nullable<OasisUserObject> = params.oasis ?? null;
                 const creation = await Creation.build({
                     username: requireNonEmpty(params.username),
                     minecraft: requireNonEmpty(params.minecraft),
                     password: requireNonEmpty(params.password),
-                    oasis: params.oasis ?? null
+                    oasis,
+                    avatar: oasis ? `https://i.oases.red${oasis.picture}` : "",
+                    regType: 'common'
                 })
                 await creation.create()
-                return ok();
+                const user = await User.build(creation.dist.id);
+                await user.setLogin();
+                const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
+                return ok(null, user.getToken(expiration));
             }
 
             case "user.alter": {
@@ -42,7 +48,6 @@ export default defineEventHandler(async e => {
             }
 
             case 'user.login.oasis': {
-
                 const oasisUsername = requireNonEmpty(params.username);
                 const oasisPassword = requireNonEmpty(params.password);
                 const login = await loginOasis(oasisUsername, oasisPassword);
