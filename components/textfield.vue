@@ -69,8 +69,9 @@ defineEmits(['update:modelValue']);
   border: 2px solid rgba(0, 0, 0, .2);
   transition: all .2s ease;
   font-size: 16px;
-  width: calc(100% - 18px);
+  width:
   resize: none;
+  box-sizing: border-box;
 
   padding: 8px;
   font-family: Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', ui-sans-serif, monospace;
