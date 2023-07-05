@@ -32,7 +32,7 @@ const emit = defineEmits(['update:modelValue'])
 
 <style scoped lang="less">
 .dialog, .dialog-cover {
-  transition: all .2s ease;
+  transition: all .38s cubic-bezier(.84,0,.24,1.03);
 }
 
 .dialog-cover {
@@ -56,31 +56,30 @@ const emit = defineEmits(['update:modelValue'])
     .dialog-card {
       background: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
+      opacity: 0;
+      transform: scale(.9);
+
+      &.active {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   }
 
 
   .dialog-card {
-    transition: all .2s ease;
+    transition: all .38s cubic-bezier(.84,0,.24,1.03);
     border-radius: 5px;
     max-width: 500px;
-    padding: 24px 32px;
+    padding: 32px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    opacity: 0;
-    transform: scale(.9);
-
-    &.active {
-      opacity: 1;
-      transform: scale(1);
-    }
+    gap: 8px;
 
     .dialog-card-title {
       font-size: 34px;
       font-weight: bold;
-      line-height: 1.5;
-
+      line-height: 1;
     }
 
     .dialog-card-content {
@@ -112,15 +111,17 @@ const emit = defineEmits(['update:modelValue'])
   .dialog-card {
     color: white;
     max-width: 1000px;
-
+    transform: translateX(-20px);
+    &.active {
+      transform: translateX(0);
+    }
     .dialog-card-title {
-      text-shadow: 0 0 3px rgba(0, 0, 0, .7);
+      text-shadow: 0 0 3px rgba(0, 0, 0, .2);
     }
 
     .dialog-card-content {
-      text-shadow: 0 0 3px rgba(0, 0, 0, .7);
+      text-shadow: 0 0 3px rgba(0, 0, 0, .2);
     }
-
   }
 }
 
@@ -147,6 +148,21 @@ const emit = defineEmits(['update:modelValue'])
       &:hover {
         box-shadow: none;
       }
+    }
+  }
+}
+
+.dialog-card {
+  .oasis-logo {
+    transform: scale(.8);
+    opacity: 0;
+    transition: all .38s cubic-bezier(.84,0,.24,1.03);
+  }
+
+  &.active {
+    .oasis-logo {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 }
