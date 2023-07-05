@@ -4,7 +4,7 @@ type SnackbarConfig = { display: boolean, text: string }
 type UserConfig = { ready: boolean, target: Partial<IUser> }
 
 export function dispatchSnackbar(text: string) {
-    const s = useState<SnackbarConfig>("snackbarGlobal")
+    const s = useSnackbar();
     s.value.display = true;
     s.value.text = text;
 }
