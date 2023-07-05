@@ -45,7 +45,12 @@ const emit = defineEmits(['update:modelValue'])
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  background: rgba(0, 0, 0, .2);
+  opacity: 0;
+
+  &.active {
+    opacity: 1;
+  }
 
   &:not(.cover) {
     .dialog-card {
@@ -64,11 +69,11 @@ const emit = defineEmits(['update:modelValue'])
     flex-direction: column;
     gap: 16px;
     opacity: 0;
-    transform: translateX(-36px);
+    transform: scale(.9);
 
     &.active {
       opacity: 1;
-      transform: translateX(0);
+      transform: scale(1);
     }
 
     .dialog-card-title {
