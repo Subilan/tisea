@@ -12,19 +12,10 @@ export function doAction<T = any>(action: RequestActions, params: object) {
 }
 
 export function post<T = any>(url: string, body: object) {
-    const {error, data} = useFetch<CommonResponse<T>>(url, {
+    return $fetch<CommonResponse<T>>(url, {
         method: 'post',
         body
     });
-    if (error.value) {
-        console.error(error.value);
-        return null;
-    }
-    if (!data.value) {
-        return null;
-    } else {
-        return unref(data);
-    }
 }
 
 export async function checkToken() {
