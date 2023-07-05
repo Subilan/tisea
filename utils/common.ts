@@ -12,18 +12,18 @@ export function doAction<T = any>(action: RequestActions, params: object) {
 }
 
 export function post<T = any>(url: string, body: object) {
-   const res = useFetch<CommonResponse<T>>(url, {
+    const {error, data} = useFetch<CommonResponse<T>>(url, {
         method: 'post',
         body
-    })
-    if (res.error) {
-        console.error(res.error);
+    });
+    if (error.value) {
+        console.error(error.value);
         return null;
     }
-    if (!res.data) {
+    if (!data.value) {
         return null;
     } else {
-        return unref(res.data);
+        return unref(data);
     }
 }
 
