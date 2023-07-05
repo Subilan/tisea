@@ -7,12 +7,12 @@ export function castObject<T>(obj: any, targetClass: Class) {
 
 /**
  * * 指定对应 `obj` 不为 `undefined` 或 `null`
- * * 否则抛出 ERR.INVALID_ARGUMENT 的错误。
+ * * 否则抛出 ERR.REQUIRE_NON_EMPTY 的错误。
  *
  * @param obj 判断对象
  */
 export function requireNonEmpty<T = any>(obj: any): T {
-    if (obj === undefined || obj === null) throw new Error(ERR.INVALID_ARGUMENT);
+    if (obj === undefined || obj === null) throw new Error(ERR.REQUIRE_NON_EMPTY);
     return obj;
 }
 

@@ -5,6 +5,7 @@ export const ERR = {
     INTERNAL_REQUEST_FAILED: 'error.internal_request_failed',
     CANNOT_GET_UUID: 'error.cannot_get_uuid',
     VERFICIATION_FAILED: 'error.verification_failed',
+    REQUIRE_NON_EMPTY: 'error.require_non_empty',
     NOT_EXIST: {
       OBJECT: 'error.not_exist.object',
       USER: 'error.not_exist.user'
@@ -14,7 +15,11 @@ export const ERR = {
     CRYPTO: 'error.crypto',
     DUPLICATE: 'error.duplicate',
     EXPIRED_TOKEN: 'error.expired_token',
-    INVALID_TOKEN: 'error.invalid_token'
+    INVALID_TOKEN: 'error.invalid_token',
+    UNEXPECTED_EMPTY_VALUE: 'error.unexpected_empty_value',
+    NODEBB: {
+        EMAIL_NOT_CONFIRMED: 'error.nodebb.email_not_confirmed'
+    }
 }
 
 export function ok<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
