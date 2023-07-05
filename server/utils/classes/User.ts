@@ -27,7 +27,7 @@ export class Creation implements IUserCreation {
     isOnline = false;
     hash = "";
     password = "";
-    private static readonly MANDATORY: (keyof IUserCreation)[] = ["minecraft", "username", "password"]
+    private static readonly MANDATORY: (keyof IUserCreation)[] = ["username", "password"]
 
     constructor(creation: Partial<IUserCreation>) {
         bindProperties(this, creation);
