@@ -6,7 +6,7 @@
         <div class="container">
             <div class="col col-1">
                 <client-only>
-                    <card v-if="!lock && !loggedIn">
+                    <card v-if="!loggedIn">
                         <template #title>
                             <div class="hero-text">
                                 开始你的
@@ -77,8 +77,8 @@
                     <template #content>
                         <div class="user-card">
                             <div class="avatar">
-                                <avatar-spinner v-if="!avatar"/>
-                                <img class="avatar-img" v-else :src="avatar"/>
+                                <avatar-spinner v-if="!user.avatar"/>
+                                <img class="avatar-img" v-else :src="user.avatar"/>
                             </div>
                         </div>
                     </template>
@@ -88,28 +88,12 @@
     </div>
 </template>
 
-<script lang="ts">
-// import FUserUtil from '@/utils/FUserUtil';
-// import { $openTab } from '@/utils/FCommonUtil';
-//
-// export default {
-//     data() {
-//         return {
-//             loggedIn: false,
-//             // prevent weird card state changing
-//             lock: true,
-//             avatar: ''
-//         }
-//     },
-//     async created() {
-//         this.loggedIn = await FUserUtil.AgetLoggedIn();
-//         this.lock = false;
-//         this.avatar = await FUserUtil.AgetAvatarURL() ?? '';
-//     },
-//     methods: {
-//         $openTab
-//     }
-// }
+<script lang="ts" setup>
+import {checkToken, getUser} from "~/utils/common";
+import Storage from "~/utils/storage";
+
+const loggedIn = await checkToken();
+const user = await getUser(Storage.token as string);
 </script>
 
 <style scoped>
