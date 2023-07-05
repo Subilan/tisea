@@ -1,8 +1,9 @@
 interface IUser {
     id: string;
+    username: string;
     displayname: string;
     hash: string;
-    minecraft: string;
+    minecraft: Nullable<string>;
     uuid: string;
     avatar: string;
     latestLoginActionAt: number;
@@ -50,6 +51,7 @@ interface NodeBBResponse {
 }
 
 interface Token {
+    username: string;
     expires: number;
     id: string;
 }

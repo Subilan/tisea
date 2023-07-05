@@ -1,4 +1,4 @@
-const Actions = ['user.create', 'user.alter', 'user.login', 'user.logout', 'user.checkToken'] as const;
+const Actions = ['user.create', 'user.alter', 'user.login', 'user.login.oasis', 'user.logout', 'user.checkToken'] as const;
 
 type RequestActions = typeof Actions[number];
 

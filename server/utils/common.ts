@@ -88,9 +88,36 @@ export function getKey(obj: any, key: string) {
     return obj[key];
 }
 
-export function checkPassword(input: string, hash: string) {
+export function verifyHash(input: string, hash: string) {
     const {raw, salt} = splitHash(hash);
     return CryptoEs.PBKDF2(input, salt).toString() === raw;
+}
+
+export async function loginOasis(username: string, password: string) {
+    const result = await $fetch<NodeBBResponse>('https://i.oases.red/api/v3/utilities/login', {
+        method: 'post',
+        body: {
+            username,
+            password
+        }
+    }).catch(e => {
+        throw new Error(ERR.VERFICIATION_FAILED)
+    })
+    if (result.status.code !== 'ok') return null;
+    return result.response as OasisUserObject;
+}
+
+
+export function genPasswordOasis(obj: OasisUserObject) {
+    return obj.username + obj.uid;
+}
+export function genHashOasis(obj: OasisUserObject) {
+    return genHash(genPasswordOasis(obj));
+}
+
+export function genHash(password: string) {
+    const salt = getRandomString(10);
+    return `${CryptoEs.PBKDF2(password, salt).toString()}.${salt}`;
 }
 
 function splitHash(hash: string) {
