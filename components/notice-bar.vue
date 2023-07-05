@@ -1,12 +1,17 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div class="notice-bar">
+  <div class="notice-bar" :class="targetClass">
     <slot/>
   </div>
 </template>
+
+<script setup lang="ts">
+const props = defineProps({
+  targetClass: {
+    type: String,
+    default: 'default'
+  }
+})
+</script>
 
 <style lang="less">
 .notice-bar {
@@ -16,8 +21,21 @@
   margin: 8px 0;
   font-size: 16px;
   border-radius: 5px;
-  background: #e0f7fa;
-  color: #00bcd4;
+
+  &.default {
+    background: #e0f7fa;
+    color: #00bcd4;
+  }
+
+  &.warn {
+    background: #fff8e1;
+    color: #ffc107;
+  }
+
+  &.critical {
+    background: #ffebee;
+    color: #f44336;
+  }
 
   .mdi::before {
     font-size: 20px;
