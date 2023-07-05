@@ -71,11 +71,9 @@ export class Creation implements IUserCreation {
             params.uuid = uuid;
         }
 
-        params.regType =
-            params.regType === 'oasis'
-                ? 'oasis' : params.regType === 'common'
-                    ? 'common' : params.oasis
-                        ? 'oasis' : 'common'
+        if (!['oasis', 'common'].includes(params.regType ?? '')) {
+            params.regType = params.oasis ? 'oasis' : 'common';
+        }
 
         if (params.regType === 'common') {
             params.hash = genHash(password);
