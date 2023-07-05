@@ -53,10 +53,6 @@ export class Creation implements IUserCreation {
             console.warn("Invalid `uuid` specification in user creation, which would be directly ignored.");
         }
 
-        if ("regType" in keys) {
-            console.warn("Invalid `regType` specification in user creation, which would be directly ignored.");
-        }
-
         if ("hash" in keys) {
             console.warn("Invalid `hash` specification in user creation, which would be directly ignored.");
         }
@@ -75,7 +71,11 @@ export class Creation implements IUserCreation {
             params.uuid = uuid;
         }
 
-        params.regType = params.oasis ? 'oasis' : 'common';
+        params.regType =
+            params.regType === 'oasis'
+                ? 'oasis' : params.regType === 'common'
+                    ? 'common' : params.oasis
+                        ? 'oasis' : 'common'
 
         if (params.regType === 'common') {
             params.hash = genHash(password);
