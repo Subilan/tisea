@@ -10,15 +10,16 @@ export default defineEventHandler(async e => {
         token = requireNonEmpty(body.token);
         isOnline = requireNonEmpty(body.isOnline);
     } catch (e: any) {
-        console.warn(`beacon: ${e.message}`);
+        console.warn(`Beacon warning: ${e.message}`);
         return null;
     }
     try {
         const user = await User.fromToken(token);
         await user.setOnline(isOnline);
+        console.log(`Set isOnline to ${isOnline} for user ${user.username}.`);
         return null;
     } catch (e: any) {
-        console.warn(`beacon: ${e.message}`);
+        console.warn(`Beacon warning: ${e.message}`);
         return null;
     }
 })
