@@ -5,7 +5,7 @@ import {UserUtil} from "../utils/classes/User";
 export default defineEventHandler(async e => {
     const body = await readBody(e);
     if (typeof body.action !== 'string' || typeof body.params !== 'object') {
-        return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, null, 'index.ts');
+        return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED,  'index.ts');
     }
     const action = body.action as RequestActions;
     const params = body.params as dict<any>;
@@ -44,6 +44,9 @@ export default defineEventHandler(async e => {
                 // default: 12 hours
                 const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
                 const user = await User.build("", username);
+                if (user.regType === 'oasis') {
+                    return ng(ERR.UNSUPPORTED_OPERATION,  'user.login');
+                }
                 await user.login(pwd);
                 return ok(null, user.getToken(expiration));
             }
@@ -98,6 +101,6 @@ export default defineEventHandler(async e => {
 
         return ng(ERR.UNSUPPORTED_OPERATION, 'index.ts');
     } catch (e: any) {
-        return ng(e.message, null, 'index.ts wild');
+        return ng(e.message, 'index.ts wild');
     }
 })

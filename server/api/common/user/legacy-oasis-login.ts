@@ -7,10 +7,10 @@ export default defineEventHandler(async e => {
         const password = requireNonEmpty(body.password);
         const login = await loginOasis(username, password);
         if (login === null) {
-            return ng(null, ERR.INTERNAL_REQUEST_FAILED);
+            return ng(ERR.INTERNAL_REQUEST_FAILED, 'legacy-oasis-login.ts');
         }
         return ok(null, login);
     } catch (e: any) {
-        return ng(e.message)
+        return ng(e.message, 'legacy-oasis-login.ts wild')
     }
 })

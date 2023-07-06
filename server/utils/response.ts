@@ -28,8 +28,8 @@ export function ok<T = any>(msg: Nullable<string> = null, data: Nullable<T> = nu
     return buildResponse('ok', msg, data);
 }
 
-export function ng<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null, at: Nullable<string> = null) {
-    return buildResponse('ng', `(at ${at}) ${msg}`, data);
+export function ng<T = any>(msg: Nullable<string> = null, at: Nullable<string> = null) {
+    return buildResponse('ng', at ? `(at ${at}) ${msg}` : msg, null);
 }
 
 /**

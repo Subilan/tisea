@@ -23,11 +23,11 @@ export default defineEventHandler(async e => {
             if (key in user.dist) {
                 return ok(null, getKey(user.dist, key));
             } else {
-                return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, null, 'get.ts')
+                return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'get.ts')
             }
         } else if (Array.isArray(key)) {
             if (key.includes("hash")) {
-                return ng(ERR.UNSUPPORTED_OPERATION, null, 'get.ts');
+                return ng(ERR.UNSUPPORTED_OPERATION, 'get.ts');
             }
             const result = {};
             bindProperties(result, user.dist);
@@ -39,8 +39,8 @@ export default defineEventHandler(async e => {
             return ok(null, result);
         }
 
-        return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, null, 'get.ts');
+        return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'get.ts');
     } catch (e: any) {
-        return ng(e.message, null, 'get.ts wild');
+        return ng(e.message, 'get.ts wild');
     }
 })

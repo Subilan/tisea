@@ -31,10 +31,10 @@ export default defineEventHandler(async e => {
             }
 
             default: {
-                return ng(ERR.UNSUPPORTED_OPERATION);
+                return ng(ERR.UNSUPPORTED_OPERATION, 'check-value.ts switch-default');
             }
         }
     } catch (e: any) {
-        return ng(e.message);
+        return ng(e.message, 'check-value.ts wild');
     }
 })
