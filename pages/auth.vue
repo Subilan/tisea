@@ -129,7 +129,6 @@ import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/server/utils/common";
 import Storage from "~/utils/storage";
 import {checkValue, doAction} from "~/utils/common";
-import {loginOasis} from "~/server/utils/common";
 import {dispatchSnackbar} from "~/utils/states";
 import {useRouter} from "#app/composables/router";
 

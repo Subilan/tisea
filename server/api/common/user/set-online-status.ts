@@ -10,7 +10,7 @@ export default defineEventHandler(async e => {
         token = requireNonEmpty(body.token);
         isOnline = requireNonEmpty(body.isOnline);
     } catch (e: any) {
-        console.warn(`beacon: ${ERR.NOT_ENOUGH_ARGUMENT}`);
+        console.warn(`beacon: ${e.message}`);
         return null;
     }
     try {
