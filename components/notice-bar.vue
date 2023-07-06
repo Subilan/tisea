@@ -38,11 +38,11 @@ const props = defineProps({
   }
 
   .mdi::before {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .mdi {
-    margin-right: .5em;
+    margin-right: 1em;
   }
 }
 </style>
