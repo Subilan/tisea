@@ -1,5 +1,5 @@
 export const ERR = {
-    INVALID_ARGUMENT: 'error.invalid_argument',
+    ARGUMENT_TYPE_NOT_SATISFIED: 'error.argument_type_not_satisfied',
     UNSUPPORTED_OPERATION: 'error.unsupported_operation',
     NOT_ENOUGH_ARGUMENT: 'error.not_enough_argument',
     INTERNAL_REQUEST_FAILED: 'error.internal_request_failed',
@@ -14,8 +14,10 @@ export const ERR = {
     INTERNAL_QUERY_FAILED: 'error.internal_query_failed',
     CRYPTO: 'error.crypto',
     DUPLICATE: 'error.duplicate',
-    EXPIRED_TOKEN: 'error.expired_token',
-    INVALID_TOKEN: 'error.invalid_token',
+    TOKEN: {
+        EXPIRED: 'error.token.expired',
+        INVALID: 'error.token.invalid'
+    },
     UNEXPECTED_EMPTY_VALUE: 'error.unexpected_empty_value',
     NODEBB: {
         EMAIL_NOT_CONFIRMED: 'error.nodebb.email_not_confirmed'
@@ -26,8 +28,8 @@ export function ok<T = any>(msg: Nullable<string> = null, data: Nullable<T> = nu
     return buildResponse('ok', msg, data);
 }
 
-export function ng<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
-    return buildResponse('ng', msg, data);
+export function ng<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null, at: Nullable<string> = null) {
+    return buildResponse('ng', `(at ${at}) ${msg}`, data);
 }
 
 /**

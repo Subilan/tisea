@@ -5,7 +5,7 @@ import {UserUtil} from "../utils/classes/User";
 export default defineEventHandler(async e => {
     const body = await readBody(e);
     if (typeof body.action !== 'string' || typeof body.params !== 'object') {
-        return ng(ERR.INVALID_ARGUMENT);
+        return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, null, 'index.ts');
     }
     const action = body.action as RequestActions;
     const params = body.params as dict<any>;
@@ -99,6 +99,6 @@ export default defineEventHandler(async e => {
 
         return ng(ERR.UNSUPPORTED_OPERATION);
     } catch (e: any) {
-        return ng(e.message);
+        return ng(e.message, null, 'index.ts wild');
     }
 })

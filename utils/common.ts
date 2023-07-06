@@ -50,7 +50,7 @@ export async function getUser() {
         token: Storage.token,
         all: true
     });
-    return result ? result.state ? result.data as Partial<IUser> : {} : {};
+    return result ? (result.state ? result.data as Partial<IUser> : {}) : {};
 }
 
 export async function logout() {

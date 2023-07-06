@@ -184,10 +184,10 @@ export class User implements IUser {
         try {
             token = JSON.parse(CryptoEs.AES.decrypt(encryptedToken, CRYPTO_KEY).toString(CryptoEs.enc.Utf8)) as Token;
         } catch (e: any) {
-            throw new Error(ERR.INVALID_TOKEN)
+            throw new Error(ERR.TOKEN.INVALID)
         }
         if (token.expires <= new Date().getTime()) {
-            throw new Error(ERR.EXPIRED_TOKEN);
+            throw new Error(ERR.TOKEN.EXPIRED);
         }
         return await User.build(token.id);
     }
