@@ -20,7 +20,8 @@ export default defineEventHandler(async e => {
                     password: requireNonEmpty(params.password),
                     oasis,
                     avatar: oasis ? `https://i.oases.red${oasis.picture}` : "",
-                    regType: 'common'
+                    regType: 'common',
+                    oasisUsername: oasis ? oasis.username : ''
                 })
                 await creation.create()
                 const user = await User.build(creation.dist.id);
@@ -68,7 +69,8 @@ export default defineEventHandler(async e => {
                         minecraft: null,
                         password,
                         oasis: login,
-                        avatar: `https://i.oases.red${login.picture}`
+                        avatar: `https://i.oases.red${login.picture}`,
+                        oasisUsername: login.username
                     });
                     await creation.create();
                 }

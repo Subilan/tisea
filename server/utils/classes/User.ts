@@ -13,7 +13,8 @@ const CRYPTO_KEY = 'jkeUmUaYnfxVcuvjnpS39uo5EnX4mR7OHyIkXSOfmcVjAIUqxZntJBjgRsHG
 
 export class Creation implements IUserCreation {
     id = "";
-    username = ""
+    username = "";
+    oasisUsername = "";
     displayname = "";
     minecraft = "";
     uuid = "";
@@ -65,7 +66,7 @@ export class Creation implements IUserCreation {
         const minecraft = params.minecraft as Nullable<string>;
         if (minecraft) {
             const uuid = await getUUIDFromName(minecraft);
-            if (uuid === undefined) {
+            if (uuid === null) {
                 throw new Error(ERR.CANNOT_GET_UUID);
             }
             params.uuid = uuid;
@@ -78,6 +79,7 @@ export class Creation implements IUserCreation {
         if (params.regType === 'common') {
             params.hash = genHash(password);
         } else {
+            params.oasisUsername = params.oasis?.username;
             params.hash = genHashOasis(params.oasis as OasisUserObject);
         }
 
@@ -144,7 +146,8 @@ export class UserUtil {
  */
 export class User implements IUser {
     id = "";
-    username = ""
+    username = "";
+    oasisUsername = "";
     displayname = "";
     hash = "";
     uuid = "";
