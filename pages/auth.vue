@@ -47,21 +47,12 @@
       <div class="auth-box-divider"/>
 
       <div class="auth-box-actions">
-        <btn class="primary" v-if="!registering && method === 'oasis'" @click="loginWithOasis()">
-          <template v-if="loading.login">
-            <spinner-diamond size="45px"/>
-          </template>
-          <template v-else>
-            使用火星港账号登录
-          </template>
+        <btn :loading="loading.login" class="primary" v-if="!registering && method === 'oasis'"
+             @click="loginWithOasis()">
+          使用火星港账号登录
         </btn>
-        <btn class="primary" v-if="!registering && method === 'common'" @click="login()">
-          <template v-if="loading.login">
-            <spinner-diamond size="45px"/>
-          </template>
-          <template v-else>
-            登录
-          </template>
+        <btn :loading="loading.login" class="primary" v-if="!registering && method === 'common'" @click="login()">
+          登录
         </btn>
         <btn :disabled="!canRegister" class="primary" v-if="registering" @click="dialogs.needToBindOasis = true">注册
         </btn>
@@ -103,13 +94,8 @@
       </template>
       <template #actions>
         <btn class="primary" @click="dialogs.needToBindOasis = false; dialogs.bindOasis = true;">现在绑定</btn>
-        <btn class="primary" @click="register()">
-          <template v-if="loading.register">
-            <spinner-diamond size="45px"/>
-          </template>
-          <template v-else>
-            不绑定注册
-          </template>
+        <btn class="primary" :loading="loading.register" @click="register()">
+          不绑定注册
         </btn>
         <btn class="white" @click="dialogs.needToBindOasis = false">取消</btn>
       </template>
@@ -127,13 +113,8 @@
         </div>
       </template>
       <template #actions>
-        <btn class="primary" @click="bindOasisAndRegister()">
-          <template v-if="loading.register">
-            <spinner-diamond size="45px"/>
-          </template>
-          <template v-else>
-            绑定并注册
-          </template>
+        <btn :loading="loading.register" class="primary" @click="bindOasisAndRegister()">
+          绑定并注册
         </btn>
         <btn class="white" @click="dialogs.bindOasis = false; dialogs.needToBindOasis = true">上一步</btn>
       </template>
@@ -148,6 +129,7 @@ import Storage from "~/utils/storage";
 import {doAction} from "~/utils/common";
 import {loginOasis} from "~/server/utils/common";
 import {dispatchSnackbar} from "~/utils/states";
+import {useRouter} from "#app/composables/router";
 
 definePageMeta({
   layout: false,
@@ -209,8 +191,17 @@ let canRegister = computed(() => {
       && Object.values(registrationData).filter(x => typeof x === 'string' ? x.length > 0 : x === null).length === Object.keys(registrationData).length;
 })
 
-function login() {
-
+async function login() {
+  loading.login = true;
+  const r = await doAction("user.login", loginData);
+  if (r.state !== 'ok') {
+    dispatchSnackbar(`登录失败：${r.msg}`);
+    loading.login = false;
+    return;
+  }
+  Storage.token = r.data;
+  loading.login = false;
+  await useRouter().push('/');
 }
 
 async function bindOasisAndRegister() {
