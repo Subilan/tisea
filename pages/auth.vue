@@ -3,7 +3,7 @@
     <div class="auth-box">
       <div class="auth-box-head">
         <div class="auth-box-title" v-if="!registering">
-          <div class="title-element-1">></div><!---->Login<!---->
+          <div class="title-element-1">></div><!---->{{ method === 'oasis' ? 'Oasis ' : '' }}Login<!---->
           <div v-show="titleUnderscoreShown" class="title-element-2">_</div>
         </div>
         <div class="auth-box-title" v-else>
@@ -13,21 +13,19 @@
 
         <div class="auth-box-description" v-if="!registering">
           登入 Tisea 账号即可尽享所有功能，支持与游戏内角色创建关联，随时随地与服务器联系。
-          <notice-bar v-if="method === 'oasis'">
-            <span class="mdi mdi-check-decagram-outline"/> 当前正在使用火星港账号登录
+          <notice-bar v-if="method === 'oasis' && oasisNotRegistered">
+            <span class="mdi mdi-account-arrow-left"/>
+            未注册用户登入后将自动以火星港用户名注册
           </notice-bar>
         </div>
         <div class="auth-box-description" v-else>
           若要注册一个 Tisea 账号，请填写下列信息。
-          <notice-bar>
-            <span class="mdi mdi-information-outline"/> 你也可以使用火星港账号登录来自动注册
-          </notice-bar>
         </div>
       </div>
 
       <div class="textfield-container" v-if="!registering && method === 'oasis'">
-        <textfield placeholder="Oasis 用户名" icon="mdi-account-circle" type="text" v-model="loginDataOasis.username"/>
-        <textfield placeholder="Oasis 密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
+        <textfield placeholder="火星港用户名" icon="mdi-account-circle" type="text" v-model="loginDataOasis.username"/>
+        <textfield placeholder="火星港密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
       </div>
       <div class="textfield-container" v-if="!registering && method === 'common'">
         <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.username"/>
@@ -71,10 +69,6 @@
         发生了一些问题
       </template>
       <template #content>
-        <p>服务器在处理信息时发生了一些问题，返回的错误信息如下。</p>
-        <notice-bar target-class="warn">
-          <span class="mdi mdi-alert-outline"/> 如果问题看起来难以解决，请联系管理员
-        </notice-bar>
         <p v-html="authInformationHtml"/>
       </template>
       <template #actions>
@@ -137,6 +131,7 @@ definePageMeta({
   middleware: 'auth-excepted'
 })
 
+let oasisNotRegistered = ref(false);
 let titleUnderscoreShown = ref(false);
 let authInformationHtml: Nullable<string> = '';
 let registering = location.hash === '#register';
@@ -147,6 +142,7 @@ let dialogs = reactive({
   bindOasis: false,
   duplicateOasis: false
 })
+
 let loginData = reactive({
   username: '',
   password: '',
@@ -294,6 +290,14 @@ watch(() => registrationData.minecraft, async v => {
     return;
   }
   errorTextDynamic.minecraft = ''
+});
+
+watch(() => loginDataOasis.username, async v => {
+  if (v.length === 0) {
+    oasisNotRegistered.value = false;
+    return;
+  }
+  oasisNotRegistered.value = await checkValue(v, "user.oasis.uniqueness");
 })
 </script>
 
