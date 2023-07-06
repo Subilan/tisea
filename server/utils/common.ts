@@ -71,13 +71,16 @@ export function getRandomString(len: number) {
  * @param name 结果。若未找到则为 `null`
  */
 export async function getUUIDFromName(name: string) {
-    const resp: {
-        name: string;
-        id: string;
-    } = await $fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, {
-        method: 'get'
-    });
-    return resp.id ? resp.id : undefined;
+    try {
+        const resp: {id: string, name: string} = await $fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, {
+            method: 'get'
+        });
+        return resp.id ? resp.id : null;
+    } catch (e: any) {
+        if (!e.message.includes("404")) console.warn(`Unexpected error occurred when getting uuid from name ${name}: ${e.message}.`);
+        return null;
+    }
+
 }
 
 export function deleteKey(obj: any, key: string) {
