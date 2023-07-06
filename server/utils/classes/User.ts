@@ -2,7 +2,7 @@ import {getOne, removeOne, upsertOne} from "../database";
 import {
     bindProperties,
     verifyHash,
-    deleteKey, genHash, genHashOasis,
+    deleteKey, genHash,
     getRandomString,
     getUUIDFromName,
     isEmptyKey
@@ -76,12 +76,8 @@ export class Creation implements IUserCreation {
             params.regType = params.oasis ? 'oasis' : 'common';
         }
 
-        if (params.regType === 'common') {
-            params.hash = genHash(password);
-        } else {
-            params.oasisUsername = params.oasis?.username;
-            params.hash = genHashOasis(params.oasis as OasisUserObject);
-        }
+        params.hash = genHash(password);
+        params.oasisUsername = params.oasis?.username ?? null;
 
         return new Creation(params);
     }
@@ -113,16 +109,16 @@ export class UserUtil {
         return upsertOne<IUser>("users", {id: getRandomString(10)}, user);
     }
 
-    public static alter(id: string, set: Partial<IUser>) {
-        return upsertOne<IUser>("users", {id}, set);
+    public static alter(filter: Partial<IUser>, set: Partial<IUser>) {
+        return upsertOne<IUser>("users", filter, set);
     }
 
     public static get(filter: Partial<IUser>) {
         return getOne<IUser>("users", filter);
     }
 
-    public static remove(id: string) {
-        return removeOne<IUser>("users", {id});
+    public static remove(filter: Partial<IUser>) {
+        return removeOne<IUser>("users", filter);
     }
 
     public static async doesExist(filter: Partial<IUser>) {
@@ -137,6 +133,12 @@ export class UserUtil {
             return false;
         }
         return token.expires > new Date().getTime();
+    }
+
+    public static setPassword(filter: Partial<IUser>, newPassword: string) {
+        return this.alter(filter, {
+            hash: genHash(newPassword)
+        })
     }
 }
 
@@ -194,11 +196,15 @@ export class User implements IUser {
 
     public async alter(set: Partial<IUser>) {
         bindProperties(this, set);
-        return await UserUtil.alter(this.id, set);
+        return await UserUtil.alter({
+            id: this.id
+        }, set);
     }
 
     public async remove() {
-        return await UserUtil.remove(this.id);
+        return await UserUtil.remove({
+            id: this.id
+        });
     }
 
     public async setPerm(perm: UserPerm) {

@@ -1,5 +1,5 @@
 import {ERR, ng} from '../utils/response';
-import {genPasswordOasis, loginOasis, requireNonEmpty} from "../utils/common";
+import {isEmpty, loginOasis, requireNonEmpty, verifyHash} from "../utils/common";
 import {UserUtil} from "../utils/classes/User";
 
 export default defineEventHandler(async e => {
@@ -62,15 +62,14 @@ export default defineEventHandler(async e => {
                 if (!login["email:confirmed"]) {
                     return ng(ERR.NODEBB.EMAIL_NOT_CONFIRMED, 'user.login.oasis');
                 }
-                const password = genPasswordOasis(login)
                 if (!userExist) {
                     const creation = await Creation.build({
-                        username: login.username,
+                        username: oasisUsername,
                         minecraft: null,
-                        password,
+                        password: oasisPassword,
                         oasis: login,
                         avatar: `https://i.oases.red${login.picture}`,
-                        oasisUsername: login.username
+                        oasisUsername: oasisUsername,
                     });
                     await creation.create();
                 }
@@ -81,7 +80,7 @@ export default defineEventHandler(async e => {
                         oasis: login
                     })
                 }
-                await user.login(password)
+                await user.login(oasisPassword)
                 return ok(null, user.getToken(expiration));
             }
 

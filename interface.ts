@@ -10,7 +10,7 @@ interface IUser {
     latestLogoutActionAt: number;
     regType: UserRegType;
     perm: UserPerm;
-    oasisUsername: string;
+    oasisUsername: Nullable<string>;
     oasis: Nullable<OasisUserObject>;
     isOnline: boolean;
 }

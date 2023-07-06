@@ -110,14 +110,6 @@ export async function loginOasis(username: string, password: string) {
     return result.response as OasisUserObject;
 }
 
-
-export function genPasswordOasis(obj: OasisUserObject) {
-    return obj.username + obj.uid;
-}
-export function genHashOasis(obj: OasisUserObject) {
-    return genHash(genPasswordOasis(obj));
-}
-
 export function genHash(password: string) {
     const salt = getRandomString(10);
     return `${CryptoEs.PBKDF2(password, salt).toString()}.${salt}`;
