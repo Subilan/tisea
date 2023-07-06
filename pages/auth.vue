@@ -34,13 +34,15 @@
         <textfield placeholder="密码" icon="mdi-key" type="password" v-model="loginData.password"/>
       </div>
       <div class="textfield-container" v-if="registering">
-        <textfield placeholder="用户名" :error-text="errorTexts.username" icon="mdi-account-circle" type="text"
+        <textfield placeholder="用户名" :error-text="errorTextDynamic.username || errorTextStatic.username"
+                   icon="mdi-account-circle" type="text"
                    v-model="registrationData.username"/>
-        <textfield placeholder="Minecraft 游戏名" :error-text="errorTexts.minecraft" icon="mdi-minecraft" type="text"
+        <textfield placeholder="Minecraft 游戏名" :error-text="errorTextDynamic.minecraft || errorTextStatic.minecraft"
+                   icon="mdi-minecraft" type="text"
                    v-model="registrationData.minecraft"/>
-        <textfield placeholder="密码" icon="mdi-key" :error-text="errorTexts.password" type="password"
+        <textfield placeholder="密码" icon="mdi-key" :error-text="errorTextStatic.password" type="password"
                    v-model="registrationData.password"/>
-        <textfield placeholder="确认密码" icon="mdi-shield-key" :error-text="errorTexts.passwordV" type="password"
+        <textfield placeholder="确认密码" icon="mdi-shield-key" :error-text="errorTextStatic.passwordV" type="password"
                    v-model="passwordV"/>
       </div>
 
@@ -126,7 +128,7 @@
 import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/server/utils/common";
 import Storage from "~/utils/storage";
-import {doAction} from "~/utils/common";
+import {checkValue, doAction} from "~/utils/common";
 import {loginOasis} from "~/server/utils/common";
 import {dispatchSnackbar} from "~/utils/states";
 import {useRouter} from "#app/composables/router";
@@ -143,7 +145,8 @@ let method: UserRegType = 'common';
 let dialogs = reactive({
   authInformation: false,
   needToBindOasis: false,
-  bindOasis: false
+  bindOasis: false,
+  duplicateOasis: false
 })
 let loginData = reactive({
   username: '',
@@ -167,13 +170,17 @@ let loading = reactive({
   register: false
 })
 
-let errorTexts = {
+let errorTextStatic = {
   username: '',
   minecraft: '',
   password: '',
   passwordV: ''
 }
 
+let errorTextDynamic = {
+  username: '',
+  minecraft: ''
+}
 
 let passwordV = ref('')
 
@@ -188,7 +195,8 @@ let validation = computed(() => {
 
 let canRegister = computed(() => {
   return Object.values(validation.value).filter(x => x !== '').length === 0
-      && Object.values(registrationData).filter(x => typeof x === 'string' ? x.length > 0 : x === null).length === Object.keys(registrationData).length;
+      && Object.values(registrationData).filter(x => typeof x === 'string' ? x.length > 0 : x === null).length === Object.keys(registrationData).length
+      && Object.values(errorTextStatic).filter(x => x !== '').length === 0;
 })
 
 async function login() {
@@ -206,11 +214,18 @@ async function login() {
 
 async function bindOasisAndRegister() {
   loading.register = true;
+  const check = await checkValue(loginDataOasis.username, 'user.oasis.uniqueness');
+  if (!check) {
+    loading.register = false;
+    dialogs.bindOasis = false;
+    dispatchSnackbar("该火星港账号已被其它用户绑定");
+    return;
+  }
   const r = await post<OasisUserObject>("/api/common/user/legacy-oasis-login", loginDataOasis);
   if (r.state !== 'ok') {
+    loading.register = false;
     dialogs.bindOasis = false;
     dispatchSnackbar(`无法登录 Oasis：${r.msg}`);
-    loading.register = false;
     return;
   }
   registrationData.oasis = r.data;
@@ -225,14 +240,12 @@ async function loginWithOasis() {
     password: loginDataOasis.password
   });
   loading.login = false;
-  if (result) {
-    if (result.state === 'ok') {
-      Storage.token = result.data;
-      await useRouter().push("/");
-    } else {
-      authInformationHtml = result.msg;
-      dialogs.authInformation = true;
-    }
+  if (result.state === 'ok') {
+    Storage.token = result.data;
+    await useRouter().push("/");
+  } else {
+    dialogs.bindOasis = false;
+    dispatchSnackbar(result.msg);
   }
 }
 
@@ -259,8 +272,30 @@ onMounted(() => {
 
 watch(() => validation, v => {
   const val = v.value;
-  bindProperties(errorTexts, val);
+  bindProperties(errorTextStatic, val);
 }, {deep: true})
+
+watch(() => registrationData.username, async v => {
+  if (v.length === 0) return;
+  if (!await checkValue(v, 'user.username.uniqueness')) {
+    errorTextDynamic.username = '此用户名已被占用';
+    return;
+  }
+  errorTextDynamic.username = '';
+})
+
+watch(() => registrationData.minecraft, async v => {
+  if (v.length === 0) return;
+  if (!await checkValue(v, 'user.minecraft.valid')) {
+    errorTextDynamic.minecraft = '此玩家不存在';
+    return;
+  }
+  if (!await checkValue(v, 'user.minecraft.uniqueness')) {
+    errorTextDynamic.minecraft = '此玩家已被绑定至其它用户';
+    return;
+  }
+  errorTextDynamic.minecraft = ''
+})
 </script>
 
 <style lang="less">

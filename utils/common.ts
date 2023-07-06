@@ -67,3 +67,19 @@ export async function logout() {
         return false;
     }
 }
+
+export async function checkValue(value: any, type: CheckTypes, ifnotCallback: Nullable<Function> = null) {
+    const r = await post<boolean>('/api/common/check-value', {
+        type,
+        value
+    });
+    if (r.state !== 'ok') {
+        console.warn(`Error in checkValue ${value} ${type}? Details: ${r.msg}`);
+    }
+    if (!r.data) {
+        if (ifnotCallback !== null) ifnotCallback();
+        return false;
+    } else {
+        return true;
+    }
+}

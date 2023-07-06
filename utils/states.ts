@@ -1,10 +1,10 @@
 import {useState} from "#app";
 import Storage from "~/utils/storage";
 
-type SnackbarConfig = { display: boolean, text: string }
+type SnackbarConfig = { display: boolean, text: Nullable<string> }
 type UserConfig = { ready: boolean, target: Partial<IUser> }
 
-export function dispatchSnackbar(text: string) {
+export function dispatchSnackbar(text: Nullable<string>) {
     const s = useSnackbar();
     s.value.display = true;
     s.value.text = text;

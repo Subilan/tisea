@@ -1,6 +1,8 @@
 const Actions = ['user.create', 'user.alter', 'user.login', 'user.login.oasis', 'user.logout', 'user.checkToken'] as const;
+const CheckTypes = ['user.username.uniqueness', 'user.minecraft.valid', 'user.minecraft.uniqueness', 'user.oasis.uniqueness'] as const;
 
 type RequestActions = typeof Actions[number];
+type CheckTypes = typeof CheckTypes[number];
 
 type dict<T> = { [prop: string]: T };
 
@@ -23,3 +25,4 @@ type Nullable<T> = T | null;
 type ResponseState = 'ok' | 'ng';
 type CommonResponse<T = any> = { state: ResponseState, msg: Nullable<string>, data: T };
 type CommonRequest<T extends {} = object> = { action: RequestActions, params: T };
+
