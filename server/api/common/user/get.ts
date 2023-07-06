@@ -11,7 +11,7 @@ export default defineEventHandler(async e => {
             const dist = user.dist;
             deleteKey(dist, 'hash');
             deleteKey(dist, '_id');
-            return ok(null, dist);
+            return ok(dist);
         }
 
         const key = requireNonEmpty(body.key) as string | string[];
@@ -21,7 +21,7 @@ export default defineEventHandler(async e => {
                 return ng(ERR.UNSUPPORTED_OPERATION);
             }
             if (key in user.dist) {
-                return ok(null, getKey(user.dist, key));
+                return ok(getKey(user.dist, key));
             } else {
                 return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'get.ts')
             }
@@ -36,7 +36,7 @@ export default defineEventHandler(async e => {
                     deleteKey(result, k);
                 }
             })
-            return ok(null, result);
+            return ok(result);
         }
 
         return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'get.ts');

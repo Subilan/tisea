@@ -8,26 +8,26 @@ export default defineEventHandler(async e => {
         switch (type) {
             case "user.minecraft.valid": {
                 const login = await getUUIDFromName(value);
-                return ok(null, login !== null)
+                return ok(login !== null)
             }
 
             case "user.username.uniqueness": {
                 const r = await UserUtil.doesExist({username: value});
-                return ok(null, !r);
+                return ok(!r);
             }
 
             case "user.minecraft.uniqueness": {
                 const r = await UserUtil.get({
                     minecraft: value
                 });
-                return ok(null, r === null);
+                return ok(r === null);
             }
 
             case "user.oasis.uniqueness": {
                 const r = await UserUtil.get({
                     oasisUsername: value
                 });
-                return ok(null, r === null);
+                return ok(r === null);
             }
 
             default: {

@@ -9,7 +9,7 @@ export default defineEventHandler(async e => {
         if (login === null) {
             return ng(ERR.INTERNAL_REQUEST_FAILED, 'legacy-oasis-login.ts');
         }
-        return ok(null, login);
+        return ok(login);
     } catch (e: any) {
         return ng(e.message, 'legacy-oasis-login.ts wild')
     }

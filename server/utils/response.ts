@@ -24,8 +24,8 @@ export const ERR = {
     }
 }
 
-export function ok<T = any>(msg: Nullable<string> = null, data: Nullable<T> = null) {
-    return buildResponse('ok', msg, data);
+export function ok<T = any>(data: Nullable<T> = null) {
+    return buildResponse('ok', null, data);
 }
 
 export function ng<T = any>(msg: Nullable<string> = null, at: Nullable<string> = null) {

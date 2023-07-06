@@ -27,7 +27,7 @@ export default defineEventHandler(async e => {
                 const user = await User.build(creation.dist.id);
                 await user.setLogin();
                 const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
-                return ok(null, user.getToken(expiration));
+                return ok(user.getToken(expiration));
             }
 
             case "user.alter": {
@@ -48,7 +48,7 @@ export default defineEventHandler(async e => {
                     return ng(ERR.UNSUPPORTED_OPERATION,  'user.login');
                 }
                 await user.login(pwd);
-                return ok(null, user.getToken(expiration));
+                return ok(user.getToken(expiration));
             }
 
             case 'user.login.oasis': {
@@ -84,7 +84,7 @@ export default defineEventHandler(async e => {
                     })
                 }
                 await user.login(oasisPassword)
-                return ok(null, user.getToken(expiration));
+                return ok(user.getToken(expiration));
             }
 
             case "user.logout": {
@@ -95,7 +95,7 @@ export default defineEventHandler(async e => {
             }
 
             case "user.checkToken": {
-                return params.token ? ok(null, UserUtil.checkEncryptedToken(params.token)) : ok(null, false);
+                return params.token ? ok(UserUtil.checkEncryptedToken(params.token)) : ok(false);
             }
         }
 
