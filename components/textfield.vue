@@ -68,12 +68,12 @@ defineEmits(['update:modelValue']);
   border-radius: 5px;
   border: 2px solid rgba(0, 0, 0, .2);
   transition: all .2s ease;
-  font-size: 16px;
+  font-size: 18px;
   resize: none;
   box-sizing: border-box;
 
   padding: 8px;
-  font-family: Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', ui-sans-serif, monospace;
+  font-family: Cascadia Mono, Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', ui-sans-serif, monospace;
 
   &:hover,
   &:focus {
