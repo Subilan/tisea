@@ -123,6 +123,7 @@ import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/server/utils/common";
 import Storage from "~/utils/storage";
 import {checkValue, doAction} from "~/utils/common";
+import {translate as t} from "~/utils/common";
 import {dispatchSnackbar} from "~/utils/states";
 import {useRouter} from "#app/composables/router";
 
@@ -198,7 +199,7 @@ async function login() {
   loading.login = true;
   const r = await doAction("user.login", loginData);
   if (r.state !== 'ok') {
-    dispatchSnackbar(`登录失败：${r.msg}`);
+    dispatchSnackbar(`${t(r.msg, 'login')}`);
     loading.login = false;
     return;
   }
@@ -220,7 +221,7 @@ async function bindOasisAndRegister() {
   if (r.state !== 'ok') {
     loading.register = false;
     dialogs.bindOasis = false;
-    dispatchSnackbar(`无法登录 Oasis：${r.msg}`);
+    dispatchSnackbar(`${t(r.msg, 'login')}`);
     return;
   }
   registrationData.oasis = r.data;
@@ -230,31 +231,29 @@ async function bindOasisAndRegister() {
 
 async function loginWithOasis() {
   loading.login = true;
-  const result = await doAction("user.login.oasis", {
+  const r = await doAction("user.login.oasis", {
     username: loginDataOasis.username,
     password: loginDataOasis.password
   });
   loading.login = false;
-  if (result.state === 'ok') {
-    Storage.token = result.data;
+  if (r.state === 'ok') {
+    Storage.token = r.data;
     await useRouter().push("/");
   } else {
-    dialogs.bindOasis = false;
-    dispatchSnackbar(result.msg);
+    dispatchSnackbar(`${t(r.msg, 'login')}`);
   }
 }
 
 async function register() {
   loading.register = true;
-  const result = await doAction("user.create", registrationData)
+  const r = await doAction("user.create", registrationData)
   loading.register = false;
-  if (result) {
-    if (result.state === 'ok') {
-      Storage.token = result.data;
+  if (r) {
+    if (r.state === 'ok') {
+      Storage.token = r.data;
       await useRouter().push("/");
     } else {
-      authInformationHtml = result.msg;
-      dialogs.authInformation = true;
+      dispatchSnackbar(`${t(r.msg, 'login')}`);
     }
   }
 }
