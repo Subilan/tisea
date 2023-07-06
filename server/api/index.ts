@@ -1,5 +1,5 @@
 import {ERR, ng} from '../utils/response';
-import {isEmpty, loginOasis, requireNonEmpty, verifyHash} from "../utils/common";
+import {loginOasis, requireNonEmpty} from "../utils/common";
 import {UserUtil} from "../utils/classes/User";
 
 export default defineEventHandler(async e => {
