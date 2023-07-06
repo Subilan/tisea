@@ -54,13 +54,13 @@ export default defineEventHandler(async e => {
                 const login = await loginOasis(oasisUsername, oasisPassword);
                 const userExist = await UserUtil.doesExist({username: login?.username});
                 if (login === null) {
-                    return ng(ERR.VERFICIATION_FAILED);
+                    return ng(ERR.VERFICIATION_FAILED, 'user.login.oasis');
                 }
                 if (login.banned) {
-                    return ng(ERR.BANNED)
+                    return ng(ERR.BANNED, 'user.login.oasis')
                 }
                 if (!login["email:confirmed"]) {
-                    return ng(ERR.NODEBB.EMAIL_NOT_CONFIRMED);
+                    return ng(ERR.NODEBB.EMAIL_NOT_CONFIRMED, 'user.login.oasis');
                 }
                 const password = genPasswordOasis(login)
                 if (!userExist) {
@@ -97,7 +97,7 @@ export default defineEventHandler(async e => {
             }
         }
 
-        return ng(ERR.UNSUPPORTED_OPERATION);
+        return ng(ERR.UNSUPPORTED_OPERATION, 'index.ts');
     } catch (e: any) {
         return ng(e.message, null, 'index.ts wild');
     }
