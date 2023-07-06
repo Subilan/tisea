@@ -1,6 +1,11 @@
 <template>
   <div :disabled="disabled" class="button">
-    <slot></slot>
+    <template v-if="loading">
+      <spinner-diamond :size="spinnerSize"/>
+    </template>
+    <template v-else>
+      <slot></slot>
+    </template>
   </div>
 </template>
 
@@ -9,6 +14,14 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  spinnerSize: {
+    type: String,
+    default: "45px"
   }
 })
 </script>
