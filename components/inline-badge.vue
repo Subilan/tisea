@@ -12,11 +12,24 @@
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  background: #00bcd4;
-  color: white;
   line-height: 1;
   padding: 4px 6px;
-  margin: 0 4px;
-  border-radius: 100px;
+  border-radius: 5px;
+  font-size: 14px;
+
+  &.outline {
+    border: 1px solid rgba(0, 0, 0, .2);
+    color: #00bcd4;
+  }
+
+  &.plain {
+    background: #00bcd4;
+    color: white;
+  }
+
+  &.oasis {
+    background: #ffebee;
+    color: #de3012;
+  }
 }
 </style>

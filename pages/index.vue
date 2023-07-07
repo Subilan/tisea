@@ -1,10 +1,9 @@
 <template>
   <div>
     <div class="hero">
-
     </div>
     <div class="container">
-      <div class="col col-1">
+      <div class="col gap-16 nowrap col-left">
         <client-only>
           <card v-if="!user.ready">
             <template #title>
@@ -19,7 +18,7 @@
               <p>你可以在此无限制地保留自己在每个周目游戏中的经历与记忆。</p>
             </template>
             <template #actions>
-              <btn class="primary" @click="useRouter().push('/auth#register')">&raquo; 现在就注册 &laquo;</btn>
+              <btn class="primary" @click="useRouter().push('/auth#register')">现在就注册</btn>
               <btn class="solid" @click="useRouter().push('/auth')">立即登录</btn>
             </template>
           </card>
@@ -42,7 +41,7 @@
           </template>
         </card>
       </div>
-      <div class="col col-2">
+      <div class="col gap-16 nowrap col-center">
         <card>
           <template #title>Title</template>
           <template #content>
@@ -72,20 +71,58 @@
         </card>
 
       </div>
-      <div class="col col-3">
+      <div class="col gap-16 nowrap col-right">
         <client-only>
           <card raw v-if="user.ready">
             <template #content>
-              <div class="user-card">
-                <div class="avatar">
-                  <avatar-spinner v-if="!user.target.avatar"/>
-                  <img class="avatar-img" v-else :src="user.target.avatar"/>
+              <div class="content-primary">
+                <user-contact/>
+                <div class="col nowrap gap-8">
+                  <btn size="medium" class="primary">发布动态</btn>
+                  <btn size="medium" class="white">个人主页</btn>
                 </div>
               </div>
             </template>
           </card>
-        </client-only>
+          <card raw v-if="user.ready">
+            <template #content>
+              <div class="col gap-16 nowrap">
+                <mainpage-function icon="mdi-book-account-outline"  color="blue">
+                  <template #title>
+                    教程专区
+                  </template>
+                  <template #subtitle>
+                    我们已将 Seati Wiki 上的教程搬迁到这里的新家了~
+                  </template>
+                </mainpage-function>
+                <mainpage-function icon="mdi-message-text-outline"  color="amber">
+                  <template #title>
+                    写点日志
+                  </template>
+                  <template #subtitle>
+                    有些话一个动态说不清楚，可以在想写多长写多长的日志里记录哦~
+                  </template>
+                </mainpage-function>
+              </div>
+            </template>
+          </card>
+          <card>
+            <template #title>
+              #ST8
+            </template>
+            <template #content>
 
+            </template>
+          </card>
+          <card>
+            <template #title>
+              需要帮助？
+            </template>
+            <template #content>
+
+            </template>
+          </card>
+        </client-only>
       </div>
     </div>
   </div>
@@ -93,6 +130,8 @@
 
 <script lang="ts" setup>
 import {useUser} from "@/utils/states";
+import UserContact from "~/components/user-contact.vue";
+import MainpageFunction from "~/components/mainpage-function.vue";
 
 const user = useUser();
 </script>
@@ -121,16 +160,16 @@ const user = useUser();
   gap: 16px;
 }
 
-.col-1,
-.col-3 {
+.col-left,
+.col-right {
   width: 25%;
 }
 
-.col-2 {
+.col-center {
   width: 50%;
 }
 
-.col {
+.content-primary {
   display: flex;
   flex-direction: column;
   gap: 16px;

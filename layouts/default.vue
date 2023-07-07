@@ -5,7 +5,7 @@
         <img draggable="false" @click="useRouter().push('/')" class="logo-img" src="/assets/icons/tisea.svg"/>
       </div>
       <div class="navigation-links">
-        <NuxtLink class="link" to="/">首页</NuxtLink>
+        <NuxtLink class="link" to="/">动态</NuxtLink>
         <NuxtLink class="link" to="/terms">周目</NuxtLink>
         <client-only>
           <NuxtLink v-if="!user.ready" class="link" to="/auth">登录</NuxtLink>
@@ -14,10 +14,7 @@
       <div class="divider"></div>
       <client-only>
         <div class="misc">
-          <div class="avatar" v-if="user.ready">
-            <avatar-spinner v-if="!user.target.avatar"/>
-            <img v-else :src="user.target.avatar" class="nav-avatar-img avatar-img"/>
-          </div>
+          <avatar width="36px" :src="user.target.avatar" :ready="user.ready"/>
           <btn @click="out()" class="solid" v-if="user.ready">
             <template v-if="loading.logoutBtn">
               <spinner-diamond color="#00bcd4" size="20px"/>
@@ -57,10 +54,6 @@ async function out() {
 
 <style scoped lang="less">
 @import '@/assets/styles/var';
-
-.nav-avatar-img {
-  width: 36px;
-}
 
 .avatar {
   display: flex;
