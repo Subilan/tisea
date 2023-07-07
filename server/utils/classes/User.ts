@@ -19,10 +19,11 @@ export class Creation implements IUserCreation {
     minecraft = "";
     uuid = "";
     avatar = "";
+    level = 1;
     latestLoginActionAt = 0;
     latestLogoutActionAt = 0;
     regType: UserRegType = "common";
-    perm: UserPerm = 1;
+    perm: UserPerm = 0;
     oasis: OasisUserObject | null = null;
     isOnline = false;
     hash = "";
@@ -161,6 +162,7 @@ export class User implements IUser {
     perm: UserPerm = 0;
     oasis: Nullable<OasisUserObject> = null;
     isOnline: boolean = false;
+    level = 1;
 
     constructor(user: IUser) {
         bindProperties(this, user);

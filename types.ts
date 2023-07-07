@@ -17,8 +17,8 @@ type UserRegType = 'oasis' | 'common';
  * * -2 - 禁止登入
  * * -1 - 仅登入
  * * 0 - 正常
- * * 1 - 一般管理
- * * 2 - 内部管理
+ * * 1 - 管理
+ * * 2 - admin
  */
 type UserPerm = -2 | -1 | 0 | 1 | 2;
 
