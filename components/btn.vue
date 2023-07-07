@@ -1,5 +1,5 @@
 <template>
-  <div :disabled="disabled" class="button">
+  <div :class="size" :disabled="disabled" class="button">
     <template v-if="loading">
       <spinner-diamond :size="spinnerSize"/>
     </template>
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
@@ -19,25 +19,43 @@ defineProps({
     type: Boolean,
     default: false
   },
-  spinnerSize: {
+  size: {
     type: String,
-    default: "45px"
+    default: 'large'
   }
+})
+
+const spinnerSize = computed(() => {
+  return props.size === 'large' ? '45px' : (props.size === 'medium' ? '36px' : '24px')
 })
 </script>
 
 <style lang="less">
 .button {
   padding: 8px 16px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 5px;
   cursor: pointer;
   background: white;
-  min-height: 20px;
-
   transition: all .2s ease;
+}
+
+.button:not(.icon) {
+  &.large {
+    min-height: 20px;
+  }
+
+  &.medium {
+    font-size: 16px;
+    max-height: 16px;
+  }
+
+  &.small {
+    font-size: 14px;
+    max-height: 14px;
+  }
 }
 
 .button.outline {
@@ -59,12 +77,44 @@ defineProps({
   }
 }
 
+.button.primary-amber {
+  background: #ffc107;
+  color: white;
+
+  &:hover {
+    box-shadow: 0 0 0 4px #fff8e1;
+    background: darken(#ffc107, 3%);
+  }
+}
+
+.button.primary-blue {
+  background: #2196f3;
+  color: white;
+
+  &:hover {
+    box-shadow: 0 0 0 4px #e3f2fd;
+    background: darken(#2196f3, 3%);
+  }
+}
+
+
+.button.primary-green {
+  background: #4caf50;
+  color: white;
+
+  &:hover {
+    box-shadow: 0 0 0 4px #e8f5e9;
+    background: darken(#4caf50, 3%);
+  }
+}
+
 .button.primary {
   background: #00bcd4;
   color: white;
 
   &:hover {
     box-shadow: 0 0 0 4px #b2ebf2;
+    background: darken(#00bcd4, 3%);
   }
 }
 
@@ -92,8 +142,17 @@ defineProps({
   }
 }
 
-.button:hover {
-  opacity: .8;
+.button.icon {
+  display: inline-flex;
+  padding: 0;
 
+  &.rounded {
+    border-radius: 100%;
+
+    &.large {
+      height: 36px;
+      width: 36px;
+    }
+  }
 }
 </style>
