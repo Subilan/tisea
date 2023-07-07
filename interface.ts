@@ -6,6 +6,7 @@ interface IUser {
     minecraft: Nullable<string>;
     uuid: string;
     avatar: string;
+    level: number;
     latestLoginActionAt: number;
     latestLogoutActionAt: number;
     regType: UserRegType;
