@@ -145,14 +145,26 @@ body {
     opacity: 1;
 }
 
-.avatar-img {
-    display: inline-block;
-    border-radius: 100%;
-    transition: all .2s ease;
-    cursor: pointer;
-    border: 1px solid rgba(0, 0, 0, .2);
+.nowrap {
+    flex-wrap: nowrap;
+}
 
-    &:hover {
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, .1);
-    }
+.row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.col {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-16 {
+    gap: 16px;
 }
