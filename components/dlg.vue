@@ -1,8 +1,9 @@
 <template>
   <div class="dialog">
-    <div class="dialog-cover" :style="props.modelValue ? {} : {'pointer-events': 'none'}"
+    <div @click.self="coverHandler" class="dialog-cover"
+         :style="props.modelValue ? {} : {'pointer-events': 'none'}"
          :class="{cover: props.cover, active: props.modelValue}">
-      <div class="dialog-card" :class="{cover: props.cover, active: props.modelValue}">
+      <div class="dialog-card" :class="{cover: props.cover, active: props.modelValue, 'full-width': props.fullWidth}">
         <div class="dialog-card-title">
           <slot name="title"/>
         </div>
@@ -24,8 +25,22 @@ const props = defineProps({
   },
   modelValue: {
     type: Boolean
+  },
+  fullWidth: {
+    type: Boolean,
+    default: false
+  },
+  disableClickOutToClose: {
+    type: Boolean,
+    default: false
   }
 })
+
+const coverHandler = () => {
+  if (!props.disableClickOutToClose && !props.cover) {
+    emit('update:modelValue', false);
+  }
+}
 
 const emit = defineEmits(['update:modelValue'])
 </script>
@@ -60,6 +75,10 @@ const emit = defineEmits(['update:modelValue'])
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    &.full-width {
+      width: 500px;
+    }
 
     &:not(.cover) {
 
