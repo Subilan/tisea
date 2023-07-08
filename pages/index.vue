@@ -42,7 +42,7 @@
         </card>
       </div>
       <div class="col gap-16 nowrap col-center">
-        <card>
+        <card important-text="劲爆!!" border-color="#00bcd4">
           <template #title>Title</template>
           <template #content>
             <loading-text center/>
@@ -78,7 +78,7 @@
               <div class="content-primary">
                 <user-contact/>
                 <div class="col nowrap gap-8">
-                  <btn size="medium" class="primary">发布动态</btn>
+                  <btn size="medium" class="primary" @click="dialogs.newDynamic = true">发布动态</btn>
                   <btn size="medium" class="white">个人主页</btn>
                 </div>
               </div>
@@ -87,7 +87,7 @@
           <card raw v-if="user.ready">
             <template #content>
               <div class="col gap-16 nowrap">
-                <mainpage-function icon="mdi-book-account-outline"  color="blue">
+                <mainpage-function icon="mdi-book-account-outline" color="blue">
                   <template #title>
                     教程专区
                   </template>
@@ -95,7 +95,7 @@
                     我们已将 Seati Wiki 上的教程搬迁到这里的新家了~
                   </template>
                 </mainpage-function>
-                <mainpage-function icon="mdi-message-text-outline"  color="amber">
+                <mainpage-function icon="mdi-message-text-outline" color="amber">
                   <template #title>
                     写点日志
                   </template>
@@ -124,6 +124,24 @@
           </card>
         </client-only>
       </div>
+      <dlg disable-click-out-to-close full-width v-model="dialogs.newDynamic">
+        <template #title>
+          发布动态
+        </template>
+        <template #content>
+          <div class="col nowrap gap-16">
+            <client-only>
+              <textfield keyup-event maxlength="50" type="text" placeholder="标题（可选）"
+                         v-model="dynamic.title"></textfield>
+              <editor v-model="dynamic.content"/>
+            </client-only>
+          </div>
+        </template>
+        <template #actions>
+          <btn class="primary" :loading="loading.submitDynamic">发布</btn>
+          <btn class="white" @click="dialogs.newDynamic = false">关闭</btn>
+        </template>
+      </dlg>
     </div>
   </div>
 </template>
@@ -132,6 +150,20 @@
 import {useUser} from "@/utils/states";
 import UserContact from "~/components/user-contact.vue";
 import MainpageFunction from "~/components/mainpage-function.vue";
+import Editor from "~/components/editor.vue";
+
+let dialogs = reactive({
+  newDynamic: false
+})
+
+let loading = reactive({
+  submitDynamic: false
+})
+
+let dynamic = reactive({
+  title: '',
+  content: ''
+})
 
 const user = useUser();
 </script>
