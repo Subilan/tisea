@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@types/lowlight": "^0.0.3",
     "@types/node": "^18",
     "@types/nprogress": "^0.2.0",
     "nuxt": "^3.5.2",
@@ -17,8 +18,25 @@
     "ts-interface-checker": "^1.0.2"
   },
   "dependencies": {
+    "@tiptap/extension-code-block-lowlight": "^2.0.3",
+    "@tiptap/extension-color": "^2.0.3",
+    "@tiptap/extension-document": "^2.0.3",
+    "@tiptap/extension-dropcursor": "^2.0.3",
+    "@tiptap/extension-gapcursor": "^2.0.3",
+    "@tiptap/extension-mention": "^2.0.3",
+    "@tiptap/extension-paragraph": "^2.0.3",
+    "@tiptap/extension-placeholder": "^2.0.3",
+    "@tiptap/extension-text": "^2.0.3",
+    "@tiptap/extension-text-align": "^2.0.3",
+    "@tiptap/extension-text-style": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/vue-3": "^2.0.3",
     "crypto-es": "^1.2.7",
+    "highlight.js": "^11.8.0",
+    "ismobilejs": "^1.1.1",
     "less": "^4.1.3",
+    "lowlight": "^2.9.0",
     "mongodb": "^5.6.0",
     "nprogress": "^0.2.0",
     "sass": "^1.63.4"
