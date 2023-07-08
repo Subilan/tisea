@@ -1,5 +1,5 @@
 // https://docs.oracle.com/javase/specs/jls/se15/html/jls-3.html#jls-3.10
-import {HLJSApi, Language, Mode} from "highlight.js";
+import {HLJSApi, Language} from "highlight.js";
 
 const decimalDigits = '[0-9](_*[0-9])*';
 const frac = `\\.(${decimalDigits})`;

@@ -36,8 +36,6 @@ import {StarterKit} from "@tiptap/starter-kit";
 import {onBeforeUnmount} from "#imports";
 import Tooltip from "~/components/tooltip.vue";
 import ButtonGroup from "~/components/button-group.vue";
-import {Gapcursor} from "@tiptap/extension-gapcursor";
-import {Dropcursor} from "@tiptap/extension-dropcursor";
 import {Mention} from "@tiptap/extension-mention";
 import suggestion from '~/components/editor-mention-suggestions';
 import {Placeholder} from "@tiptap/extension-placeholder";
