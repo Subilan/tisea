@@ -1,25 +1,84 @@
 <template>
-  <div class="textfield" :class="{error: !!errorText}">
-    <div class="left">
+  <div class="textfield" :class="ofError ? 'error' : ''">
+    <div class="left" v-if="icon">
       <span class="mdi" v-if="icon" :class="icon"/>
     </div>
     <div class="right">
-      <input :class="{error: !!errorText}" @change="ev => $emit('update:modelValue', ev.target.value)"
+      <input v-if="!textarea" :class="ofError ? 'error' : ''"
+             @change="ev => {
+                  if (!keyupEvent) emit('update:modelValue', ev.target.value);
+                }" @keyup="ev => {
+                  if (keyupEvent) emit('update:modelValue', ev.target.value);
+                }"
              :placeholder="placeholder" :type="type"
-             class="textfield-input"/>
+             class="textfield-input" :maxlength="maxlength"/>
+      <textarea :style="{height: props.textareaHeight}" v-else :class="ofError ? 'error' : ''"
+                @change="ev => {
+                  if (!keyupEvent) emit('update:modelValue', ev.target.value);
+                }" @keyup="ev => {
+                  if (keyupEvent) emit('update:modelValue', ev.target.value);
+                }" :placeholder="placeholder"
+                class="textfield-textarea" :maxlength="maxlength"/>
       <Transition name="fadeRight">
         <small class="hint-text" v-if="hintText">{{ hintText }}</small>
       </Transition>
       <Transition name="fadeRight">
         <small class="error-text" v-if="errorText">{{ errorText }}</small>
       </Transition>
+      <small class="counter-text" v-if="!hintText && !errorText && maxlength > 0">{{
+          modelValue.length
+        }}/{{ maxlength }}</small>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps(['icon', 'placeholder', 'type', 'modelValue', 'errorText', 'hintText'])
-defineEmits(['update:modelValue']);
+const props = defineProps({
+  icon: {
+    type: String
+  },
+  placeholder: {
+    type: String
+  },
+  type: {
+    type: String
+  },
+  errorText: {
+    type: String
+  },
+  hintText: {
+    type: String
+  },
+  maxlength: {
+    type: String
+  },
+  textarea: {
+    type: Boolean,
+    default: false
+  },
+  textareaHeight: {
+    type: String,
+    default: '500px'
+  },
+  modelValue: {
+    type: String,
+    required: true
+  },
+  keyupEvent: {
+    type: Boolean,
+    default: false
+  }
+})
+const emit = defineEmits(['update:modelValue']);
+
+const maxlengthNum = computed(() => {
+  let r = Number(props.maxlength);
+  return isNaN(r) ? 0 : r;
+})
+
+const ofError = computed(() => {
+  return !!props.errorText;
+})
 </script>
 
 <style scoped lang="less">
@@ -55,14 +114,15 @@ defineEmits(['update:modelValue']);
   gap: 4px;
 }
 
-.hint-text {
-  color: rgba(0, 0, 0, .2);
+.hint-text, .counter-text {
+  color: rgba(0, 0, 0, .5);
 }
 
 .error-text {
   color: #f44336;
 }
 
+.textfield-textarea,
 .textfield-input {
   outline: none;
   border-radius: 5px;
