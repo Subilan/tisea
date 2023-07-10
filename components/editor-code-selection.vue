@@ -15,34 +15,21 @@
   </node-view-wrapper>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { NodeViewContent, nodeViewProps, NodeViewWrapper } from '@tiptap/vue-3'
+import {computed} from "#imports";
 
-export default {
-  components: {
-    NodeViewWrapper,
-    NodeViewContent,
-  },
+const props = defineProps({
+  ...nodeViewProps
+});
 
-  props: nodeViewProps,
+const languages = props.extension.options.lowlight.listLanguages();
 
-  data() {
-    return {
-      languages: this.extension.options.lowlight.listLanguages(),
-    }
-  },
+const selectedLanguage = computed({
+  get: () => props.node.attrs.language,
+  set: v => props.updateAttributes({ v })
+})
 
-  computed: {
-    selectedLanguage: {
-      get() {
-        return this.node.attrs.language
-      },
-      set(language) {
-        this.updateAttributes({ language })
-      },
-    },
-  },
-}
 </script>
 
 <style lang="scss">
