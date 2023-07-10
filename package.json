@@ -11,6 +11,7 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/gradient-parser": "^0.1.2",
+    "@types/lodash-es": "^4.17.7",
     "@types/lowlight": "^0.0.3",
     "@types/node": "^18",
     "@types/nprogress": "^0.2.0",
