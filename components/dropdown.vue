@@ -11,7 +11,7 @@
     </div>
     <div :id="`menu-wrapper-${uid}`" class="menu-wrapper">
       <div :class="{active: menuOpen}" :style="{display: menuDisplay ? 'block' : 'none'}" class="menu">
-        <slot name="menu"/>
+        <slot name="menu" :close="() => menuOpen = false"/>
       </div>
     </div>
   </div>
@@ -84,6 +84,17 @@ watch(() => menuOpen.value, v => {
     background: #e0f7fa;
   }
 }
+
+.menu-item-raw {
+  padding: .4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+
+  * {
+    font-size: 14px !important;
+  }
+}
 </style>
 
 <style scoped lang="less">
@@ -102,7 +113,7 @@ watch(() => menuOpen.value, v => {
 .menu {
   background: white;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
-  border: 1px solid rgba(0, 0, 0, .2);
+  border: 2px solid rgba(0, 0, 0, .2);
   padding: .2rem;
   width: max-content;
   display: block;
