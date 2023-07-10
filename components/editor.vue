@@ -110,7 +110,7 @@
     <!--suppress TypeScriptUnresolvedReference -->
     <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
 
-    <dlg v-model="errorDialogs.invalidImageURL">
+    <dlg v-model="dialogs.invalidImageURL">
       <template #title>
         无法插入图片
       </template>
@@ -121,7 +121,23 @@
         }}</code>）无效。请确保目标地址可以正常访问，且为正确的图片格式。
       </template>
       <template #actions>
-        <btn class="primary" @click="errorDialogs.invalidImageURL = false">关闭</btn>
+        <btn class="primary" size="medium" @click="dialogs.invalidImageURL = false">关闭</btn>
+      </template>
+    </dlg>
+    <dlg v-model="dialogs.invalidImageRegexTest">
+      <template #title>
+        不支持此图片地址
+      </template>
+      <template #content>
+        <p>你所提供的图片地址（<code>{{
+            // noinspection TypeScriptUnresolvedReference
+            editorReactive.insertImageURL
+          }}</code>）不受本站支持。请确保它是 <em>https</em> 协议下的正确链接。</p>
+        <p>一个正确的图片地址应当与下面的示例在格式上类似。</p>
+        <pre><code>https://example.com/path/to/example.png</code></pre>
+      </template>
+      <template #actions>
+        <btn class="primary" size="medium" @click="dialogs.invalidImageRegexTest = false">关闭</btn>
       </template>
     </dlg>
   </div>
@@ -181,8 +197,9 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const errorDialogs = reactive({
-  invalidImageURL: false
+const dialogs = reactive({
+  invalidImageURL: false,
+  invalidImageRegexTest: false
 })
 const loadings = reactive({
   insertImageURL: false
@@ -238,7 +255,11 @@ watch(() => editorReactive.colorGrad, handleColor);
 watch(() => editorReactive.colorPure, handleColor);
 
 async function createImage() {
-  if (editorReactive.insertImageURL.length > 0 && editorReactive.insertImageURL.trim() !== '') {
+  if (editorReactive.insertImageURL.length === 0 || editorReactive.insertImageURL.trim() === '') {
+    return;
+  }
+  if (!/https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(editorReactive.insertImageURL)) {
+    dialogs.invalidImageRegexTest = true;
     return;
   }
   loadings.insertImageURL = true;
@@ -248,7 +269,7 @@ async function createImage() {
   });
   loadings.insertImageURL = false;
   if (!res.data) {
-    errorDialogs.invalidImageURL = true;
+    dialogs.invalidImageURL = true;
     return;
   }
   getFocus().setImage({src: editorReactive.insertImageURL}).run();
