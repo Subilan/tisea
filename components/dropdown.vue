@@ -10,7 +10,8 @@
       <slot/>
     </div>
     <div :id="`menu-wrapper-${uid}`" class="menu-wrapper" :class="position">
-      <div :class="{'active': menuOpen, [position]: true}" :style="{'display': menuDisplay ? 'block' : 'none'}" class="menu">
+      <div :class="{'active': menuOpen, [position]: true}" :style="{'display': menuDisplay ? 'block' : 'none'}"
+           class="menu">
         <slot name="menu" :close="() => menuOpen = false"/>
       </div>
     </div>
@@ -34,12 +35,24 @@ const props = defineProps({
 
 const menuOpen = ref(false);
 const menuDisplay = ref(false);
+const allowClasses = ['advance', 'back'];
 let uid = getRandomString(6);
 
 const timeout = setTimeout.bind(window);
 
 function clickOutsideHandler(e: MouseEvent) {
   const el = e.target as HTMLElement;
+
+  if (Array.isArray(allowClasses)) {
+    for (let i = 0; i < allowClasses.length; i++) {
+      let x = allowClasses[i];
+      let allowParent: HTMLElement | null = el.closest(`.${x}`);
+      if (allowParent !== null || el.classList.contains(x)) {
+        return;
+      }
+    }
+  }
+
   const closestActivator: HTMLElement | null = el.closest(`#menu-activator-${uid}`);
   const closedWrapper: HTMLElement | null = el.closest(`#menu-wrapper-${uid}`);
   // satisfied when clicking outside the 'dropdown self-handling area'.
