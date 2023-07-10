@@ -9,10 +9,12 @@ const props = defineProps({
     default: ''
   }
 })
+
+const hoverEnabled = ref(true);
 </script>
 
 <template>
-  <div class="tooltip-wrapper">
+  <div @click="hoverEnabled = false" @mouseleave="hoverEnabled = true" class="tooltip-wrapper" :class="{'hover-enabled': hoverEnabled}">
     <div class="content">
       <slot/>
     </div>
@@ -56,9 +58,11 @@ const props = defineProps({
     justify-content: center;
   }
 
-  .content:hover + .tooltip-text-wrapper .tooltip-text {
-    transform: scale(1);
-    opacity: 1;
+  &.hover-enabled {
+    .content:hover + .tooltip-text-wrapper .tooltip-text {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 </style>
