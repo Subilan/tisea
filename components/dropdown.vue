@@ -22,7 +22,7 @@ import {onMounted, onUnmounted} from "#imports";
 import {getRandomString} from "~/server/utils/common";
 
 const menuOpen = ref(false);
-const menuDisplay = ref(true);
+const menuDisplay = ref(false);
 let uid = getRandomString(6);
 
 const timeout = setTimeout.bind(window);
@@ -102,7 +102,7 @@ watch(() => menuOpen.value, v => {
 .menu {
   background: white;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
-  border: 1px solid #00bcd4;
+  border: 1px solid rgba(0, 0, 0, .2);
   padding: .2rem;
   width: max-content;
   display: block;
