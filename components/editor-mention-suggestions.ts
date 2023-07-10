@@ -59,7 +59,7 @@ export default {
                     return true
                 }
 
-                return component.ref?.onKeyDown(props)
+                return component.ref.keydownHandler(props)
             },
 
             onExit() {

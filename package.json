@@ -18,6 +18,7 @@
     "ts-interface-checker": "^1.0.2"
   },
   "dependencies": {
+    "@tiptap/extension-character-count": "^2.0.3",
     "@tiptap/extension-code-block-lowlight": "^2.0.3",
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-document": "^2.0.3",

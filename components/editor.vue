@@ -27,6 +27,7 @@
       </bubble-menu>
     </mobile-only>
     <editor-content class="editor-content" :editor="editor"></editor-content>
+    <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
   </div>
 </template>
 
@@ -54,6 +55,7 @@ import ini from '@/utils/lib/hljs-languages/ini';
 import yaml from '@/utils/lib/hljs-languages/yaml';
 import json from '@/utils/lib/hljs-languages/json';
 import 'highlight.js/styles/atom-one-dark-reasonable.css'
+import {CharacterCount} from "@tiptap/extension-character-count";
 
 lowlight.lowlight.registerLanguage('html', html)
 lowlight.lowlight.registerLanguage('js', javascript);
@@ -73,7 +75,6 @@ const props = defineProps({
     default: ''
   }
 })
-defineModel('modelValue');
 const emit = defineEmits(['update:modelValue'])
 
 const editor = new Editor({
@@ -93,6 +94,8 @@ const editor = new Editor({
   }).configure({
     // @ts-ignore
     lowlight: lowlight.lowlight
+  }), CharacterCount.configure({
+    limit: 500
   })],
   content: props.modelValue,
   onUpdate(target) {
@@ -129,6 +132,10 @@ function getFocus() {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.counter-text {
+  color: rgba(0, 0, 0, .5);
 }
 </style>
 
