@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown-menu">
     <div
-         :id="`menu-activator-${uid}`" @click="() => {
+        :id="`menu-activator-${uid}`" @click="() => {
            menuDisplay = true;
            timeout(() => {
              menuOpen = !menuOpen
@@ -9,8 +9,8 @@
          } " class="content">
       <slot/>
     </div>
-    <div :id="`menu-wrapper-${uid}`" class="menu-wrapper">
-      <div :class="{active: menuOpen}" :style="{display: menuDisplay ? 'block' : 'none'}" class="menu">
+    <div :id="`menu-wrapper-${uid}`" class="menu-wrapper" :class="position">
+      <div :class="{'active': menuOpen, [position]: true}" :style="{'display': menuDisplay ? 'block' : 'none'}" class="menu">
         <slot name="menu" :close="() => menuOpen = false"/>
       </div>
     </div>
@@ -21,6 +21,17 @@
 import {onMounted, onUnmounted} from "#imports";
 import {getRandomString} from "~/server/utils/common";
 
+const props = defineProps({
+  noCloseOnClick: {
+    type: Boolean,
+    default: false
+  },
+  position: {
+    type: String,
+    default: 'center-bottom'
+  }
+})
+
 const menuOpen = ref(false);
 const menuDisplay = ref(false);
 let uid = getRandomString(6);
@@ -29,8 +40,8 @@ const timeout = setTimeout.bind(window);
 
 function clickOutsideHandler(e: MouseEvent) {
   const el = e.target as HTMLElement;
-  const closestActivator: HTMLElement | null = el.closest("[id^='menu-activator']");
-  const closedWrapper: HTMLElement | null = el.closest("[id^='menu-wrapper']");
+  const closestActivator: HTMLElement | null = el.closest(`#menu-activator-${uid}`);
+  const closedWrapper: HTMLElement | null = el.closest(`#menu-wrapper-${uid}`);
   // satisfied when clicking outside the 'dropdown self-handling area'.
   if (closestActivator === null && closedWrapper === null) {
     menuOpen.value = false;
@@ -44,17 +55,21 @@ function clickMenuItemHandler() {
 onMounted(() => {
   document.addEventListener('click', clickOutsideHandler);
 
-  document.querySelectorAll(`#menu-wrapper-${uid} .menu-item`).forEach(e => {
-    e.addEventListener('click', clickMenuItemHandler);
-  })
+  if (!props.noCloseOnClick) {
+    document.querySelectorAll(`#menu-wrapper-${uid} .menu-item`).forEach(e => {
+      e.addEventListener('click', clickMenuItemHandler);
+    })
+  }
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', clickOutsideHandler);
 
-  document.querySelectorAll(`#menu-wrapper-${uid} .menu-item`).forEach(e => {
-    e.removeEventListener('click', clickMenuItemHandler);
-  })
+  if (!props.noCloseOnClick) {
+    document.querySelectorAll(`#menu-wrapper-${uid} .menu-item`).forEach(e => {
+      e.removeEventListener('click', clickMenuItemHandler);
+    })
+  }
 })
 
 watch(() => menuOpen.value, v => {
@@ -95,25 +110,31 @@ watch(() => menuOpen.value, v => {
     font-size: 14px !important;
   }
 }
-</style>
 
-<style scoped lang="less">
 .dropdown-menu {
   position: relative;
 }
 
 .menu-wrapper {
   position: absolute;
-  top: calc(110%);
-  right: 50%;
-  transform: translateX(50%);
   z-index: 300;
+
+  &.center-bottom {
+    top: calc(110%);
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  &.right {
+    left: calc(100% + 4px);
+    top: 0;
+  }
 }
 
 .menu {
   background: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
-  border: 2px solid rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, .2);
   padding: .2rem;
   width: max-content;
   display: block;
@@ -123,14 +144,29 @@ watch(() => menuOpen.value, v => {
   font-size: 1rem;
   pointer-events: none;
 
-  transform: translateY(-4px) scale(.85);
   opacity: 0;
   transition: all .2s cubic-bezier(.84, 0, .24, 1.03);
 
-  &.active {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    pointer-events: all;
+  &.center-bottom {
+    transform-origin: top;
+    transform: translateY(-10px) scale(.85);
+
+    &.active {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+
+  &.right {
+    transform-origin: top;
+    transform: translateX(-10px) scale(.85);
+
+    &.active {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
   }
 }
 </style>
