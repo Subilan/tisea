@@ -33,12 +33,12 @@
         </tooltip>
         <template #menu="{ close }">
           <div class="menu-item-raw">
-            <textfield v-model="editorReactive.insertImageURL" placeholder="插入图片链接..."></textfield>
+            <textfield v-model="editorReactive.insertImageURL" placeholder="有效的图片链接..."></textfield>
             <btn :loading="loadings.insertImage" class="primary" size="small" @click="() => {
-              close();
-              if (editorReactive.insertImageURL.length > 0) {
+              if (editorReactive.insertImageURL.length > 0 && editorReactive.insertImageURL.trim() !== '') {
                 createImage();
               }
+              close();
             }">插入</btn>
             <btn class="white" size="small" @click="close()">取消</btn>
           </div>
