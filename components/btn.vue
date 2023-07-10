@@ -40,6 +40,7 @@ const spinnerSize = computed(() => {
   cursor: pointer;
   background: white;
   transition: all .2s ease;
+  line-height: 1;
 }
 
 .button:not(.icon) {

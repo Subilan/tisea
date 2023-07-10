@@ -11,7 +11,7 @@
     <div class="card-content">
       <slot name="content"></slot>
     </div>
-    <div class="card-actions">
+    <div class="card-actions" v-if="slots.actions">
       <slot name="actions"></slot>
     </div>
   </div>
@@ -31,6 +31,8 @@ const props = defineProps({
     default: 'rgba(0, 0, 0, .15)'
   }
 })
+
+const slots = useSlots();
 </script>
 
 <style lang="less" scoped>
@@ -61,6 +63,7 @@ const props = defineProps({
 .card-actions {
   display: flex;
   flex-direction: column;
+  padding-top: 16px;
   gap: 16px;
   text-align: center;
 }
