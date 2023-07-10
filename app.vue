@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 import {useSnackbar, useUser} from "~/utils/states";
 import {setOnlineStatus} from "~/utils/common";
+import 'normalize.css';
 
 
 const snackbarGlobal = useSnackbar();
