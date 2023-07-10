@@ -143,6 +143,18 @@
         <btn class="primary" size="medium" @click="dialogs.invalidImageRegexTest = false">关闭</btn>
       </template>
     </dlg>
+    <dlg v-model="dialogs.invalidLanguage">
+      <template #title>
+        不支持的语言
+      </template>
+      <template #content>
+        <p>你输入了不支持的语言“{{ provided.langSelect.targetLanguage }}”，将无法实现代码高亮或者代码标注。目前我们支持的语言如下。</p>
+        <pre><code>{{ provided.langSelect.languages.join(", ") }}</code></pre>
+      </template>
+      <template #actions>
+        <btn class="primary" size="medium" @click="dialogs.invalidLanguage = false">关闭</btn>
+      </template>
+    </dlg>
   </div>
 </template>
 
@@ -179,6 +191,7 @@ import {ColorHighlighter} from "~/lib/editor/plugins/color-swatch/plugin";
 import {Image} from "@tiptap/extension-image";
 import {TextStyle} from "@tiptap/extension-text-style";
 import {ColorPicker} from "@/vendor/vue3-colorpicker";
+import {getMit, post} from "~/lib/common/futils/common";
 
 lowlight.lowlight.registerLanguage('html', html)
 lowlight.lowlight.registerLanguage('js', javascript);
@@ -202,7 +215,8 @@ const emit = defineEmits(['update:modelValue'])
 
 const dialogs = reactive({
   invalidImageURL: false,
-  invalidImageRegexTest: false
+  invalidImageRegexTest: false,
+  invalidLanguage: false
 })
 const loadings = reactive({
   insertImageURL: false
@@ -213,6 +227,12 @@ const editorReactive = reactive({
   colorGrad: ''
 })
 const colorInput = ref<null | HTMLElement>(null);
+const provided = reactive({
+  langSelect: {
+    targetLanguage: '',
+    languages: [] as string[]
+  }
+})
 
 const editor = new Editor({
   extensions: [StarterKit, Mention.configure({
@@ -276,6 +296,17 @@ async function createImage() {
     return;
   }
   getFocus().setImage({src: editorReactive.insertImageURL}).run();
+}
+
+const emitter = getMit(inject);
+
+if (emitter) {
+  emitter.on('dispatchInvalidLanguageDialog', (obj: { targetLanguage: string, languages: string[] }) => {
+    const {targetLanguage, languages} = obj;
+    provided.langSelect.targetLanguage = targetLanguage;
+    provided.langSelect.languages = languages;
+    dialogs.invalidLanguage = true;
+  })
 }
 </script>
 
