@@ -39,7 +39,8 @@
                 createImage();
               }
               close();
-            }">插入</btn>
+            }">插入
+            </btn>
             <btn class="white" size="small" @click="close()">取消</btn>
           </div>
         </template>
@@ -51,8 +52,14 @@
           </btn>
         </tooltip>
         <template #menu="{ close }">
-          <div class="menu-item" @click="getFocus().clearNodes().run()">
+          <div class="menu-item" @click="getFocus().clearNodes().run(); getFocus().unsetAllMarks().run(); close()">
             <span class="mdi mdi-format-clear"/>清除格式
+          </div>
+          <input ref="colorInput" type="color" hidden="hidden"
+                 @input="$event => getFocus().setColor($event.target.value).run()"
+                 :value="editor.getAttributes('textStyle').color"/>
+          <div class="menu-item" @click="handleColor">
+            <span class="mdi mdi-palette"/>颜色
           </div>
           <dropdown position="right">
             <div class="menu-item">
@@ -147,6 +154,7 @@ import {Typography} from "@tiptap/extension-typography";
 import {TextAlign} from "@tiptap/extension-text-align";
 import {ColorHighlighter} from "~/components/editor-plugin-color-highlighter";
 import {Image} from "@tiptap/extension-image";
+import {TextStyle} from "@tiptap/extension-text-style";
 
 lowlight.lowlight.registerLanguage('html', html)
 lowlight.lowlight.registerLanguage('js', javascript);
@@ -197,7 +205,7 @@ const editor = new Editor({
     limit: 500
   }), Highlight, Typography, TextAlign.configure({
     types: ['heading', 'paragraph']
-  }), ColorHighlighter, Image],
+  }), ColorHighlighter, Image, TextStyle],
   content: props.modelValue,
   onUpdate(target) {
     emit('update:modelValue', target.editor.getText())
@@ -208,12 +216,18 @@ const editorReactive = reactive({
   insertImageURL: ''
 })
 
+const colorInput = ref<null | HTMLElement>(null);
+
 onBeforeUnmount(() => {
   editor.destroy();
 })
 
 function getFocus() {
   return editor.chain().focus();
+}
+
+function handleColor() {
+  colorInput.value?.click();
 }
 
 async function createImage() {
@@ -262,12 +276,14 @@ async function createImage() {
 <style lang="less">
 @import '@/assets/styles/typo.less';
 
+@border-width-arg: 2px;
+
 .editor-content {
 
   .ProseMirror {
     outline: none;
     border-radius: 5px;
-    border: 2px solid rgba(0, 0, 0, .2);
+    border: solid 2px rgba(0, 0, 0, .2);
     transition: all .2s ease;
     font-size: 18px;
     resize: none;
