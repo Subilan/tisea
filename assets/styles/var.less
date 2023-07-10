@@ -2,13 +2,21 @@
 @text-l1: #ededed;
 
 @font-face {
-    font-family: Minecraft;
-    src: url("~/assets/fonts/MinecraftRegular.otf") format('opentype')
+  font-family: Minecraft;
+  src: url("~/assets/fonts/MinecraftRegular.otf") format('opentype')
 }
 
 @font-face {
-    font-family: YuanHeiNC;
-    font-weight: bold;
-    src: url("~/assets/fonts/MFYuanHei_Noncommercial-Regular.woff2") format('woff2');
-    unicode-range: U+4E00-9FD5;
+  font-family: YuanHeiNC;
+  font-weight: bold;
+  src: url("@/assets/fonts/MFYuanHei_Noncommercial-Regular.woff2") format('woff2');
+  unicode-range: U+4E00-9FD5;
+}
+
+.font-default {
+  font-family: Rubik, ui-sans-serif, '微软雅黑', 'Microsoft Yahei', sans-serif;
+}
+
+.font-monospace {
+  font-family: Cascadia Mono, Consolas, ui-monospace, '微软雅黑', 'Microsoft Yahei', ui-sans-serif, monospace;
 }
