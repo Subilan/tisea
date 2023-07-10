@@ -34,12 +34,7 @@
         <template #menu="{ close }">
           <div class="menu-item-raw">
             <textfield v-model="editorReactive.insertImageURL" placeholder="有效的图片链接..."></textfield>
-            <btn :loading="loadings.insertImage" class="primary" size="small" @click="() => {
-              if (editorReactive.insertImageURL.length > 0 && editorReactive.insertImageURL.trim() !== '') {
-                createImage();
-              }
-              close();
-            }">插入
+            <btn :loading="loadings.insertImageURL" class="primary" size="small" @click="createImage(); close();">插入
             </btn>
             <btn class="white" size="small" @click="close()">取消</btn>
           </div>
@@ -55,12 +50,17 @@
           <div class="menu-item" @click="getFocus().clearNodes().run(); getFocus().unsetAllMarks().run(); close()">
             <span class="mdi mdi-format-clear"/>清除格式
           </div>
-          <input ref="colorInput" type="color" hidden="hidden"
-                 @input="$event => getFocus().setColor($event.target.value).run()"
-                 :value="editor.getAttributes('textStyle').color"/>
-          <div class="menu-item" @click="handleColor">
-            <span class="mdi mdi-palette"/>颜色
-          </div>
+          <dropdown no-close-on-click position="right">
+            <div class="menu-item" @click="handleColor">
+              <span class="mdi mdi-palette"/>颜色
+            </div>
+            <template #menu>
+              <div class="menu-item-raw">
+                <color-picker :is-widget="true" v-model:pure-color="editorReactive.colorPure"
+                              v-model:gradient-color="editorReactive.colorGrad"/>
+              </div>
+            </template>
+          </dropdown>
           <dropdown position="right">
             <div class="menu-item">
               <span class="mdi mdi-format-header-pound"/>标题
@@ -107,6 +107,7 @@
       </bubble-menu>
     </mobile-only>
     <editor-content ref="editorRef" class="editor-content" :editor="editor"/>
+    <!--suppress TypeScriptUnresolvedReference -->
     <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
 
     <dlg v-model="errorDialogs.invalidImageURL">
@@ -114,7 +115,10 @@
         无法插入图片
       </template>
       <template #content>
-        你所提供的图片地址（<code>{{ editorReactive.insertImageURL }}</code>）无效。请确保目标地址可以正常访问，且为正确的图片格式。
+        你所提供的图片地址（<code>{{
+          // noinspection TypeScriptUnresolvedReference
+          editorReactive.insertImageURL
+        }}</code>）无效。请确保目标地址可以正常访问，且为正确的图片格式。
       </template>
       <template #actions>
         <btn class="primary" @click="errorDialogs.invalidImageURL = false">关闭</btn>
@@ -124,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import {Editor, EditorContent, BubbleMenu, VueNodeViewRenderer, Mark} from "@tiptap/vue-3";
+import {Editor, EditorContent, BubbleMenu, VueNodeViewRenderer} from "@tiptap/vue-3";
 import {StarterKit} from "@tiptap/starter-kit";
 import {onBeforeUnmount} from "#imports";
 import Tooltip from "~/components/tooltip.vue";
@@ -155,6 +159,7 @@ import {TextAlign} from "@tiptap/extension-text-align";
 import {ColorHighlighter} from "~/components/editor-plugin-color-highlighter";
 import {Image} from "@tiptap/extension-image";
 import {TextStyle} from "@tiptap/extension-text-style";
+import {ColorPicker} from "@/utils/vendor/index";
 
 lowlight.lowlight.registerLanguage('html', html)
 lowlight.lowlight.registerLanguage('js', javascript);
@@ -179,10 +184,15 @@ const emit = defineEmits(['update:modelValue'])
 const errorDialogs = reactive({
   invalidImageURL: false
 })
-
 const loadings = reactive({
-  insertImage: false
+  insertImageURL: false
 })
+const editorReactive = reactive({
+  insertImageURL: '',
+  colorPure: '',
+  colorGrad: ''
+})
+const colorInput = ref<null | HTMLElement>(null);
 
 const editor = new Editor({
   extensions: [StarterKit, Mention.configure({
@@ -212,12 +222,6 @@ const editor = new Editor({
   }
 });
 
-const editorReactive = reactive({
-  insertImageURL: ''
-})
-
-const colorInput = ref<null | HTMLElement>(null);
-
 onBeforeUnmount(() => {
   editor.destroy();
 })
@@ -226,17 +230,23 @@ function getFocus() {
   return editor.chain().focus();
 }
 
-function handleColor() {
-  colorInput.value?.click();
+function handleColor(v: string) {
+  getFocus().setColor(v).run();
 }
 
+watch(() => editorReactive.colorGrad, handleColor);
+watch(() => editorReactive.colorPure, handleColor);
+
 async function createImage() {
-  loadings.insertImage = true;
+  if (editorReactive.insertImageURL.length > 0 && editorReactive.insertImageURL.trim() !== '') {
+    return;
+  }
+  loadings.insertImageURL = true;
   const res = await post<boolean>('/api/common/check-value', {
     type: "image.valid",
     value: editorReactive.insertImageURL
   });
-  loadings.insertImage = false;
+  loadings.insertImageURL = false;
   if (!res.data) {
     errorDialogs.invalidImageURL = true;
     return;
