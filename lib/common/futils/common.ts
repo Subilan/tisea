@@ -1,6 +1,6 @@
-import Storage from "~/utils/storage";
-import {useUser} from "~/utils/states";
-import {ERR} from '@/server/utils/response';
+import Storage from "~/lib/common/futils/storage";
+import {useUser} from "~/lib/common/futils/states";
+import {ERR} from '~/lib/common/butils/response';
 
 export function $openTab(url: string) {
     window.open(url);

@@ -71,7 +71,7 @@ defineExpose({keydownHandler});
 </script>
 
 <style lang="less">
-@import "@/assets/styles/var.less";
+@import "assets/styles/var.less";
 
 .items {
   padding: 0.2rem;

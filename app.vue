@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import {useSnackbar, useUser} from "~/utils/states";
-import {setOnlineStatus} from "~/utils/common";
+import {useSnackbar, useUser} from "~/lib/common/futils/states";
+import {setOnlineStatus} from "~/lib/common/futils/common";
 import 'normalize.css';
 
 

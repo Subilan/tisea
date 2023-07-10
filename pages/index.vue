@@ -87,22 +87,22 @@
           <card raw v-if="user.ready">
             <template #content>
               <div class="col gap-16 nowrap">
-                <mainpage-function icon="mdi-book-account-outline" color="blue">
+                <function-card icon="mdi-book-account-outline" color="blue">
                   <template #title>
                     教程专区
                   </template>
                   <template #subtitle>
                     我们已将 Seati Wiki 上的教程搬迁到这里的新家了~
                   </template>
-                </mainpage-function>
-                <mainpage-function icon="mdi-message-text-outline" color="amber">
+                </function-card>
+                <function-card icon="mdi-message-text-outline" color="amber">
                   <template #title>
                     写点日志
                   </template>
                   <template #subtitle>
                     有些话一个动态说不清楚，可以在想写多长写多长的日志里记录哦~
                   </template>
-                </mainpage-function>
+                </function-card>
               </div>
             </template>
           </card>
@@ -147,10 +147,10 @@
 </template>
 
 <script lang="ts" setup>
-import {useUser} from "@/utils/states";
+import {useUser} from "~/lib/common/futils/states";
 import UserContact from "~/components/user-contact.vue";
-import MainpageFunction from "~/components/mainpage-function.vue";
 import Editor from "~/components/editor.vue";
+import FunctionCard from "~/components/function-card.vue";
 
 let dialogs = reactive({
   newDynamic: false

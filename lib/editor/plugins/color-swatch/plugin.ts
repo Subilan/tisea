@@ -1,7 +1,7 @@
 import {Extension} from '@tiptap/core'
 import {Plugin} from '@tiptap/pm/state'
 
-import colorSwatch from './editor-color-swatch'
+import colorSwatch from './decoration'
 
 export const ColorHighlighter = Extension.create({
     name: 'colorHighlighter',

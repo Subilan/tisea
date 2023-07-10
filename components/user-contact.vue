@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {useUser} from "~/utils/states";
+import {useUser} from "~/lib/common/futils/states";
 import Avatar from "~/components/avatar.vue";
 
 const user = useUser();

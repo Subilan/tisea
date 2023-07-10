@@ -120,11 +120,11 @@
 
 <script lang="ts" setup>
 import NoticeBar from "~/components/notice-bar.vue";
-import {bindProperties} from "~/server/utils/common";
-import Storage from "~/utils/storage";
-import {checkValue, doAction} from "~/utils/common";
-import {translate as t} from "~/utils/common";
-import {dispatchSnackbar} from "~/utils/states";
+import {bindProperties} from "~/lib/common/butils/common";
+import Storage from "~/lib/common/futils/storage";
+import {checkValue, doAction} from "~/lib/common/futils/common";
+import {translate as t} from "~/lib/common/futils/common";
+import {dispatchSnackbar} from "~/lib/common/futils/states";
 import {useRouter} from "#app/composables/router";
 
 definePageMeta({

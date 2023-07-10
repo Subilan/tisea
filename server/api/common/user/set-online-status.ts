@@ -1,4 +1,4 @@
-import {User} from "../../../utils/classes/User";
+import {User} from "../../../../lib/common/butils/classes/User";
 
 // important: please use navigator.sendBeacon(url, data: string) to test such API, absolutely not other API tools.
 export default defineEventHandler(async e => {

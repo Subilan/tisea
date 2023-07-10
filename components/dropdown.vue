@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import {onMounted, onUnmounted} from "#imports";
-import {getRandomString} from "~/server/utils/common";
+import {getRandomString} from "~/lib/common/butils/common";
 
 const props = defineProps({
   noCloseOnClick: {

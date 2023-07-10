@@ -1,5 +1,5 @@
 import {useState} from "#app";
-import Storage from "~/utils/storage";
+import Storage from "~/lib/common/futils/storage";
 
 type SnackbarConfig = { display: boolean, text: Nullable<string> }
 type UserConfig = { ready: boolean, target: Partial<IUser> }

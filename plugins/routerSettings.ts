@@ -1,6 +1,6 @@
 import nprogress from 'nprogress';
-import {updateUser} from "~/utils/states";
-import {getUser} from "~/utils/common";
+import {updateUser} from "~/lib/common/futils/states";
+import {getUser} from "~/lib/common/futils/common";
 
 export default defineNuxtPlugin({
     hooks: {

@@ -1,7 +1,7 @@
 import {VueRenderer} from '@tiptap/vue-3'
 import tippy, {GetReferenceClientRect, Instance, Props} from 'tippy.js'
 
-import EditorMentionList from "~/components/editor-mention-list.vue";
+import EditorMentionList from "~/lib/editor/plugins/mention/mention-list.vue";
 import {SuggestionOptions} from "@tiptap/suggestion";
 
 export default {

@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts" setup>
-import {useUser} from "@/utils/states";
-import {logout} from '@/utils/common';
+import {useUser} from "~/lib/common/futils/states";
+import {logout} from '~/lib/common/futils/common';
 import {useRouter} from "#app/composables/router";
 
 const user = useUser();
