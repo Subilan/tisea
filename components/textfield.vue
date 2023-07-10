@@ -4,7 +4,7 @@
       <span class="mdi" v-if="icon" :class="icon"/>
     </div>
     <div class="right">
-      <input v-if="!textarea" :class="ofError ? 'error' : ''"
+      <input :value="value" v-if="!textarea" :class="ofError ? 'error' : ''"
              @change="ev => {
                   if (!keyupEvent) emit('update:modelValue', ev.target.value);
                 }" @keyup="ev => {
@@ -12,7 +12,7 @@
                 }"
              :placeholder="placeholder" :type="type"
              class="textfield-input" :maxlength="maxlength"/>
-      <textarea :style="{height: props.textareaHeight}" v-else :class="ofError ? 'error' : ''"
+      <textarea :value="value" :style="{height: props.textareaHeight}" v-else :class="ofError ? 'error' : ''"
                 @change="ev => {
                   if (!keyupEvent) emit('update:modelValue', ev.target.value);
                 }" @keyup="ev => {
@@ -78,6 +78,10 @@ const maxlengthNum = computed(() => {
 
 const ofError = computed(() => {
   return !!props.errorText;
+})
+
+const value = computed(() => {
+  return props.modelValue;
 })
 </script>
 
