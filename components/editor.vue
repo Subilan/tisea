@@ -8,17 +8,90 @@
         <btn @click="getFocus().toggleItalic().run()" class="icon white rounded"><span class="mdi mdi-format-italic"/>
         </btn>
       </tooltip>
-      <div class="vertical-divider"/>
-      <tooltip tooltip-text="清除格式">
+      <tooltip tooltip-text="删除线">
         <btn @click="getFocus().toggleStrike().run()" class="icon white rounded"><span
             class="mdi mdi-format-strikethrough"/></btn>
       </tooltip>
-      <tooltip tooltip-text="标题">
-        <btn class="icon white rounded"><span class="mdi mdi-format-header-pound"/></btn>
+      <div class="vertical-divider"/>
+      <tooltip tooltip-text="引用">
+        <btn @click="getFocus().toggleBlockquote().run()" class="icon white rounded">
+          <span class="mdi mdi-format-quote-close"/>
+        </btn>
       </tooltip>
+      <tooltip tooltip-text="分割线">
+        <btn @click="getFocus().setHorizontalRule().run()" class="icon white rounded">
+          <span class="mdi mdi-minus"/>
+        </btn>
+      </tooltip>
+      <tooltip tooltip-text="高亮">
+        <btn class="icon white rounded" @click="getFocus().toggleHighlight().run()"><span class="mdi mdi-marker"/></btn>
+      </tooltip>
+      <dropdown>
+        <tooltip tooltip-text="图片">
+          <btn @click="editorReactive.insertImageURL = ''" class="icon white rounded"><span class="mdi mdi-image"/>
+          </btn>
+        </tooltip>
+        <template #menu="{ close }">
+          <div class="menu-item-raw">
+            <textfield v-model="editorReactive.insertImageURL" placeholder="插入图片链接..."></textfield>
+            <btn :loading="loadings.insertImage" class="primary" size="small" @click="() => {
+              close();
+              if (editorReactive.insertImageURL.length > 0) {
+                createImage();
+              }
+            }">插入</btn>
+            <btn class="white" size="small" @click="close()">取消</btn>
+          </div>
+        </template>
+      </dropdown>
+      <div class="vertical-divider"/>
+      <dropdown no-close-on-click>
+        <tooltip tooltip-text="更多">
+          <btn class="icon white rounded"><span class="mdi mdi-dots-horizontal"/>
+          </btn>
+        </tooltip>
+        <template #menu="{ close }">
+          <div class="menu-item" @click="getFocus().clearNodes().run()">
+            <span class="mdi mdi-format-clear"/>清除格式
+          </div>
+          <dropdown position="right">
+            <div class="menu-item">
+              <span class="mdi mdi-format-header-pound"/>标题
+            </div>
+            <template #menu>
+              <div class="menu-item" @click="getFocus().toggleHeading({level: 1}).run()"><span
+                  class="mdi mdi-format-header-1"/>一级标题
+              </div>
+              <div class="menu-item" @click="getFocus().toggleHeading({level: 2}).run()"><span
+                  class="mdi mdi-format-header-2"/>二级标题
+              </div>
+              <div class="menu-item" @click="getFocus().toggleHeading({level: 3}).run()"><span
+                  class="mdi mdi-format-header-3"/>三级标题
+              </div>
+              <div class="menu-item" @click="getFocus().clearNodes().run()"><span class="mdi mdi-delete"/>撤销标题</div>
+            </template>
+          </dropdown>
+          <dropdown position="right">
+            <div class="menu-item">
+              <span class="mdi mdi-format-align-justify"/>对齐
+            </div>
+            <template #menu>
+              <div class="menu-item" @click="getFocus().setTextAlign('left').run()">
+                <span class="mdi mdi-format-align-left"/>居左
+              </div>
+              <div class="menu-item" @click="getFocus().setTextAlign('center').run()">
+                <span class="mdi mdi-format-align-center"/>居中
+              </div>
+              <div class="menu-item" @click="getFocus().setTextAlign('right').run()">
+                <span class="mdi mdi-format-align-right"/>居右
+              </div>
+            </template>
+          </dropdown>
+        </template>
+      </dropdown>
     </div>
     <mobile-only>
-      <bubble-menu :editor="editor" :tippy-options="{ duration: 100}" v-if="editor">
+      <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" v-if="editor">
         <button-group>
           <div @click="getFocus().clearNodes().run()"><span class="mdi mdi-close"/> 清除格式</div>
           <div @click="getFocus().toggleBold().run()"><span class="mdi mdi-format-bold"/> 粗体</div>
@@ -26,13 +99,25 @@
         </button-group>
       </bubble-menu>
     </mobile-only>
-    <editor-content class="editor-content" :editor="editor"></editor-content>
+    <editor-content ref="editorRef" class="editor-content" :editor="editor"/>
     <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
+
+    <dlg v-model="errorDialogs.invalidImageURL">
+      <template #title>
+        无法插入图片
+      </template>
+      <template #content>
+        你所提供的图片地址（<code>{{ editorReactive.insertImageURL }}</code>）无效。请确保目标地址可以正常访问，且为正确的图片格式。
+      </template>
+      <template #actions>
+        <btn class="primary" @click="errorDialogs.invalidImageURL = false">关闭</btn>
+      </template>
+    </dlg>
   </div>
 </template>
 
 <script setup lang="ts">
-import {Editor, EditorContent, BubbleMenu, VueNodeViewRenderer} from "@tiptap/vue-3";
+import {Editor, EditorContent, BubbleMenu, VueNodeViewRenderer, Mark} from "@tiptap/vue-3";
 import {StarterKit} from "@tiptap/starter-kit";
 import {onBeforeUnmount} from "#imports";
 import Tooltip from "~/components/tooltip.vue";
@@ -56,6 +141,12 @@ import yaml from '@/utils/lib/hljs-languages/yaml';
 import json from '@/utils/lib/hljs-languages/json';
 import 'highlight.js/styles/atom-one-dark-reasonable.css'
 import {CharacterCount} from "@tiptap/extension-character-count";
+import Dropdown from "~/components/dropdown.vue";
+import {Highlight} from "@tiptap/extension-highlight";
+import {Typography} from "@tiptap/extension-typography";
+import {TextAlign} from "@tiptap/extension-text-align";
+import {ColorHighlighter} from "~/components/editor-plugin-color-highlighter";
+import {Image} from "@tiptap/extension-image";
 
 lowlight.lowlight.registerLanguage('html', html)
 lowlight.lowlight.registerLanguage('js', javascript);
@@ -77,6 +168,14 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
+const errorDialogs = reactive({
+  invalidImageURL: false
+})
+
+const loadings = reactive({
+  insertImage: false
+})
+
 const editor = new Editor({
   extensions: [StarterKit, Mention.configure({
     HTMLAttributes: {
@@ -96,11 +195,17 @@ const editor = new Editor({
     lowlight: lowlight.lowlight
   }), CharacterCount.configure({
     limit: 500
-  })],
+  }), Highlight, Typography, TextAlign.configure({
+    types: ['heading', 'paragraph']
+  }), ColorHighlighter, Image],
   content: props.modelValue,
   onUpdate(target) {
     emit('update:modelValue', target.editor.getText())
   }
+});
+
+const editorReactive = reactive({
+  insertImageURL: ''
 })
 
 onBeforeUnmount(() => {
@@ -110,6 +215,20 @@ onBeforeUnmount(() => {
 function getFocus() {
   return editor.chain().focus();
 }
+
+async function createImage() {
+  loadings.insertImage = true;
+  const res = await post<boolean>('/api/common/check-value', {
+    type: "image.valid",
+    value: editorReactive.insertImageURL
+  });
+  loadings.insertImage = false;
+  if (!res.data) {
+    errorDialogs.invalidImageURL = true;
+    return;
+  }
+  getFocus().setImage({src: editorReactive.insertImageURL}).run();
+}
 </script>
 
 <style scoped lang="less">
@@ -118,6 +237,7 @@ function getFocus() {
   align-items: center;
   gap: 8px;
   padding: 0 8px;
+
 }
 
 .vertical-divider {
@@ -168,6 +288,25 @@ function getFocus() {
     }
 
     .typo;
+
+    .color {
+      white-space: nowrap;
+      cursor: pointer;
+
+      &::before {
+        content: ' ';
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: 1px solid rgba(0, 0, 0, .1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+        vertical-align: middle;
+        margin-right: 0.1em;
+        margin-bottom: 0.15em;
+        border-radius: 2px;
+        background-color: var(--color);
+      }
+    }
   }
 }
 
