@@ -30,5 +30,8 @@ export default defineNuxtConfig({
 	plugins: [{
 		src: '@/plugins/routerSettings.ts',
 		mode: 'client'
+	}, {
+		src: '@/plugins/mitt.ts',
+		mode: 'client'
 	}]
 });

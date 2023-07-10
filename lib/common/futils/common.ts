@@ -1,6 +1,7 @@
 import Storage from "~/lib/common/futils/storage";
 import {useUser} from "~/lib/common/futils/states";
 import {ERR} from '~/lib/common/butils/response';
+import {Emitter, EventType} from "mitt";
 
 export function $openTab(url: string) {
     window.open(url);
@@ -125,4 +126,8 @@ export function translate(input: Nullable<string>, context: TranslateContexts = 
         }
     }
     return target;
+}
+
+export function getMit(inject: (str: string) => Emitter<Record<EventType, any>>) {
+    return inject('emitter');
 }
