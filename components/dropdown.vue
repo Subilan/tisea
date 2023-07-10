@@ -138,7 +138,7 @@ watch(() => menuOpen.value, v => {
     transform: translateX(50%);
   }
 
-  &.right {
+  &.right, &.right-plus {
     left: calc(100% + 4px);
     top: 0;
   }
@@ -162,7 +162,7 @@ watch(() => menuOpen.value, v => {
 
   &.center-bottom {
     transform-origin: top;
-    transform: translateY(-10px) scale(.85);
+    transform: translateY(-15px) scale(.85);
 
     &.active {
       transform: translateY(0) scale(1);
@@ -171,9 +171,21 @@ watch(() => menuOpen.value, v => {
     }
   }
 
+  &.right-plus {
+    transform-origin: top;
+    transform: translateX(-30px) scale(.8);
+
+    &.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+
   &.right {
     transform-origin: top;
-    transform: translateX(-10px) scale(.85);
+    transform: translateX(-15px) scale(.85);
 
     &.active {
       transform: translateX(0) scale(1);

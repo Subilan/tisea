@@ -50,7 +50,7 @@
           <div class="menu-item" @click="getFocus().clearNodes().run(); getFocus().unsetAllMarks().run(); close()">
             <span class="mdi mdi-format-clear"/>清除格式
           </div>
-          <dropdown no-close-on-click position="right">
+          <dropdown no-close-on-click position="right-plus">
             <div class="menu-item" @click="handleColor">
               <span class="mdi mdi-palette"/>颜色
             </div>
