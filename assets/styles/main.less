@@ -13,6 +13,23 @@ code {
     .font-monospace;
 }
 
+p:first-child, pre:first-child {
+    margin-top: 0;
+}
+
+p:last-child, pre:last-child {
+    margin-bottom: 0;
+}
+
+p, pre {
+    margin: .8rem 0;
+}
+pre {
+    padding: .4rem .8rem;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, .2);
+}
+
 .container {
     max-width: 1200px;
     display: block;
