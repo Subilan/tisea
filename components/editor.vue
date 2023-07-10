@@ -106,9 +106,12 @@
         </button-group>
       </bubble-menu>
     </mobile-only>
-    <editor-content ref="editorRef" class="editor-content" :editor="editor"/>
-    <!--suppress TypeScriptUnresolvedReference -->
-    <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
+
+    <div class="editor-wrapper">
+      <editor-content ref="editorRef" class="editor-content" :editor="editor"/>
+      <!--suppress TypeScriptUnresolvedReference -->
+      <small class="counter-text">{{ editor.storage.characterCount.characters() }}/500</small>
+    </div>
 
     <dlg v-model="dialogs.invalidImageURL">
       <template #title>

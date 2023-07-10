@@ -64,7 +64,7 @@ const slots = useSlots();
   display: flex;
   flex-direction: column;
   padding-top: 16px;
-  gap: 16px;
+  gap: 8px;
   text-align: center;
 }
 

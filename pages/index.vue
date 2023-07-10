@@ -172,7 +172,6 @@ const user = useUser();
 .hero {
   background-size: cover;
   background: url(https://seati.oss-cn-qingdao.aliyuncs.com/assets/images/1.jpg) no-repeat center;
-  width: 100vw;
   height: 30vh;
 }
 
