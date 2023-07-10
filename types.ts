@@ -1,5 +1,5 @@
 const Actions = ['user.create', 'user.alter', 'user.login', 'user.login.oasis', 'user.logout', 'user.checkToken'] as const;
-const CheckTypes = ['user.username.uniqueness', 'user.minecraft.valid', 'user.minecraft.uniqueness', 'user.oasis.uniqueness'] as const;
+const CheckTypes = ['user.username.uniqueness', 'user.minecraft.valid', 'user.minecraft.uniqueness', 'user.oasis.uniqueness', 'image.valid'] as const;
 const TranslateContexts = ['none', 'login'] as const;
 
 type RequestActions = typeof Actions[number];

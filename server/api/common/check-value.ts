@@ -30,6 +30,11 @@ export default defineEventHandler(async e => {
                 return ok(r === null);
             }
 
+            case "image.valid": {
+                const r = await fetch(value, {method: 'HEAD'});
+                return ok((await r.blob()).type.startsWith('image/'));
+            }
+
             default: {
                 return ng(ERR.UNSUPPORTED_OPERATION, 'check-value.ts switch-default');
             }
