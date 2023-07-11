@@ -37,7 +37,7 @@ const hoverEnabled = ref(true);
     transition: all .25s cubic-bezier(.84, 0, .24, 1.03);
     background: #4f4f4f;
     color: white;
-    padding: 2px 8px;
+    padding: .3rem .6rem;
     border-radius: 5px;
     cursor: default;
     opacity: 0;
@@ -60,7 +60,7 @@ const hoverEnabled = ref(true);
 
   &.hover-enabled {
     .content:hover + .tooltip-text-wrapper .tooltip-text {
-      transform: scale(1);
+      transform: scale(1.01); // magic, solving aligning problems
       opacity: 1;
     }
   }
