@@ -104,7 +104,7 @@ const emit = defineEmits(['update:modelValue'])
       line-height: 1.5;
       font-size: 18px;
       max-height: 700px;
-      overflow: visible;
+      overflow-y: auto;
     }
 
     .dialog-card-actions {
