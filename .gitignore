@@ -22,7 +22,5 @@ logs
 .env.*
 !.env.example
 
-package-lock.json
-
 test.ts
 help.json
