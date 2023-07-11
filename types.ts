@@ -1,7 +1,7 @@
 const Actions = ['user.create', 'user.alter', 'user.login', 'user.login.oasis', 'user.logout', 'user.checkToken'] as const;
 const CheckTypes = ['user.username.uniqueness', 'user.minecraft.valid', 'user.minecraft.uniqueness', 'user.oasis.uniqueness', 'image.valid'] as const;
 const TranslateContexts = ['none', 'login'] as const;
-const TokenExpiration = ['12h', '1d', '3d', '7d', '15d'] as const;
+const TokenExpiration = ['1h', '12h', '1d', '3d', '7d', '15d'] as const;
 
 type RequestActions = typeof Actions[number];
 type CheckTypes = typeof CheckTypes[number];
