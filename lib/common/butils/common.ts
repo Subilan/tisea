@@ -1,4 +1,5 @@
 import CryptoEs from "crypto-es";
+import {ERR} from "~/lib/common/butils/response";
 const RANDOM_STRING_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function castObject<T>(obj: any, targetClass: Class) {
