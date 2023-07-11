@@ -126,3 +126,21 @@ function splitHash(hash: string) {
         salt: splitted[1]
     }
 }
+
+/**
+ * 将会话期限字串转换为指定时间的毫秒数
+ * * 如果字串 falsy，那么返回 12 小时
+ * * 如果字串 truthy 但是不存在对应的时间，那么返回 NaN
+ * @param expiration 会话期限字串
+ */
+export function expirationToNumber(expiration: TokenExpiration) {
+    if (!expiration) return 43200000;
+    const match: Record<TokenExpiration, number> = {
+        "12h": 43200000,
+        "1d": 86400000,
+        "3d": 259200000,
+        "7d": 604800000,
+        "15d": 1296000000
+    }
+    return expiration in Object.keys(match) ? match[expiration] : NaN;
+}

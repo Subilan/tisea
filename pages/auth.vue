@@ -26,10 +26,14 @@
       <div class="textfield-container" v-if="!registering && method === 'oasis'">
         <textfield placeholder="火星港用户名" icon="mdi-account-circle" type="text" v-model="loginDataOasis.username"/>
         <textfield placeholder="火星港密码" icon="mdi-key" type="password" v-model="loginDataOasis.password"/>
+        <sel icon="mdi-clock" placeholder="会话期限" v-model="loginDataOasis.expiration"
+             :options="tokenExpirationSelectionObject"/>
       </div>
       <div class="textfield-container" v-if="!registering && method === 'common'">
         <textfield placeholder="用户名" icon="mdi-account-circle" type="text" v-model="loginData.username"/>
         <textfield placeholder="密码" icon="mdi-key" type="password" v-model="loginData.password"/>
+        <sel icon="mdi-clock" placeholder="会话期限" v-model="loginData.expiration"
+             :options="tokenExpirationSelectionObject"/>
       </div>
       <div class="textfield-container" v-if="registering">
         <textfield placeholder="用户名" :error-text="errorTextDynamic.username || errorTextStatic.username"
@@ -42,6 +46,8 @@
                    v-model="registrationData.password"/>
         <textfield placeholder="确认密码" icon="mdi-shield-key" :error-text="errorTextStatic.passwordV" type="password"
                    v-model="passwordV"/>
+        <sel icon="mdi-clock" placeholder="会话期限" v-model="registrationData.expiration"
+             :options="tokenExpirationSelectionObject"/>
       </div>
 
       <div class="auth-box-divider"/>
@@ -122,15 +128,27 @@
 import NoticeBar from "~/components/notice-bar.vue";
 import {bindProperties} from "~/lib/common/butils/common";
 import Storage from "~/lib/common/futils/storage";
-import {checkValue, doAction} from "~/lib/common/futils/common";
+import {checkValue, doAction, post} from "~/lib/common/futils/common";
 import {translate as t} from "~/lib/common/futils/common";
 import {dispatchSnackbar} from "~/lib/common/futils/states";
 import {useRouter} from "#app/composables/router";
+import {tokenExpirationSelectionObject} from "~/lib/common/template/token-expiration";
+import {VueCookies} from "vue-cookies";
 
 definePageMeta({
   layout: false,
   middleware: 'auth-excepted'
 })
+
+const cookies = inject<VueCookies>('$cookies') as VueCookies;
+
+function updateExpirationCookie(exp: string) {
+  cookies.set('tisea-login-session-expiration', exp);
+}
+
+function getExpirationCookie(): TokenExpiration | '' {
+  return cookies.get('tisea-login-session-expiration') || ''
+}
 
 let oasisNotRegistered = ref(false);
 let titleUnderscoreShown = ref(false);
@@ -147,18 +165,21 @@ let dialogs = reactive({
 let loginData = reactive({
   username: '',
   password: '',
+  expiration: getExpirationCookie()
 })
 
 let loginDataOasis = reactive({
   username: '',
-  password: ''
+  password: '',
+  expiration: getExpirationCookie()
 })
 
 let registrationData = reactive({
   username: '',
   password: '',
   oasis: null as Nullable<OasisUserObject>,
-  minecraft: ''
+  minecraft: '',
+  expiration: getExpirationCookie()
 })
 
 let loading = reactive({
@@ -205,6 +226,7 @@ async function login() {
   }
   Storage.token = r.data;
   loading.login = false;
+  updateExpirationCookie(loginData.expiration)
   await useRouter().push('/');
 }
 
@@ -238,6 +260,7 @@ async function loginWithOasis() {
   loading.login = false;
   if (r.state === 'ok') {
     Storage.token = r.data;
+    updateExpirationCookie(loginDataOasis.expiration)
     await useRouter().push("/");
   } else {
     dispatchSnackbar(`${t(r.msg, 'login')}`);
@@ -251,6 +274,7 @@ async function register() {
   if (r) {
     if (r.state === 'ok') {
       Storage.token = r.data;
+      updateExpirationCookie(registrationData.expiration)
       await useRouter().push("/");
     } else {
       dispatchSnackbar(`${t(r.msg, 'login')}`);

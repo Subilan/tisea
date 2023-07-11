@@ -1,5 +1,5 @@
 import {ERR, ng, ok} from '../../lib/common/butils/response';
-import {loginOasis, requireNonEmpty} from "../../lib/common/butils/common";
+import {expirationToNumber, loginOasis, requireNonEmpty} from "../../lib/common/butils/common";
 import {Creation, User, UserUtil} from "../../lib/common/butils/classes/User";
 
 export default defineEventHandler(async e => {
@@ -26,7 +26,8 @@ export default defineEventHandler(async e => {
                 await creation.create()
                 const user = await User.build(creation.dist.id);
                 await user.setLogin();
-                const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
+                const expiration = expirationToNumber(params.expiration);
+                if (isNaN(expiration)) return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'user.create');
                 return ok(user.getToken(expiration));
             }
 
@@ -41,8 +42,8 @@ export default defineEventHandler(async e => {
             case "user.login": {
                 const username = requireNonEmpty(params.username);
                 const pwd = requireNonEmpty(params.password);
-                // default: 12 hours
-                const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
+                const expiration = expirationToNumber(params.expiration);
+                if (isNaN(expiration)) return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'user.login');
                 const user = await User.build("", username);
                 if (user.regType === 'oasis') {
                     return ng(ERR.UNSUPPORTED_OPERATION,  'user.login');
@@ -76,7 +77,8 @@ export default defineEventHandler(async e => {
                     });
                     await creation.create();
                 }
-                const expiration = typeof params.expiration === 'number' ? params.expiration : 43200000;
+                const expiration = expirationToNumber(params.expiration);
+                if (isNaN(expiration)) return ng(ERR.ARGUMENT_TYPE_NOT_SATISFIED, 'user.login.oasis');
                 const user = await User.build("", login.username);
                 if (userExist) {
                     await user.alter({
