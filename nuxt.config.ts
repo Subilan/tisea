@@ -33,5 +33,8 @@ export default defineNuxtConfig({
 	}, {
 		src: '@/plugins/mitt.ts',
 		mode: 'client'
+	}, {
+		src: '@/plugins/cookies.ts',
+		mode: 'client'
 	}]
 });

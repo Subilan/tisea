@@ -52,6 +52,7 @@
     "nprogress": "^0.2.0",
     "sass": "^1.63.4",
     "tinycolor2": "^1.6.0",
+    "vue-cookies": "^1.8.3",
     "vue-types": "^5.1.0"
   }
 }
