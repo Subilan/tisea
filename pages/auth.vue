@@ -1,5 +1,16 @@
 <template>
   <div class="auth">
+    <help>
+      <template #title>
+        登录帮助
+      </template>
+      <template #content>
+        <div v-html="articles.auth"/>
+      </template>
+      <template #actions="{ close }">
+        <btn class="primary" @click="close()">关闭</btn>
+      </template>
+    </help>
     <div class="auth-box">
       <div class="auth-box-head">
         <div class="auth-box-title" v-if="!registering">
@@ -134,6 +145,8 @@ import {dispatchSnackbar} from "~/lib/common/futils/states";
 import {useRouter} from "#app/composables/router";
 import {tokenExpirationSelectionObject} from "~/lib/common/template/token-expiration";
 import {VueCookies} from "vue-cookies";
+import Help from "~/components/help.vue";
+import articles from '@/assets/help.json';
 
 definePageMeta({
   layout: false,
@@ -204,7 +217,7 @@ let passwordV = ref('')
 let validation = computed(() => {
   return {
     username: /^(?=.{6,18}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(registrationData.username ?? '') || registrationData.username.length === 0 ? '' : '6~18 位英文或数字，不能以特殊符号开头或结尾',
-    password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
+    password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\$\*\.\-@~&%\{\}><\^\+\d]{8,}$/.test(registrationData.password ?? '') || registrationData.password.length === 0 ? '' : '至少 8 位且包含一位字母和数字',
     minecraft: /^[a-zA-Z0-9_]{2,16}$/mg.test(registrationData.minecraft ?? '') || registrationData.minecraft.length === 0 ? '' : '不是有效的 Minecraft 游戏名格式',
     passwordV: (passwordV.value === registrationData.password || (registrationData.password.length === 0 && passwordV.value.length === 0)) ? '' : '两次密码输入不一致'
   }
