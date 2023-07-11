@@ -5,8 +5,8 @@
   <div class="icon" v-if="icon.length > 0">
     <span class="mdi" :class="icon"/>
   </div>
-  <div contenteditable="false" :id="`option-activator-${uid}`" @click="handleInputClick()" :style="{color: selected ? '#000' : 'rgb(117, 117, 117)'}" :class="{active: optionsActive}" class="selection-input">
-    {{ selected || placeholder }}
+  <div contenteditable="false" :id="`option-activator-${uid}`" @click="handleInputClick()" :style="{color: (modelValue || selected) ? '#000' : 'rgb(117, 117, 117)'}" :class="{active: optionsActive}" class="selection-input">
+    {{ modelValue || selected || placeholder }}
   </div>
   <div :id="`option-wrapper-${uid}`" class="selection-options-wrapper" :class="{active: optionsActive}" :style="{display: displayOptions ? 'block' : 'none'}">
     <div class="selection-options">
@@ -36,7 +36,8 @@ const props = defineProps({
     default: ''
   },
   options: {
-    type: Array // {text: string, value?: string}[]
+    type: Array, // {text: string, value?: string}[]
+    required: true
   },
   modelValue: {
     type: String,
