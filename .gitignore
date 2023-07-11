@@ -25,3 +25,4 @@ logs
 package-lock.json
 
 test.ts
+help.json
