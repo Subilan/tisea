@@ -6,17 +6,17 @@
     <div class="right">
       <input :value="value" v-if="!textarea" :class="ofError ? 'error' : ''"
              @change="ev => {
-                  if (!keyupEvent) emit('update:modelValue', ev.target.value);
+                  if (!keyupEvent) updateModelValue(ev);
                 }" @keyup="ev => {
-                  if (keyupEvent) emit('update:modelValue', ev.target.value);
+                  if (keyupEvent) updateModelValue(ev);
                 }"
              :placeholder="placeholder" :type="type"
              class="textfield-input" :maxlength="maxlength"/>
       <textarea :value="value" :style="{height: props.textareaHeight}" v-else :class="ofError ? 'error' : ''"
                 @change="ev => {
-                  if (!keyupEvent) emit('update:modelValue', ev.target.value);
+                  if (!keyupEvent) updateModelValue(ev);
                 }" @keyup="ev => {
-                  if (keyupEvent) emit('update:modelValue', ev.target.value);
+                  if (keyupEvent) updateModelValue(ev);
                 }" :placeholder="placeholder"
                 class="textfield-textarea" :maxlength="maxlength"/>
       <Transition name="fadeRight">
@@ -25,7 +25,7 @@
       <Transition name="fadeRight">
         <small class="error-text" v-if="errorText">{{ errorText }}</small>
       </Transition>
-      <small class="counter-text" v-if="!hintText && !errorText && maxlength > 0">{{
+      <small class="counter-text" v-if="!hintText && !errorText && Number(maxlength) > 0">{{
           modelValue.length
         }}/{{ maxlength }}</small>
     </div>
@@ -83,6 +83,10 @@ const ofError = computed(() => {
 const value = computed(() => {
   return props.modelValue;
 })
+
+function updateModelValue(event: Event) {
+  emit('update:modelValue', (event.target as HTMLInputElement).value);
+}
 </script>
 
 <style scoped lang="less">
@@ -106,7 +110,7 @@ const value = computed(() => {
   align-items: flex-start;
 
   .mdi::before {
-    font-size: 28px;
+    font-size: 1.5rem;
     color: rgba(0, 0, 0, .6);
   }
 }
@@ -132,7 +136,7 @@ const value = computed(() => {
   border-radius: 5px;
   border: 2px solid rgba(0, 0, 0, .2);
   transition: all .2s ease;
-  font-size: 18px;
+  font-size: 1rem;
   resize: none;
   box-sizing: border-box;
 

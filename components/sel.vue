@@ -20,12 +20,14 @@
 
 <script setup lang="ts">
 import {onMounted, onUnmounted} from "vue";
+import { PropType } from "vue-types/dist/types";
 import {getRandomString} from "~/lib/common/butils/common";
 
 const selected = ref('');
 const displayOptions = ref(false);
 const optionsActive = ref(false);
 const uid = getRandomString(7);
+
 const props = defineProps({
   icon: {
     type: String,
@@ -36,7 +38,7 @@ const props = defineProps({
     default: ''
   },
   options: {
-    type: Array, // {text: string, value?: string}[]
+    type: Object as PropType<{value?: string, text: string}[]>,
     required: true
   },
   modelValue: {
@@ -96,7 +98,7 @@ onUnmounted(() => {
 <style scoped lang="less">
 .mdi::before {
   color: rgba(0, 0, 0, .6);
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .selection {
@@ -111,7 +113,7 @@ onUnmounted(() => {
   border-radius: 5px;
   border: 2px solid rgba(0, 0, 0, .2);
   transition: all .2s ease;
-  font-size: 18px;
+  font-size: 1rem;
   resize: none;
   box-sizing: border-box;
   padding: 8px;
@@ -137,7 +139,7 @@ onUnmounted(() => {
 }
 
 @sel-opt-padding: .6rem;
-@sel-opt-left: 44px;
+@sel-opt-left: 40px;
 @sel-opt-border: 2px;
 
 .selection-options-wrapper {
@@ -167,7 +169,7 @@ onUnmounted(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  font-size: 18px;
+  font-size: 1rem;
 
   .option {
     padding: .4rem;

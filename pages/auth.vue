@@ -363,7 +363,7 @@ watch(() => loginDataOasis.username, async v => {
 .auth-box-head {
   display: flex;
   flex-direction: column;
-  font-size: 18px;
+  font-size: 1rem;
   line-height: 1.5;
   gap: 16px;
 }
@@ -389,7 +389,7 @@ watch(() => loginDataOasis.username, async v => {
 
 .auth-box-title {
   font-family: Minecraft, ui-monospace, monospace;
-  font-size: 40px;
+  font-size: 2.4rem;
 }
 
 .auth-box-actions {

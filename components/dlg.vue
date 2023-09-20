@@ -75,6 +75,7 @@ const emit = defineEmits(['update:modelValue'])
     display: flex;
     flex-direction: column;
     gap: 16px;
+    max-height: 500px;
 
     &.full-width {
       width: 500px;
@@ -95,14 +96,14 @@ const emit = defineEmits(['update:modelValue'])
     }
 
     .dialog-card-title {
-      font-size: 34px;
+      font-size: 2rem;
       font-weight: bold;
       line-height: 1;
     }
 
     .dialog-card-content {
       line-height: 1.5;
-      font-size: 18px;
+      font-size: 1rem;
       max-height: 700px;
       overflow-y: auto;
     }

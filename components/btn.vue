@@ -45,16 +45,16 @@ const spinnerSize = computed(() => {
 
 .button:not(.icon) {
   &.large {
-    min-height: 20px;
+    min-height: 1.2rem;
   }
 
   &.medium {
-    font-size: 16px;
+    font-size: 1rem;
     max-height: 16px;
   }
 
   &.small {
-    font-size: 14px;
+    font-size: .8rem;
     max-height: 14px;
   }
 }
