@@ -1,6 +1,6 @@
 import CryptoEs from "crypto-es";
 import {ERR} from "~/lib/common/butils/response";
-const RANDOM_STRING_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const RANDOM_STRING_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function castObject<T>(obj: any, targetClass: Class) {
     return (obj instanceof targetClass) ? obj as T : null;
@@ -60,8 +60,8 @@ export function bindProperties(bindTarget: any, bindFrom: any) {
 export function getRandomString(len: number) {
     let randomString = '';
     for (let i = 0; i < len; i++) {
-        const randomPoz = Math.floor(Math.random() * RANDOM_STRING_CHARSET.length);
-        randomString += RANDOM_STRING_CHARSET.substring(randomPoz, randomPoz + 1);
+        const randomPoz = Math.floor(Math.random() * RANDOM_STRING_CHARS.length);
+        randomString += RANDOM_STRING_CHARS.substring(randomPoz, randomPoz + 1);
     }
     return randomString;
 }
