@@ -37,6 +37,7 @@
     "@tiptap/extension-typography": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/suggestion": "^2.1.10",
     "@tiptap/vue-3": "^2.0.3",
     "@vueuse/core": "^10.2.1",
     "crypto-es": "^1.2.7",
