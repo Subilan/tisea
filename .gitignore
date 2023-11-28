@@ -1,5 +1,6 @@
 # Nuxt dev/build outputs
 .output
+.data
 .nuxt
 .nitro
 .cache
@@ -22,5 +23,5 @@ logs
 .env.*
 !.env.example
 
-test.ts
-help.json
+# Old version of Tisea
+old
