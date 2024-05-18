@@ -1,3 +1,3 @@
 # 🌊 Tisea
 
-Suspended temporarily. Currently working on [lab-backend](https://github.com/seatitanium/lab-backend).
+Suspended temporarily. Currently working on [lab-frontend](https://github.com/seatitanium/lab-frontend).
